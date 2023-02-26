@@ -15,9 +15,9 @@
       </div>
     </td> -->
     <!-- :class="[isupdate == true ? needupdate : notneedupdate]" -->
-    <td :class="{'hidden': hideCols.indexOf('exercise') > -1}"> <input  @keyup="verificarCambio({name:'desActividad', value: restriction_row.desActividad})" v-model="restriction_row.desActividad" type="text" class="text-xs w-full border border-[#8A9CC9] px-2 h-8 rounded" :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" /> </td>
-    <td :class="{'hidden': hideCols.indexOf('restriction') > -1}"> <input  @keyup="verificarCambio({name:'desRestriccion', value: restriction_row.desRestriccion})" v-model="restriction_row.desRestriccion" type="text" class="text-xs w-full border border-[#8A9CC9] px-2 h-8 rounded"  :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" /> </td>
-    <td :class="{'hidden': hideCols.indexOf('restrictionType') > -1}">
+    <td> <input  @keyup="verificarCambio({name:'desActividad', value: restriction_row.desActividad})" v-model="restriction_row.desActividad" type="text" class="text-xs w-full border border-[#8A9CC9] px-2 h-8 rounded" :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" /> </td>
+    <td> <input  @keyup="verificarCambio({name:'desRestriccion', value: restriction_row.desRestriccion})" v-model="restriction_row.desRestriccion" type="text" class="text-xs w-full border border-[#8A9CC9] px-2 h-8 rounded"  :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" /> </td>
+    <td>
       <div v-if="statusRestriction" class="flex relative  cursor-pointer cursor-pointer ">
         <input type="hidden" v-model="restriction_row.codTipoRestriccion">
         <input  v-model="restriction_row.desTipoRestriccion" type="text" class="w-full border border-[#8A9CC9] px-2 text-xs h-8 rounded "  placeholder="Elegir Tipo Restricción" :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" />
@@ -29,7 +29,7 @@
       <input v-if="!statusRestriction" :value="restriction_row.desTipoRestriccion" type="text" class="w-full border border-[#8A9CC9] px-2 h-10 rounded"  :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" />
 
     </td>
-    <td :class="{'hidden': hideCols.indexOf('date_required') > -1}">
+    <td>
 
       <v-date-picker v-if="statusRestriction" @click="verificarCambio({name:'dayFechaRequerida', value: restriction_row.dayFechaRequerida})"  ref="datepicker"  v-model="restriction_row.dayFechaRequerida" mode="date" is24hr: false class="flex relative  cursor-pointer cursor-pointer"  >
           <template v-slot="{ inputValue, inputEvents }" >
@@ -47,7 +47,7 @@
         <input v-if="!statusRestriction" :value="restriction_row.dayFechaRequerida2" type="text" class="w-full border border-[#8A9CC9] px-2 h-10 rounded"  :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" />
 
     </td>
-    <td :class="{'hidden': hideCols.indexOf('date_conciliad') > -1}">
+    <td>
 
       <v-date-picker v-if="statusRestriction" @click="verificarCambio({name:'dayFechaConciliada', value: restriction_row.dayFechaConciliada})"  ref="datepicker"  v-model="(restriction_row.dayFechaConciliada)" mode="date" is24hr: false class="flex relative  cursor-pointer cursor-pointer" >
           <template v-slot="{ inputValue, inputEvents }" >
@@ -64,31 +64,31 @@
 
 
     </td>
-    <td :class="{'hidden': hideCols.indexOf('responsible') > -1}">
+    <td>
       <div v-if="statusRestriction" class="flex relative  cursor-pointer cursor-pointer">
         <input type="hidden" v-model="restriction_row.idUsuarioResponsable">
-        <input v-model="restriction_row.desUsuarioResponsable" type="text" class="w-full border border-[#8A9CC9] px-2 text-xs h-8 rounded "  placeholder="Responsable" />
+        <input v-model="restriction_row.desUsuarioResponsable" type="text" class="w-full border border-[#8A9CC9] px-2 text-xs h-8 rounded "  placeholder="Elegir Tipo Restricción" />
         <img @click="handleClickResp('option')" src="../assets/images/icons/ic_arrow-down.svg"
           class="absolute top-1/2 -translate-y-1/2 right-2" alt=""
           :class="{ 'rotate-180': isoptionsResp, 'rotate-0': !isoptionsResp }">
         <SelectOption @selected="selOptResponsable" :options="getOptionResponsables()" :name = "'idUsuarioResponsable'" v-if="isoptionsResp" />
       </div>
-      <input v-if="!statusRestriction" :value="restriction_row.desUsuarioResponsable" type="text" class="w-full border border-[#8A9CC9] px-2 text-xs h-8  rounded"  :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" />
+      <input v-if="!statusRestriction" :value="restriction_row.desUsuarioResponsable" type="text" class="w-full border border-[#8A9CC9] px-2 h-10 rounded"  :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" />
 
     </td>
-    <td :class="{'hidden': hideCols.indexOf('responsible_area') > -1}" ><nav class="text-xs h-8">{{ restriction_row.desAreaResponsable}}</nav></td>
-    <td :class="{'hidden': hideCols.indexOf('condition') > -1}">
+    <td ><nav class="text-xs h-8">{{ restriction_row.desAreaResponsable}}</nav></td>
+    <td>
       <div v-if="statusRestriction"  class="flex relative  cursor-pointer cursor-pointer">
         <input type="hidden" v-model="restriction_row.codEstadoActividad">
-        <input v-model="restriction_row.desEstadoActividad" type="text" class="w-full border border-[#8A9CC9] px-2 text-xs h-8  rounded "  placeholder="Estado" />
+        <input v-model="restriction_row.desEstadoActividad" type="text" class="w-full border border-[#8A9CC9] px-2 h-10 rounded "  placeholder="Elegir un Estado" />
         <img @click="handleClickEst('option')" src="../assets/images/icons/ic_arrow-down.svg"
           class="absolute top-1/2 -translate-y-1/2 right-2" alt=""
           :class="{ 'rotate-180': isoptionsEst, 'rotate-0': !isoptionsEst }">
         <SelectOption @selected="selOptEstado" :options="getOptionEstados()" :name = "'codEstadoActividad'" v-if="isoptionsEst" />
       </div>
-      <input v-if="!statusRestriction" :value="restriction_row.desEstadoActividad" type="text" class="w-full border border-[#8A9CC9] px-2 text-xs h-8 rounded"  :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" />
+      <input v-if="!statusRestriction" :value="restriction_row.desEstadoActividad" type="text" class="w-full border border-[#8A9CC9] px-2 h-10 rounded"  :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" />
     </td>
-    <td :class="{'hidden': hideCols.indexOf('applicant') > -1}">{{ restriction_row.desSolicitante}}</td>
+    <td >{{ restriction_row.desSolicitante}}</td>
 
 
    <!-- <td :class="{ 'hidden': hideCols.indexOf('date_required') > -1 }">{{ row['date_required'] }}</td>
@@ -115,7 +115,7 @@ export default {
     SelectOption
   },
   props: {
-    statusRestriction:Boolean,
+    statusRestriction:Number,
     frontId: Number,
     phaseId: Number,
     restriction_data: Object,

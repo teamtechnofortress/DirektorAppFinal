@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
+import Prueba2 from "../views/Prueba2.vue";
 import Project from "../views/start/Project.vue";
 import Welcome from "../views/start/Welcome.vue";
 import NotFound from "../views/NotFound.vue";
@@ -32,71 +33,76 @@ if(sessionStorage.getItem('Id')) {
           path: "/home",
           name: "Home",
           component: Home,
-          meta: { layout: 'home' },
+          meta: { layout: 'home', sidebarOpen: true },
         },
         {
           path: "/login",
           name: "Login",
           component: Login,
-          meta: { layout: 'login' },
+          meta: { layout: 'login' , sidebarOpen: false},
         },
         {
           path: "/register",
           name: "Register",
           component: Register,
-          meta: { layout: 'register' },
+          meta: { layout: 'register' , sidebarOpen: false},
         },
         {
           path: "/welcome",
           name: "Welcome",
           component: Welcome,
-          meta: { layout: 'home' },
+          meta: { layout: 'home' , sidebarOpen: true},
         },
         {
           path: "/create_project",
           name: "Create_Project",
           component: Project,
-          meta: { layout: 'home' },
+          meta: { layout: 'home' , sidebarOpen: true},
         },
         {
           path: "/restrictions_analysis",
           name: "restrictions_analysis",
           component: Restrictions,
-          meta: { layout: 'home' },
+          meta: { layout: 'home' , sidebarOpen: true},
         },
         {
           path: "/white_project",
           name: "white_project",
           component: WhiteProject,
-          meta: { layout: 'home' },
+          meta: { layout: 'home' , sidebarOpen: true},
         },
 
         {
           path: "/addRestrictions",
           name: "add_restrictions",
           component: AddRestrictions,
-          meta: { layout: 'home' },
+          meta: { layout: 'home' , sidebarOpen: false},
         },
 
         {
           path: "/graphic_advance",
           name: "graphic_advance",
           component: Graphic,
-          meta: { layout: 'home' },
+          meta: { layout: 'home' , sidebarOpen: true},
         },
         {
           path: "/person",
           name: "person",
           component: Person,
-          meta: { layout: 'home' },
+          meta: { layout: 'home' , sidebarOpen: true},
         },
         {
           path: "/person_edit",
           name: "person_edit",
           component: Person_edit,
-          meta: { layout: 'home' },
+          meta: { layout: 'home' , sidebarOpen: true},
         },
-
+        {
+          path: "/prueba2",
+          name: "prueba2",
+          component: Prueba2,
+          meta: { layout: 'prueba2' , sidebarOpen: true},
+        },
 
       ],
     },

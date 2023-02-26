@@ -1,28 +1,19 @@
-<!-- <script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-</script> -->
-
-<!-- <template>
-  <router-view :key="$route.path"></router-view>
-</template> -->
-
-<!-- <style>
-</style>  -->
-
 <template>
   <div id="app" class="tracking-tight font-semibold text-activeText">
     <div v-if="layout === 'home'">
       <Header :username="getUsername" />
       <MobileMenu v-if="menu" />
       <div class="flex" :class="{ 'sm:hidden': menu }">
-        <Sidebar :openSidebar="openSidebar" @toggleSidebar="toggleSidebar" />
+        <Sidebar :openSidebar="statusSidebar" @toggleSidebar="toggleSidebar" />
         <div
           class="h-screen pt-16 sm:w-full sm:pt-14 sm:bg-[#F6F8FE]"
-          :class="openSidebar ? 'w-content' : 'w-full'"
+          :class="statusSidebar ? 'w-content' : 'w-full'"
         >
         <!-- h-full  => esto hace que sea centrado y full -->
-          <div class="max-h-[39rem] px-16 sm:px-8 py-8 overflow-y-auto">
+          <!-- <div class="max-h-[39rem] px-16 sm:px-8 py-8 overflow-y-auto">
+            <router-view />
+          </div> -->
+          <div class="h-full px-16 sm:px-8 py-8 overflow-y-auto">
             <router-view />
           </div>
         </div>
@@ -35,6 +26,12 @@
       >
         <router-view />
       </div>
+    </div>
+    <div v-else-if="layout === 'prueba2'">
+
+
+        <router-view />
+
     </div>
     <div v-else-if="layout === 'login'">
       <!-- <Header /> -->
@@ -72,17 +69,29 @@ export default {
   },
   methods: {
     toggleSidebar: function () {
-      this.openSidebar = !this.openSidebar;
+      this.$store.state.sidebar = !this.$store.state.sidebar;
+      // this.openSidebar = !this.openSidebar;
     },
     handleResize: function() {
-      window.innerWidth <= 1000 && (this.openSidebar = false);
-      window.innerWidth > 1000 && (this.openSidebar = true);
+      window.innerWidth <= 1000 && (this.$store.state.sidebar = false);
+      window.innerWidth > 1000 && (this.$store.state.sidebar = true);
+
+      document.body.style.zoom = "90%";
     },
 
   },
   computed: {
     layout: function () {
       return this.$route.meta.layout;
+    },
+    // closeSidebar: function () {
+    //   return this.$route.meta.sidebarOpen;
+    // },
+    // Statussidebar: function (){
+    //   return this.openSidebar
+    // },
+    statusSidebar: function (){
+      return this.$store.state.sidebar;
     },
     menu: function () {
       return this.$store.state.menu;
@@ -98,6 +107,8 @@ export default {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
     this.$store.dispatch('getUserName');
+
+    // this.$store.state.sidebar = false
 
   },
 };

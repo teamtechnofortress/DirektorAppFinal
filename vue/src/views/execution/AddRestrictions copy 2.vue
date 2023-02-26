@@ -20,8 +20,8 @@
       :paths="['Inicio', 'Análisis de restricciones', nameProyecto]"
        :settingFlag="true"
     />
-    <div class="flex sm:flex-col justify-between mb-12 sm:mb-10" @click="revision">
-      <span  class="items-start text-2xl text-activeText sm:mb-4"
+    <div class="flex sm:flex-col justify-between mb-12 sm:mb-10">
+      <span @click="pruebavalidar" class="items-start text-2xl text-activeText sm:mb-4"
         >Restricciones</span
       >
       <div class="flex sm:flex-col h-[52px] sm:h-auto">
@@ -60,15 +60,7 @@
             :class="{ 'rotate-180': filterOpen, 'rotate-0': !filterOpen }"
             @click="handleClick('filter')"
           />
-          <SelectOption
-                            :selType="'tree'"
-                            @selected="selFilterOpt"
-                            @treeSelected="selTreeOpt"
-                            :options="options"
-                            v-if="filterOpen"
-                            :treeIndex="treeIndex"
-                            :treeOptions="treeOptions"
-          />
+          <SelectOption :selType="'tree'" @selected="selFilterOpt" :options="options" v-if="filterOpen" />
         </div>
       </div>
     </div>
@@ -222,24 +214,18 @@
                       >
                     </div>
 
-                      <transition name="fade">
+                    <div class="flex items-end mb-6 cursor-pointer ">
+                      <img
+                        src="../../assets/images/icons/upload.svg"
+                        alt=""
+                        class="mr-1"
+                      />
 
-                          <div  key="3" v-if="!showifUpd" class="flex items-end mb-6 cursor-pointer ">
-                          </div>
-                      </transition>
-                      <transition name="fade">
+                      <span class="text-xs text-[#002B6B]"
+                        > Registros Actualizados</span
+                      >
 
-
-                          <div  key="1" v-if="showifUpd" class="flex items-end mb-6 cursor-pointer text-xs text-[#002B6B] ">
-                            <img
-                            src="../../assets/images/icons/upload.svg"
-                            alt=""
-                            class="mr-1"
-                          />
-                            {{showifUpdMsg}}
-                          </div>
-                      </transition>
-
+                    </div>
                 </div>
                 <div id="filterSection" class="outer relative border border-[#D0D9F1] rounded-lg before:w-24 before:absolute before:h-full before:shadow-tooltip">
                   <div
@@ -259,22 +245,10 @@
                       @fullScreen="toggleFullScreen"
                       @addRowModal="addRowModal"
 
-                      :statusDraggable = "statusDraggable"
-                      :statusRestriction="statusRestriction"
-                      :idxFront="index1"
-                      :idxPhase="index2"
-                      :validarUpd = "validarUpd"
-
-                      @updateRow          = "updateRow"
-                      @RegistrarCambioRow = "RegistrarCambioRow"
-                      @movimientoRow      = "movimientoRow"
-                      @updalidarUpd       = "updalidarUpd"
-                      @openModal="openModal"
-
                     >
-                      <!-- <template #default="{ tr, id }">
-                        <DataTableRestriccionesRow :statusRestriction="statusRestriction"  :listindex="[index1,index2,id]" :restriction_data="tr" :isupdate="tr.isupdate" :frontId="frente.codFrente" :phaseId="fase.codFase" :hideCols="hideCols" | @openModal="openModal" @updateRow = "updateRow" @RegistrarCambioRow = "RegistrarCambioRow"   />
-                      </template> -->
+                      <template #default="{ tr, id }">
+                        <DataTableRestriccionesRow :statusRestriction="statusRestriction"  :listindex="[index1,index2,id]" :restriction_data="tr" :isupdate="tr.isupdate" :frontId="frente.codFrente" :phaseId="fase.codFase" :hideCols="hideCols" @openModal="openModal" @updateRow = "updateRow" @RegistrarCambioRow = "RegistrarCambioRow"   />
+                      </template>
 
                     </DataTableRestricciones>
                   </div>
@@ -334,23 +308,10 @@
                       @fullScreen="toggleFullScreen"
                       @addRowModal="addRowModal"
 
-                      :statusRestriction="statusRestriction"
-                      :statusDraggable  ="statusDraggable"
-                      :idxFront="index1"
-                      :idxPhase="index2"
-                      :validarUpd = "validarUpd"
-
-                      @updateRow          = "updateRow"
-                      @RegistrarCambioRow = "RegistrarCambioRow"
-                      @movimientoRow      = "movimientoRow"
-                      @updalidarUpd       = "updalidarUpd"
-                      @openModal="openModal"
-
-
                     >
-                      <!-- <template #default="{ tr, id }">
+                      <template #default="{ tr, id }">
                         <DataTableRestriccionesRow :statusRestriction="statusRestriction"  :listindex="[index1,index2,id]" :restriction_data="tr" :isupdate="tr.isupdate" :frontId="frontId" :phaseId="phaseId" :hideCols="hideCols" @openModal="openModal" @updateRow = "updateRow" @RegistrarCambioRow = "RegistrarCambioRow"   />
-                      </template> -->
+                      </template>
 
                     </DataTableRestricciones>
                   </div>
@@ -430,14 +391,7 @@ export default {
 },
   data: function () {
     return {
-      FilterActiveFlag : false,
-      FilterActiveData : [],
-      FilterActivetree : [],
-      showifUpd : false,
-      showifUpdMsg : "",
-      validarUpd :false,
       statusRestriction: true,
-      statusDraggable:true,
       pageloadflag:false,
       nameProyecto:"",
       disabledItems:true,
@@ -454,29 +408,12 @@ export default {
       phaseName: '',
       restrictionsu:[],
       fullScreen: false,
-      options: [
-                    {
-                        name: "Responsable",
-                        value: "responsible",
-                    },
-                    {
-                        name: "Solicitante",
-                        value: "applicant",
-                    },
-                    {
-                        name: "Vencimiento",
-                        value: "expiration",
-                    },
-                    {
-                        name: "Tipo de restricción",
-                        value: "restriction_type",
-                    },
-      ],
+      options: [],
       listhideCols: [],
       headerCols: {
         // plus: "",
-        exercise: "Descrip. Actividad",
-        restriction: "Descrip. Restricción",
+        exercise: "Descrip. actividad",
+        restriction: "Descrip. restricción",
         restrictionType: "Tipo de restricción",
         date_required: "Fecha requerida",
         date_conciliad: "Fecha conciliada",
@@ -543,9 +480,7 @@ export default {
           ]
         }
 
-      ],
-      treeOptions: [],
-      treeIndex: 0,
+      ]
     };
   },
   methods: {
@@ -585,11 +520,8 @@ export default {
       id === "filter" && (this.filterOpen = !this.filterOpen);
     },
     toggleOpen: function (param) {
-      console.log(">>>>> vemos los valores")
-      console.log(param)
       this.rows.map((row) => {
-        console.log(row)
-        if (row.desFrente === param) {
+        if (row.name === param) {
           row.isOpen = !row.isOpen;
         }
       });
@@ -657,39 +589,33 @@ export default {
     },
     addPhase: function (payload) {
 
+      console.log(payload)
+      let codFaseTemp = this.$store.commit({
+        type: 'addFront',
+        ...payload,
+      });
 
-      // let codFaseTemp = this.$store.commit({
-      //   type: 'addFront',
-      //   ...payload,
-      // });
-
-      let point = this
       store.dispatch('add_phase', payload).then((response) => {
-        payload['cantNew']  = 6
-        point.$store.commit({
-            type: 'addFront',
-            ...payload,
-        });
 
         payload['codFaseReal'] = response.data.codFase
-        point.$store.commit({
-            type: 'updPhase',
-            ...payload,
+        this.$store.commit({
+          type: 'updPhase',
+          ...payload,
         });
 
-        point.filterSectionHeight()
+        this.filterSectionHeight()
 
       });
 
-      point.closeModal();
+
+      this.closeModal();
     },
     addRow: function (payload) {
 
       this.$store.commit({
         type: 'addScrollTableRow',
-        frontId : this.frontId,
-        phaseId : this.phaseId,
-        restID:   this.exercise,
+        frontId: this.frontId,
+        phaseId: this.phaseId,
         ...payload,
       });
 
@@ -697,7 +623,6 @@ export default {
 
     },
     delRow: function (payload) {
-
       let frenteId = this.frontId
       let faseId = this.phaseId
       let restriccionId = this.exercise
@@ -705,11 +630,9 @@ export default {
       console.log(frenteId+" -- "+faseId+" -- "+restriccionId)
       let enviar = {codAnaResActividad:this.exercise};
       let point  = this;
-
       store.dispatch('del_Restrictions', enviar).then((response) => {
 
         if(response.data.flag == 1){
-          this.setTimeifUpd(700, " Registro eliminado con exito ")
 
               point.$store.commit({
                 type: 'delScrollTableRow',
@@ -740,9 +663,9 @@ export default {
 
         if(response.data.flag == 1){
 
-          this.setTimeifUpd(600, " Registro duplicado con exito ")
           let codAnaResActividad = response.data.resultado
-
+          // console.log(">>>>>> codAnaResActividad ")
+          // console.log(codAnaResActividad)
           point.$store.commit({
               type: 'duplicateScrollTableRow',
               frontId: frenteId,
@@ -766,76 +689,50 @@ export default {
     },
     updateRow: function(data) {
 
-      // console.log(">>>> llegue a updateRow dd")
-      // return;
-      let frontIdx  = data.frontIdx;
-      let phaseIdx  = data.phaseIdx;
-      let enviar = this.restrictionsUpd;
+      let enviar = this.restrictionsUpd
       if (enviar.length > 0){
-          // console.log(">>>>>> Entrando a actualizar.")
+          console.log(">>>>>> Entrando a actualizar.")
 
           this.$store.dispatch('update_restricciones', enviar)
               .then((response) => {
+                // console.log(">>>>>>>>>>> salimos del post ")
+                // console.log(response)
 
                 if (response.data.flag == 1 ){
+                  console.log(">>>>> se obtuvo resultados positivos ")
+                  console.log(this.restrictions)
 
-                      for (let i = 0; i < enviar.length; i++) {
+                    for (let i = 0; i < enviar.length; i++) {
 
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['desActividad']        = enviar[i]['desActividad']
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['desRestriccion']      = enviar[i]['desRestriccion']
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['codTipoRestriccion']  = enviar[i]['codTipoRestriccion']
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['desTipoRestriccion']  = enviar[i]['desTipoRestriccion']
+                      if (response.data.typeResult == 'ins'){
 
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['dayFechaRequerida']     = enviar[i]['dayFechaRequerida'].split(" ")[0]
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['dayFechaConciliada']    = enviar[i]['dayFechaConciliada'].split(" ")[0]
+                        console.log(">>> entrando a actualizar")
+                        console.log(response.data.updateResult.codAnaResActividad)
 
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['idUsuarioResponsable']   = enviar[i]['idUsuarioResponsable']
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['desUsuarioResponsable']   = enviar[i]['desUsuarioResponsable']
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['codAreaResponsable']   = enviar[i]['codAreaResponsable']
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['codEstadoActividad']   = enviar[i]['codEstadoActividad']
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['desEstadoActividad']   = enviar[i]['desEstadoActividad']
-                          this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['isEnabled']           = false
-
-                          if (response.data.inserciones.length > 0){
-                              let codAntiguo  = 0;
-                              let codNuevo    = 0;
-
-                              for (let index1 = 0; index1 < response.data.inserciones.length; index1++) {
-                                  if (response.data.inserciones[index1]['idPivote'] == this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['codAnaResActividad']){
-                                      codNuevo = response.data.inserciones[index1]['idReal']
-                                      this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['codAnaResActividad'] = codNuevo
-                                      break;
-                                  }
-
-                              }
-
-                              this.setTimeifUpd(500, "Se inserto nuevo registro")
-
-                          }else{
-
-                              this.setTimeifUpd(500, "Se actualizo datos")
-
-                          }
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['codAnaResActividad']        = response.data.updateResult.codAnaResActividad
 
                       }
 
-                      this.restrictionsUpd     = []
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['desActividad']        = enviar[i]['desActividad']
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['desRestriccion']      = enviar[i]['desRestriccion']
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['codTipoRestriccion']  = enviar[i]['codTipoRestriccion']
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['desTipoRestriccion']  = enviar[i]['desTipoRestriccion']
 
-                      if (response.data.inserciones.length > 0){
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['dayFechaRequerida']     = enviar[i]['dayFechaRequerida']
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['dayFechaConciliada']    = enviar[i]['dayFechaConciliada']
 
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['idUsuarioResponsable']   = enviar[i]['idUsuarioResponsable']
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['idUsuarioResponsable']   = enviar[i]['desUsuarioResponsable']
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['codAreaResponsable']   = enviar[i]['codAreaResponsable']
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['codEstadoActividad']   = enviar[i]['codEstadoActividad']
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['desEstadoActividad']   = enviar[i]['desEstadoActividad']
+                        this.restrictions[enviar[i].idfrente]['listaFase'][enviar[i].idfase]['listaRestricciones'][enviar[i].idrestriccion]['isEnabled']           = false
 
-                            let enviar2              = []
-                            this.restrictions[frontIdx]['listaFase'][phaseIdx]['listaRestricciones'].forEach(function (item, key, mapObj) {
+                    }
+                    console.log(">>>>>> impresion de como queda al final")
+                    console.log(this.restrictions)
 
-                                    let data = {index: key , codAnaResActividad: item.codAnaResActividad }
-                                    enviar2.push(data)
-
-                            });
-
-                            this.movimientoRow(enviar2)
-
-
-                      }
+                    this.restrictionsUpd = []
 
                 }else{
                     console.log(">>>>>> No tenemos registros para actualizar.")
@@ -849,28 +746,15 @@ export default {
 
     RegistrarCambioRow: function(data){
 
-
       let idfrente       = data.idfrente
       let idfase         = data.idfase
-      let idrestriccion  = 0//data.idrestriccion
+      let idrestriccion  = data.idrestriccion
       let datafinal      = data.data
       let codActividad   = datafinal["codAnaResActividad"]
       let isupdate       = datafinal["isupdate"]
 
       let llave = null;
       let unid = -1
-
-
-      let restriccionesData = this.restrictions[idfrente]['listaFase'][idfase]['listaRestricciones']
-      for (var j = 0; j < restriccionesData.length; j++) {
-        if ( restriccionesData[j]['codAnaResActividad'] == codActividad){
-
-                   idrestriccion = j; //llave = key;
-                    break;
-
-        }
-
-      }
 
       if (isupdate == false){
 
@@ -896,10 +780,9 @@ export default {
         this.restrictionsUpd.splice(llave, unid);
 
         let dr= datafinal['dayFechaRequerida']
-        let dayFechaRequerida_str   = (dr != "") ? dr+" "+"12:00:00":"";
+        let dayFechaRequerida_str   = (dr != "") ? dr.getFullYear().toString()+"-"+((dr.getMonth()+1).toString().length==2?(dr.getMonth()+1).toString():"0"+(dr.getMonth()+1).toString())+"-"+(dr.getDate().toString().length==2?dr.getDate().toString():"0"+dr.getDate().toString())+" "+"12:00:00":"";
         let dc= datafinal['dayFechaConciliada']
-        let dayFechaConciliada_str   = (dc != "") ? dc+" "+"12:00:00":"";
-        //let dayFechaConciliada_str =  (dc != "") ? dc.getFullYear().toString()+"-"+((dc.getMonth()+1).toString().length==2?(dc.getMonth()+1).toString():"0"+(dc.getMonth()+1).toString())+"-"+(dc.getDate().toString().length==2?dc.getDate().toString():"0"+dc.getDate().toString())+" "+"12:00:00":"";
+        let dayFechaConciliada_str =  (dc != "") ? dc.getFullYear().toString()+"-"+((dc.getMonth()+1).toString().length==2?(dc.getMonth()+1).toString():"0"+(dc.getMonth()+1).toString())+"-"+(dc.getDate().toString().length==2?dc.getDate().toString():"0"+dc.getDate().toString())+" "+"12:00:00":"";
 
         let codAnaResFrente    = this.restrictions[idfrente]['codFrente']
         let codAnaResFase      = this.restrictions[idfrente]['listaFase'][idfase]['codFase']
@@ -922,206 +805,29 @@ export default {
                             desUsuarioResponsable : datafinal['desUsuarioResponsable'],
                             codEstadoActividad : datafinal['codEstadoActividad'],
                             desEstadoActividad : datafinal['desEstadoActividad'],
-                            numOrden: datafinal['numOrden']
 
 
                         }
 
         this.restrictionsUpd.push(row)
 
+
       }
 
-      // console.log(">>> Verificamos lo que enviamos  ")
-      // console.log(this.restrictionsUpd)
-
-    },
-    revision: function(){
+      console.log(">>> Verificamos lo que enviamos  ")
       console.log(this.restrictionsUpd)
-    },
-    movimientoRow: function(data){
-
-      this.$store.dispatch('update_numOrden', data).then((response) => {
-
-              console.log(response)
-
-              if(response.data.estado == true){
-
-               this.setTimeifUpd(500, "Nuevo Orden Actualizado")
-
-              }
-      });
-
-     },
-
-    setTimeifUpd: function(time, mensaje){
-
-      this.showifUpd    = true
-      this.showifUpdMsg = mensaje
-
-      setTimeout(()=>{
-        this.showifUpd = false
-      }, time);
 
     },
 
-    updalidarUpd: function(data){
-      console.log(">>>> mandamos a actualizar el valor ::: "+data)
-      this.validarUpd = data
+    getRestrictions: function(){
+        let restrictions  = this.$store.state.whiteproject_rows;
+        this.restrictions = restrictions
     },
 
     filterSectionHeight() {
       const filterSectionDOM = document.getElementById("filterSection");
       this.heigthDiv =  filterSectionDOM ? (filterSectionDOM.offsetHeight + filterSectionDOM.offsetHeight*0.5) : 0;
     },
-
-    selFilterOpt (payload) {
-
-
-
-                if(payload.selType == 'clean'){
-
-                  this.FilterActiveFlag  = false
-                  this.FilterActiveData  = []
-                  this.statusDraggable   = false
-
-                  this.filterOpen = !this.filterOpen
-
-                  return
-                }
-
-                      //this.filterOpen = !this.filterOpen;
-                if (payload.selType && payload.selType !== 'tree') {
-                    this.filterName = payload.name;
-                }
-                this.treeOpen = !this.treeOpen;
-
-                let projectId = sessionStorage.getItem("constraintid");
-
-                this.treeOptions = [];
-                this.treeIndex = this.options.findIndex(option => option.value === payload.value);
-                console.log(payload);
-
-                switch (this.treeIndex) {
-                    /* 'Responsable' */
-                    case 0:
-                        store
-                            .dispatch("get_resprojectuser", {projectId: projectId, responsible: true})
-                            .then((response) => {
-                                console.log(response);
-                                response.forEach((r) => {
-                                    let option = {
-                                        value: r.codProyIntegrante,
-                                        name: r.desCorreo,
-                                    };
-                                    this.treeOptions.push(option);
-                                });
-                            });
-                        break;
-                    /* 'Solicitante' */
-                    case 1:
-                        store.dispatch("get_proy_applicant", {projectId: projectId}).then((response) => {
-                            response.forEach((r) => {
-                                let option = {
-                                    value: r.id,
-                                    name: r.email
-                                };
-                                this.treeOptions.push(option);
-                            })
-                        });
-                        break;
-                    /* 'Vencimiento' */
-                    case 2:
-                        this.treeOptions.push({
-                            value: 1,
-                            name: 'Con retraso'
-                        });
-                        break;
-                    /* 'Tipo de restriccion' */
-                    case 3:
-                        console.log(">>>> entrando a tipo de restriccion")
-                        this.treeOptions = this.$store.state.Restrictionlist;
-                        break;
-                    default:
-                        break;
-                }
-
-    },
-    selTreeOpt: function (payload) {
-        this.FilterActiveFlag  = true
-        this.FilterActiveData  = payload
-        this.statusDraggable   = true
-
-        this.filterOpen = !this.filterOpen
-
-    },
-    getResponsibleRows(payload) {
-        // return this.$store.getters.getResponsibleRows(payload);
-        return this.$store.state.whiteproject_rows.map((row) => {
-          return {
-              ...row, listaFase: row.listaFase.map((fase) => {
-                  return {
-                      ...fase, listaRestricciones: fase.listaRestricciones.filter(restriction =>
-                          restriction.idUsuarioResponsable === payload.value
-                      )
-                  }
-              })
-          };
-
-      });
-    },
-    getApplicantRows(payload) {
-        // return this.$store.getters.getApplicantRows();
-      let applicantId = sessionStorage.getItem('Id');
-      return this.$store.state.whiteproject_rows.map((row) => {
-          return {
-              ...row, listaFase: row.listaFase.map((fase) => {
-                  return {
-                      ...fase, listaRestricciones: fase.listaRestricciones.filter(restriction =>
-                          restriction.codUsuarioSolicitante === applicantId
-                      )
-                  }
-              })
-          };
-
-      });
-    },
-    getExpirationRows(payload) {
-        console.log(payload);
-        // return this.$store.getters.getExpirationRows(payload);
-        let res = this.$store.state.whiteproject_rows.map((row) => {
-          return {
-              ...row, listaFase: row.listaFase.map((fase) => {
-                  return {
-                      ...fase, listaRestricciones: fase.listaRestricciones.filter(restriction =>
-                          (restriction.codEstadoActividad !== state.anaEstado.find(estado => estado.desEstado === 'Completado').codEstado)
-                          && (new Date(restriction.dayFechaRequerida) < new Date())
-                      )
-                  }
-              })
-          };
-
-      });
-
-      return res;
-    },
-    getResTypeRows(payload) {
-        console.log(payload);
-        //return this.$store.getters.getResTypeRows(payload);
-        return this.$store.state.whiteproject_rows.map((row) => {
-          return {
-              ...row, listaFase: row.listaFase.map((fase) => {
-                  return {
-                      ...fase, listaRestricciones: fase.listaRestricciones.filter(restriction =>
-                          restriction.codTipoRestriccion === payload.value
-                      )
-                  }
-              })
-          };
-
-      });
-
-    },
-
 
   },
   computed:{
@@ -1133,42 +839,7 @@ export default {
       let res           = this.$store.state.whiteproject_rows;
       this.restrictions = res
 
-      if( this.FilterActiveFlag == false){
-
-        return this.restrictions
-
-      }else{
-        // console.log(">>>>>  entramos aqui selTreeOpt")
-        // return this.selTreeOpt
-
-        // let restrictions = [];
-        switch (this.treeIndex) {
-            /* 'Responsable' */
-            case 0:
-                return this.getResponsibleRows(this.FilterActiveData);
-                break;
-            /* 'Solicitante' */
-            case 1:
-                return this.getApplicantRows(this.FilterActiveData);
-                break;
-            /* 'Vencimiento' */
-            case 2:
-                return this.getExpirationRows(this.FilterActiveData);
-                break;
-            /* 'Tipo de restriccion' */
-            case 3:
-                console.log(">>>> entrando a la restriccion")
-                return this.getResTypeRows(this.FilterActiveData);
-
-                break;
-            default:
-                return [];
-                break;
-        }
-
-      }
-
-      // return this.getResTypeRows();
+      return this.restrictions;
     },
     hideCols: function() {
       return  this.$store.state.hiddenCols; //this.listhideCols; //this.$store.getters.hideCols({id: this.frontId, phaseId: this.phaseId});
@@ -1194,16 +865,12 @@ export default {
     console.log(">> entro 2")
     await store.dispatch('get_datos_restricciones').then((response) => {
 
-      this.statusRestriction    = this.$store.state.estadoRestriccion;
-      this.$store.state.sidebar = false;
+      this.statusRestriction = this.$store.state.estadoRestriccion;
 
       if (this.statusRestriction === false){
-        this.disabledItems   = true
-        this.statusDraggable = true
+        this.disabledItems = true
       }else{
-        this.disabledItems   = false
-        this.statusDraggable = false
-
+        this.disabledItems = false
 
       }
 
@@ -1232,17 +899,3 @@ export default {
 
 }
 </script>
-<style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity .5s
-}
-
-.fade-enter,
-.fade-leave-to
-/* .fade-leave-active in <2.1.8 */
-
-{
-  opacity: 0
-}
-</style>

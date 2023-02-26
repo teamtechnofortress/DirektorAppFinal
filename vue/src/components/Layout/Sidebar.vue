@@ -184,6 +184,8 @@ export default {
   },
   mounted: function () {
     this.openSide();
+    console.log(">>> validamos el estado del sidebar ")
+    console.log(this.openSidebar)
   },
   updated: function () {
     this.openSide();

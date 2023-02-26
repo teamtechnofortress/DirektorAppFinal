@@ -1,22 +1,53 @@
 <template>
 
   <div class="flex flex-col">
-    <span class="text-2xl mb-8"
+    <span @click="probar" class="text-2xl mb-8"
       >Asigna los miembros de tu primer proyecto
     </span>
     <div class="flex justify-between sm:flex-col mb-8">
       <div class="flex flex-col w-[32%] sm:w-full sm:mb-8">
-        <span class="text-sm leading-6 mb-4"
-          >Ingresa el correo del miembro</span
+        <span class="text-sm leading-6 mb-4">Ingresa el correo del miembro</span>
+        <div
+        class="autocompleteel h-[52px] w-full mb-4 border border-[#8A9CC9] rounded px-4 "
+        v-for="(user, index) in users"
         >
-        <input
-          type="text"
-          v-for="(user, index) in users"
-          :key="index"
-          placeholder="Correo electrónico"
-          v-model="user.userEmail"
-          class="h-[52px] w-full mb-4 border border-[#8A9CC9] rounded px-4"
-        />
+
+            <input type="hidden" v-model="user.id">
+            <input
+              type="text"
+
+              :key="index"
+              placeholder="Correo electrónico"
+              v-model="user.userEmail"
+              class="h-[52px] w-full mb-2 rounded px-4"
+              @keyup='loadSuggestions(user.userEmail, index);'
+
+            />
+            <br>
+                <div class="w-[110%] mx-[-5%] rounded bg-white border border-gray-300 px-4 py-2 space-y-1 relative z-50"
+                v-if="user.suggestiondata.length > 0 "
+                >
+                <ul>
+                    <li
+                    class="px-1 pt-1 pb-2 font-bold border-b border-gray-200"
+                    >
+                    Mostrando {{ user.suggestiondata.length }} resultados
+                    </li>
+                    <li
+                    v-for= 'item in user.suggestiondata'
+                    v-bind:key="item.id"
+                    v-bind:value = "item.email"
+
+                    @click="user.userEmail = item.email; user.id = item.id; user.suggestiondata = [];"
+                    class="cursor-pointer hover:bg-gray-100 p-1"
+                    >
+                      {{ item.email }}
+                    </li>
+                </ul>
+                </div>
+
+        </div>
+
       </div>
 
       <div class="flex flex-col w-[32%] sm:w-full sm:mb-8">
@@ -51,30 +82,6 @@
         <span class="text-sm leading-6 mb-4"
           >Selecciona área al que pertenece</span
         >
-        <!-- <input
-
-          @selRole="selRole"
-          @selRole="selArea"
-
-          type="text"
-          v-for="(user, index) in users"
-          :key="index"
-          placeholder="Correo electrónico"
-          v-model="user.userArea"
-          class="h-[52px] w-full mb-4 border border-[#8A9CC9] rounded px-4"
-        /> -->
-
-        <!-- <Select
-          v-for="(user, index) in users"
-          :key="index"
-          :indexVal="index"
-          :typeVal="'text'"
-          :placeHolder="'Selecciona*'"
-          :selType="'area'"
-
-          v-model="user.userArea"
-          :options="areaIntegrantes"
-        /> -->
 
         <select
         v-model="value.userArea"
@@ -112,11 +119,17 @@ export default {
   data: function () {
     return {
       areaIntegrantes : [],
-      rolIntegrantes : [],
+      rolIntegrantes  : [],
+      // userSugerencias : [],
+      suggestiondata:[],
       users: [],
+      search: ""
     };
   },
   methods: {
+    probar : function () {
+      console.log(this.users)
+    },
     handleClick: function (param) {
       if (param === "coveredArea")
         this.coveredAreaStatus = !this.coveredAreaStatus;
@@ -129,27 +142,10 @@ export default {
         userEmail: "",
         userRole: "",
         userArea: "",
+        suggestiondata : []
       };
+      console.log("as")
       this.users.push(temp);
-
-    //   if (this.areaIntegrantes.length  == 0){
-
-    //       let tareaintegrante  = this.$store.state.areaintegrante;
-    //        for (let index = 0; index < tareaintegrante.length; index++) {
-    //        this.areaIntegrantes.push({value: tareaintegrante[index]["codArea"], name: tareaintegrante[index]["desArea"]})
-    //       }
-
-
-    //   }
-
-    //   if (this.rolIntegrantes.length  == 0){
-
-    //      let trolintegrante  = this.$store.state.rolintegrante;
-    //        for (let index = 0; index < trolintegrante.length; index++) {
-    //        this.rolIntegrantes.push({value: trolintegrante[index]["codRolIntegrante"], name: trolintegrante[index]["desRolIntegrante"]})
-    //      }
-
-    // }
 
     },
     selRole: function(payload) {
@@ -160,6 +156,31 @@ export default {
       this.users[payload.indexVal].userArea = payload.value;
       this.paraStatus = false;
     },
+    loadSuggestions: function(buscar, index){
+				var el = this;
+				el.users[index].suggestiondata = [];
+
+				if(this.searchText != ''){
+          var enviamos = { buscar : buscar }
+          this.$store.dispatch('get_buscar_usuarios', enviamos)
+          .then((response) => {
+            let data = []
+            //console.log(response)
+            for (let index = 0; index < response.length; index++) {
+              data.push({id:response[index]["id"], email: response[index]["email"]})
+            }
+            // data.push({id:-999, des_Empresa: '+ Agregar Nueva Empresa'})
+            //el.suggestiondata  = data
+            el.users[index].suggestiondata = data
+          })
+
+				}
+
+			},
+      itemSelected: function(campo , valor){
+          campo   = valor
+
+      }
   },
   computed: {
 
@@ -170,20 +191,6 @@ export default {
 
   },
   beforeCreate() {
-
-
-    // console.log(">>> entrando en step 2")
-    //   let tareaintegrante  = this.$store.state.areaintegrante;
-    //   for (let index = 0; index < tareaintegrante.length; index++) {
-    //     this.areaIntegrantes.push({value: tareaintegrante[index]["codArea"], name: tareaintegrante[index]["desArea"]})
-    //   }
-
-    //   let trolintegrante  = this.$store.state.rolintegrante;
-    //   for (let index = 0; index < trolintegrante.length; index++) {
-    //     this.rolIntegrantes.push({value: trolintegrante[index]["codRolIntegrante"], name: trolintegrante[index]["desRolIntegrante"]})
-    //   }
-
-
 
 
   },

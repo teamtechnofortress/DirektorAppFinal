@@ -38,6 +38,7 @@ CREATE TABLE `ana_integrantes` (
 
 LOCK TABLES `ana_integrantes` WRITE;
 /*!40000 ALTER TABLE `ana_integrantes` DISABLE KEYS */;
+INSERT INTO `ana_integrantes` VALUES (1,57,1,'2023-02-22 11:45:24','',5),(1,57,1,'2023-02-22 11:45:24','',6);
 /*!40000 ALTER TABLE `ana_integrantes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,8 +65,9 @@ CREATE TABLE `anares_actividad` (
   `codAnaRes` bigint(20) NOT NULL,
   `dayFechaConciliada` datetime DEFAULT NULL,
   `dayFechaLevantamiento` datetime DEFAULT NULL,
+  `numOrden` decimal(10,5) DEFAULT 0.00000,
   PRIMARY KEY (`codAnaResActividad`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +76,7 @@ CREATE TABLE `anares_actividad` (
 
 LOCK TABLES `anares_actividad` WRITE;
 /*!40000 ALTER TABLE `anares_actividad` DISABLE KEYS */;
-INSERT INTO `anares_actividad` VALUES (1,'actividad 1','restriccion1',1,'2023-01-07 12:00:00',9,NULL,'2','9',1,1,1,51,'2023-01-07 12:00:00',NULL),(3,'actividad 3','restriccion1',1,'2023-01-07 12:00:00',NULL,NULL,'2','9',1,1,1,51,'2023-01-07 12:00:00',NULL);
+INSERT INTO `anares_actividad` VALUES (40,'','nada',NULL,NULL,5,NULL,'3','9',1,1,1,57,NULL,NULL,0.00000);
 /*!40000 ALTER TABLE `anares_actividad` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,8 +120,9 @@ CREATE TABLE `anares_analisisrestricciones` (
   `indNoRetrasados` int(11) DEFAULT NULL,
   `indRetrasados` int(11) DEFAULT NULL,
   `codAnaRes` bigint(20) NOT NULL AUTO_INCREMENT,
+  `desColOcultas` text DEFAULT NULL,
   PRIMARY KEY (`codAnaRes`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,7 +131,7 @@ CREATE TABLE `anares_analisisrestricciones` (
 
 LOCK TABLES `anares_analisisrestricciones` WRITE;
 /*!40000 ALTER TABLE `anares_analisisrestricciones` DISABLE KEYS */;
-INSERT INTO `anares_analisisrestricciones` VALUES (1,1,'2023-01-30 09:33:24','diego@gmail.com',0,0,51);
+INSERT INTO `anares_analisisrestricciones` VALUES (1,0,'2023-02-11 10:19:38','diego@gmail.com',0,0,57,' '),(2,0,'2023-02-23 13:02:58','diego@gmail.com',0,0,58,NULL),(3,0,'2023-02-23 15:10:36','diego@gmail.com',0,0,59,NULL),(4,0,'2023-02-23 20:19:05','diego@gmail.com',0,0,60,NULL),(6,0,'2023-02-24 03:59:01','diego@gmail.com',0,0,61,NULL),(7,0,'2023-02-24 04:23:39','diego@gmail.com',0,0,62,NULL);
 /*!40000 ALTER TABLE `anares_analisisrestricciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,7 +153,7 @@ CREATE TABLE `anares_fase` (
   PRIMARY KEY (`codAnaResFase`) USING BTREE,
   UNIQUE KEY `XPKAnaRes_Fase` (`codAnaResFase`,`codAnaResFrente`,`codProyecto`,`codAnaRes`) USING BTREE,
   KEY `XIF1AnaRes_Fase` (`codAnaResFrente`,`codProyecto`,`codAnaRes`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,7 +162,7 @@ CREATE TABLE `anares_fase` (
 
 LOCK TABLES `anares_fase` WRITE;
 /*!40000 ALTER TABLE `anares_fase` DISABLE KEYS */;
-INSERT INTO `anares_fase` VALUES (1,'fase 001','2023-01-30 09:33:45','',1,1,51);
+INSERT INTO `anares_fase` VALUES (1,'fase 003','2023-02-11 13:59:24','',1,1,57),(4,'FASE 0093','2023-02-23 20:44:57','',3,1,57),(8,'FS NUMERO 2','2023-02-26 10:41:14','',4,7,62);
 /*!40000 ALTER TABLE `anares_fase` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -178,7 +181,7 @@ CREATE TABLE `anares_frente` (
   `codProyecto` bigint(20) NOT NULL,
   `codAnaRes` bigint(20) NOT NULL,
   PRIMARY KEY (`codAnaResFrente`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -187,7 +190,7 @@ CREATE TABLE `anares_frente` (
 
 LOCK TABLES `anares_frente` WRITE;
 /*!40000 ALTER TABLE `anares_frente` DISABLE KEYS */;
-INSERT INTO `anares_frente` VALUES (1,'frente 001','2023-01-30 09:33:36','',1,51);
+INSERT INTO `anares_frente` VALUES (1,'frente 001','2023-02-11 13:59:15','',1,57),(3,'FRENTE 002','2023-02-23 20:44:46','',1,57),(4,'FR NUMERO 1','2023-02-26 10:25:40','',7,62);
 /*!40000 ALTER TABLE `anares_frente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,7 +213,7 @@ CREATE TABLE `anares_tiporestricciones` (
 
 LOCK TABLES `anares_tiporestricciones` WRITE;
 /*!40000 ALTER TABLE `anares_tiporestricciones` DISABLE KEYS */;
-INSERT INTO `anares_tiporestricciones` VALUES (1,'ARQUITECTURA'),(2,'LLENADO'),(3,'COCINA'),(4,'COMEDOR');
+INSERT INTO `anares_tiporestricciones` VALUES (1,'Proceso Constructivo'),(2,'Entorno'),(3,'Información'),(4,'Mano de Obra'),(5,'Materiales'),(6,'Equipos y Herramientas'),(7,'SubContratos'),(8,'Seguridad'),(9,'Calidad'),(10,'Administración'),(11,'Cliente y Supervisión'),(12,'Logistica');
 /*!40000 ALTER TABLE `anares_tiporestricciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -223,10 +226,10 @@ DROP TABLE IF EXISTS `conf_estado`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `conf_estado` (
   `codEstado` int(11) NOT NULL,
-  `desEstado` varchar(255) DEFAULT NULL,
-  `desModule` varchar(255) DEFAULT NULL,
-  UNIQUE KEY `XPKConf_Estado` (`codEstado`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+  `desEstado` varchar(100) NOT NULL,
+  `desModulo` varchar(100) NOT NULL,
+  `desDescripcion` varchar(250) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -235,7 +238,7 @@ CREATE TABLE `conf_estado` (
 
 LOCK TABLES `conf_estado` WRITE;
 /*!40000 ALTER TABLE `conf_estado` DISABLE KEYS */;
-INSERT INTO `conf_estado` VALUES (1,'Pendiente','ANARES'),(2,'Proceso','ANARES'),(3,'Completado','ANARES');
+INSERT INTO `conf_estado` VALUES (1,'Pendiente','ANARES','Estado de las actividad es o restricciones, este estado es el estao inicial con el cual se crea.'),(2,'Proceso','ANARES','Estado de las actividad es o restricciones, este estado  indica que se esta completando la actividad'),(3,'Completado','ANARES','Estado de las actividad es o restricciones, este estado indica que fue cerrado la actividad'),(0,'Abierto','ANAPROY','Estado perteneciente al proyecto de analisis de restricciones , indica que es un proyecto trabajandose.'),(1,'Cerrado','ANAPROY','Estado perteneciente al proyecto de analisis de restricciones , indica que es un proyecto finalizado');
 /*!40000 ALTER TABLE `conf_estado` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,7 +254,7 @@ CREATE TABLE `conf_maestro_empresas` (
   `des_Empresa` varchar(250) DEFAULT NULL,
   `num_Ruc` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`cod_Empresa`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -260,7 +263,7 @@ CREATE TABLE `conf_maestro_empresas` (
 
 LOCK TABLES `conf_maestro_empresas` WRITE;
 /*!40000 ALTER TABLE `conf_maestro_empresas` DISABLE KEYS */;
-INSERT INTO `conf_maestro_empresas` VALUES (1,'SODIMAC',7845451121),(2,'CANTABRIA',788415151),(3,'NUEVAEMPRESA',787984141),(4,'CORNELIA',8494151),(5,'SOLGAS',984545451),(6,'GLORIA',978545),(7,'SAMAS',98471545),(8,'CONSTRUCTORAX',9784515),(9,'ENTEL',5545454),(10,'AVIANCA',2121545);
+INSERT INTO `conf_maestro_empresas` VALUES (1,'SODIMAC',7845451121),(2,'CANTABRIA',788415151),(3,'NUEVAEMPRESA',787984141),(4,'CORNELIA',8494151),(5,'SOLGAS',984545451),(6,'GLORIA',978545),(7,'SAMAS',98471545),(8,'CONSTRUCTORAX',9784515),(9,'ENTEL',5545454),(10,'AVIANCA',2121545),(11,'NADAAAAAA',1545454),(12,'PRUEBA001',45454);
 /*!40000 ALTER TABLE `conf_maestro_empresas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -287,6 +290,31 @@ LOCK TABLES `conf_moneda` WRITE;
 /*!40000 ALTER TABLE `conf_moneda` DISABLE KEYS */;
 INSERT INTO `conf_moneda` VALUES (1,'Soles','S/'),(2,'Dolares','$'),(3,'Euros','€');
 /*!40000 ALTER TABLE `conf_moneda` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `conf_tipodiaprogramacion`
+--
+
+DROP TABLE IF EXISTS `conf_tipodiaprogramacion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `conf_tipodiaprogramacion` (
+  `codTipoDiaProgramacion` bigint(20) NOT NULL AUTO_INCREMENT,
+  `desTipoDiaProgramacion` varchar(250) DEFAULT NULL,
+  `desNombreCorto` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`codTipoDiaProgramacion`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `conf_tipodiaprogramacion`
+--
+
+LOCK TABLES `conf_tipodiaprogramacion` WRITE;
+/*!40000 ALTER TABLE `conf_tipodiaprogramacion` DISABLE KEYS */;
+INSERT INTO `conf_tipodiaprogramacion` VALUES (1,'Lunea a Viernes','LV'),(2,'Lunes a Sabado','LS'),(3,'Lunes a Domingo','D');
+/*!40000 ALTER TABLE `conf_tipodiaprogramacion` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -391,6 +419,7 @@ CREATE TABLE `other_notificaciones` (
 
 LOCK TABLES `other_notificaciones` WRITE;
 /*!40000 ALTER TABLE `other_notificaciones` DISABLE KEYS */;
+INSERT INTO `other_notificaciones` VALUES (1,'CreacionProyecto','CreacionProyecto',NULL);
 /*!40000 ALTER TABLE `other_notificaciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -407,12 +436,14 @@ CREATE TABLE `other_notificaciones_usuario` (
   `codEstado` int(11) DEFAULT NULL,
   `dayFechaCreacion` datetime DEFAULT NULL,
   `desUsuarioCreación` varchar(255) DEFAULT NULL,
+  `codNotificacionUsuario` bigint(20) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`codNotificacionUsuario`),
   UNIQUE KEY `XPKother_Notificaciones_Usuario` (`id`,`codNotificacion`) USING BTREE,
   KEY `XIF1other_Notificaciones_Usuario` (`id`) USING BTREE,
   KEY `XIF2other_Notificaciones_Usuario` (`codNotificacion`) USING BTREE,
   CONSTRAINT `other_notificaciones_usuario_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `other_notificaciones_usuario_ibfk_2` FOREIGN KEY (`codNotificacion`) REFERENCES `other_notificaciones` (`codNotificacion`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -421,7 +452,74 @@ CREATE TABLE `other_notificaciones_usuario` (
 
 LOCK TABLES `other_notificaciones_usuario` WRITE;
 /*!40000 ALTER TABLE `other_notificaciones_usuario` DISABLE KEYS */;
+INSERT INTO `other_notificaciones_usuario` VALUES (9,1,1,NULL,NULL,1);
 /*!40000 ALTER TABLE `other_notificaciones_usuario` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `other_notificaciones_usuario2`
+--
+
+DROP TABLE IF EXISTS `other_notificaciones_usuario2`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `other_notificaciones_usuario2` (
+  `codNotificacionUsuario` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL,
+  `codNotificacion` int(11) NOT NULL,
+  `codEstado` int(11) DEFAULT NULL,
+  `dayFechaCreacion` datetime DEFAULT NULL,
+  `desUsuarioCreación` varchar(255) DEFAULT NULL,
+  UNIQUE KEY `XPKother_Notificaciones_Usuario` (`codNotificacionUsuario`,`id`,`codNotificacion`) USING BTREE,
+  KEY `XIF1other_Notificaciones_Usuario` (`id`) USING BTREE,
+  KEY `XIF2other_Notificaciones_Usuario` (`codNotificacion`) USING BTREE,
+  KEY `XIF3other_Notificaciones_Usuario` (`codNotificacionUsuario`) USING BTREE,
+  CONSTRAINT `other_notificaciones_usuario_ibfk_11` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `other_notificaciones_usuario_ibfk_21` FOREIGN KEY (`codNotificacion`) REFERENCES `other_notificaciones` (`codNotificacion`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `other_notificaciones_usuario2`
+--
+
+LOCK TABLES `other_notificaciones_usuario2` WRITE;
+/*!40000 ALTER TABLE `other_notificaciones_usuario2` DISABLE KEYS */;
+INSERT INTO `other_notificaciones_usuario2` VALUES (1,9,1,1,NULL,NULL),(2,9,1,1,NULL,NULL);
+/*!40000 ALTER TABLE `other_notificaciones_usuario2` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `other_notificaciones_usuario4`
+--
+
+DROP TABLE IF EXISTS `other_notificaciones_usuario4`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `other_notificaciones_usuario4` (
+  `codNotificacionUsuario` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL,
+  `codNotificacion` int(11) NOT NULL,
+  `codEstado` int(11) DEFAULT NULL,
+  `dayFechaCreacion` datetime DEFAULT NULL,
+  `desUsuarioCreación` varchar(255) DEFAULT NULL,
+  UNIQUE KEY `XPKother_Notificaciones_Usuario` (`codNotificacionUsuario`,`id`,`codNotificacion`) USING BTREE,
+  KEY `XIF1other_Notificaciones_Usuario` (`id`) USING BTREE,
+  KEY `XIF2other_Notificaciones_Usuario` (`codNotificacion`) USING BTREE,
+  KEY `XIF3other_Notificaciones_Usuario` (`codNotificacionUsuario`) USING BTREE,
+  CONSTRAINT `other_notificaciones_usuario_ibfk_111` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `other_notificaciones_usuario_ibfk_211` FOREIGN KEY (`codNotificacion`) REFERENCES `other_notificaciones` (`codNotificacion`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `other_notificaciones_usuario4`
+--
+
+LOCK TABLES `other_notificaciones_usuario4` WRITE;
+/*!40000 ALTER TABLE `other_notificaciones_usuario4` DISABLE KEYS */;
+INSERT INTO `other_notificaciones_usuario4` VALUES (1,9,1,1,NULL,NULL),(3,9,1,1,NULL,NULL),(4,9,1,1,NULL,NULL),(5,9,1,0,'2023-02-23 13:02:58','diego@gmail.com'),(6,9,1,0,'2023-02-23 15:10:36','diego@gmail.com'),(7,9,1,0,'2023-02-23 20:19:05','diego@gmail.com'),(8,9,1,0,'2023-02-24 03:56:02','diego@gmail.com'),(9,9,1,0,'2023-02-24 03:59:01','diego@gmail.com'),(10,9,1,0,'2023-02-24 04:23:39','diego@gmail.com');
+/*!40000 ALTER TABLE `other_notificaciones_usuario4` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -468,7 +566,7 @@ CREATE TABLE `personal_access_tokens` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `personal_access_tokens_token_unique` (`token`) USING BTREE,
   KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=114 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=189 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -477,7 +575,7 @@ CREATE TABLE `personal_access_tokens` (
 
 LOCK TABLES `personal_access_tokens` WRITE;
 /*!40000 ALTER TABLE `personal_access_tokens` DISABLE KEYS */;
-INSERT INTO `personal_access_tokens` VALUES (2,'App\\Models\\User',4,'main','fad423794c19b2fcafa97ea7b3df90432ae38f84feb04d7876ae77e8c43749fd','[\"*\"]',NULL,'2022-11-08 11:00:02','2022-11-08 11:00:02'),(3,'App\\Models\\User',4,'main','8b23b8515d0c16fa55307ada01558e8daa544f2cb148764486e7252fbcf40502','[\"*\"]',NULL,'2022-11-08 11:00:25','2022-11-08 11:00:25'),(4,'App\\Models\\User',4,'main','c7bf9c90bb85f93b443baf3ee8ead0f3da3de473fe798a3786ec450988c45b76','[\"*\"]',NULL,'2022-11-08 21:38:39','2022-11-08 21:38:39'),(5,'App\\Models\\User',5,'main','0aa1e989c6969e6d10c6646cf74b3ab944df69d6152044c171a4d936288972a6','[\"*\"]',NULL,'2022-11-11 00:18:15','2022-11-11 00:18:15'),(6,'App\\Models\\User',5,'main','da842488d492df963f2820a0e4897de5a30e3d05b27d84150e4e1f83928e9133','[\"*\"]',NULL,'2022-11-11 00:18:50','2022-11-11 00:18:50'),(7,'App\\Models\\User',5,'main','8e92ab3a7a4ad4da42c52fd6f1400095c016bfd9ec3bb302b18d363fda7bc889','[\"*\"]',NULL,'2022-11-11 04:49:37','2022-11-11 04:49:37'),(8,'App\\Models\\User',5,'main','2a7a97c651cd5fb2fcf4d9c1dfd1d8d944a95193103303c141aac0982812dd91','[\"*\"]',NULL,'2022-11-11 10:06:35','2022-11-11 10:06:35'),(9,'App\\Models\\User',5,'main','c7d95e0a2148e561747b204d7154d1f40c44b17549aae17a8da6512c1903bdd9','[\"*\"]',NULL,'2022-11-11 10:07:51','2022-11-11 10:07:51'),(10,'App\\Models\\User',5,'main','37d04b5f734555c1ac0da48ab605c44ed3a49aa5ec59c2cb18cf0087ec0dc768','[\"*\"]',NULL,'2022-11-11 10:10:00','2022-11-11 10:10:00'),(11,'App\\Models\\User',5,'main','2f11262c47a6795de590094b52168449bf37ca353d13c68c5b3dbd70d2d8a671','[\"*\"]',NULL,'2022-11-11 10:33:09','2022-11-11 10:33:09'),(12,'App\\Models\\User',5,'main','33f056e3e511f56ef8530326a2799d10b530b4273eaab0d593ea1a9e66bec7f4','[\"*\"]',NULL,'2022-11-11 10:34:46','2022-11-11 10:34:46'),(13,'App\\Models\\User',5,'main','1d3e0128edeed25fe49c1b7f32234649909b225b54554749eb47e4c562bd5a9b','[\"*\"]',NULL,'2022-11-11 10:39:32','2022-11-11 10:39:32'),(14,'App\\Models\\User',5,'main','4cab016e278c88a1e141cf1ad363d619f851475f4c1f2511c987bebc43970d41','[\"*\"]',NULL,'2022-11-11 10:44:52','2022-11-11 10:44:52'),(15,'App\\Models\\User',5,'main','a085b1189ee5434876835bc0e356830e26b446c54a442fec5b4f096b26f7756c','[\"*\"]',NULL,'2022-11-11 18:20:13','2022-11-11 18:20:13'),(16,'App\\Models\\User',5,'main','ec3da1d0dbbdfc1685ac78de7417e56226ba7f13df5cdd07b1de011d4f91fd58','[\"*\"]',NULL,'2022-11-13 16:34:48','2022-11-13 16:34:48'),(17,'App\\Models\\User',6,'main','c35d81587d6679cad0d462941e8b3d24f6057f4e7a1a539a0a2c664301d5a971','[\"*\"]',NULL,'2022-11-15 09:22:22','2022-11-15 09:22:22'),(18,'App\\Models\\User',6,'main','ce117f6577de5997021a35e2d05a8e9669bab2f744c97f435cec16968503bb04','[\"*\"]',NULL,'2022-11-15 09:22:34','2022-11-15 09:22:34'),(19,'App\\Models\\User',7,'main','002d96e3164c3ace78cca5670d336dde247293a7771cd6c00c74256dcc84372e','[\"*\"]',NULL,'2022-11-15 18:38:01','2022-11-15 18:38:01'),(20,'App\\Models\\User',7,'main','c633a7156756adc12e54def5ddffdd27828e529de86e94b9b1806f575d386453','[\"*\"]',NULL,'2022-11-15 18:38:16','2022-11-15 18:38:16'),(21,'App\\Models\\User',5,'main','066711ee3b2bc6ac0f388e03b56d3c8ce5e09ae6a81179bbce6afd86df179071','[\"*\"]',NULL,'2022-11-17 05:03:26','2022-11-17 05:03:26'),(22,'App\\Models\\User',5,'main','dbd3138ad438933d85d12b92d4afc21e95f30f04c2f97cfaba31e1f020b939e9','[\"*\"]',NULL,'2022-11-17 21:40:30','2022-11-17 21:40:30'),(23,'App\\Models\\User',5,'main','dc9f6f75376cdc7a6e887698f15c21ba08c5db28a52e327766b1e1273cc291c5','[\"*\"]',NULL,'2022-11-18 06:49:24','2022-11-18 06:49:24'),(24,'App\\Models\\User',5,'main','4823fb622e5f1d691bac582faa0faf3043dd0a0554f4339d3010c18159a8deb6','[\"*\"]',NULL,'2022-11-18 10:47:11','2022-11-18 10:47:11'),(25,'App\\Models\\User',6,'main','f32a736b9f58fc341538407297f67141cf36bad581fcf9e19f45cef6676ec6bf','[\"*\"]',NULL,'2022-11-18 10:47:49','2022-11-18 10:47:49'),(26,'App\\Models\\User',6,'main','5941cfbfc163e40db4a6b3f753aabad233ade3feaced5b2327bb6259c4773156','[\"*\"]',NULL,'2022-11-18 10:49:06','2022-11-18 10:49:06'),(27,'App\\Models\\User',5,'main','355bcb5ced91a3e77b83b325968688a12fd7205dc70ddf62f969830417c0752a','[\"*\"]',NULL,'2022-11-20 14:45:09','2022-11-20 14:45:09'),(28,'App\\Models\\User',6,'main','8193094a022a19d00c06774ec8ae0f089d5c0a57a2b5bd95fa62cc72764d5c36','[\"*\"]',NULL,'2022-11-20 18:44:49','2022-11-20 18:44:49'),(29,'App\\Models\\User',6,'main','def93eb74e74d92ea16f10fcaf0ebcc1496f753963fc17cdcd7442fee9323386','[\"*\"]',NULL,'2022-11-21 20:25:03','2022-11-21 20:25:03'),(30,'App\\Models\\User',6,'main','93c913260bd3a10edefdd0d2cc3e1a8ba95f7bbccd8e868672013c4a8f12ccae','[\"*\"]',NULL,'2022-11-22 14:16:17','2022-11-22 14:16:17'),(31,'App\\Models\\User',7,'main','1262a10de8a9ba54ff00c207791834275f013b4d05b5d9a1c46a789d87d142a3','[\"*\"]',NULL,'2022-11-22 19:38:09','2022-11-22 19:38:09'),(32,'App\\Models\\User',5,'main','7b21d51c7031b2bcb03f59665900fc2b1c35f0b1a2103d152f684bf7bed4449c','[\"*\"]',NULL,'2022-11-22 21:14:02','2022-11-22 21:14:02'),(33,'App\\Models\\User',6,'main','7c20ac3ce0b178133ac2666a10eacaa6a7bf0e35ea592e942abab05709eff183','[\"*\"]',NULL,'2022-11-22 21:16:44','2022-11-22 21:16:44'),(34,'App\\Models\\User',6,'main','360f4e14c5fb61c24f3c017f8fd41ad4a2d460627b42feaf44fae3e9c470b5cc','[\"*\"]',NULL,'2022-11-23 18:38:56','2022-11-23 18:38:56'),(35,'App\\Models\\User',8,'main','b18722012bec8d32da5a01ed7599fec0c7bc2e63bd55e23d75c51c52b09a1d4f','[\"*\"]',NULL,'2022-11-23 21:33:01','2022-11-23 21:33:01'),(36,'App\\Models\\User',8,'main','b8deacf012d2afbea9729c6f42873d1af2e052e68172aa167a31a32314a22060','[\"*\"]',NULL,'2022-11-23 21:33:19','2022-11-23 21:33:19'),(37,'App\\Models\\User',8,'main','17843f3bb8358b7cc59edf54484ed4cbe5236612885268e38961a326b4ca31bd','[\"*\"]','2022-11-24 01:27:21','2022-11-24 01:23:23','2022-11-24 01:27:21'),(38,'App\\Models\\User',8,'main','fbf99bf0f64788cc17d79c697feb4ed0d5f085a44ed05c7b2e2b2cf777d974f4','[\"*\"]',NULL,'2022-11-24 01:45:02','2022-11-24 01:45:02'),(39,'App\\Models\\User',8,'main','50945625730f6994b69d25f168a94d3477107eb117587ab4d8820fb76772597e','[\"*\"]',NULL,'2022-11-24 01:50:18','2022-11-24 01:50:18'),(40,'App\\Models\\User',8,'main','3565443e7ea98126f57ff7d5b76dc1c6e348af1173a0ba90c4124683d59d1511','[\"*\"]',NULL,'2022-11-24 01:51:38','2022-11-24 01:51:38'),(41,'App\\Models\\User',8,'main','e2c2dd0e587f95aa9d55c62a04e746345aed67ed34e3b6fef4cee0774e5d9e1f','[\"*\"]',NULL,'2022-11-24 01:54:49','2022-11-24 01:54:49'),(42,'App\\Models\\User',8,'main','475b88901b90a2b31e61ef7b8bd8e5be2d5326912c7c6b396fc60a4c74142c62','[\"*\"]',NULL,'2022-11-24 01:55:31','2022-11-24 01:55:31'),(43,'App\\Models\\User',8,'main','911c89bfdf0d83dab85e5f2e24584e77a7213334259be8291faa3047865d2f11','[\"*\"]',NULL,'2022-11-24 01:55:58','2022-11-24 01:55:58'),(44,'App\\Models\\User',8,'main','79910f6bbdc548d92cbe2371bb6868f24ef5ed980adb3e66f3ddad06422d5a61','[\"*\"]',NULL,'2022-11-24 01:56:53','2022-11-24 01:56:53'),(45,'App\\Models\\User',8,'main','ef74dba917d7f74fee9587931fd2e9a1c249c6a4a54f6c4d05e336e66024b1ea','[\"*\"]',NULL,'2022-11-24 02:05:40','2022-11-24 02:05:40'),(46,'App\\Models\\User',8,'main','858ee43fb1e289be220f0b7575c044ef125f6b6cb553176a9a1971c6f5f6ef76','[\"*\"]',NULL,'2022-11-24 02:08:03','2022-11-24 02:08:03'),(47,'App\\Models\\User',8,'main','b9e5ada0950bcb76c1ded852c0df0a8a9879463b207a95be589915f250a39402','[\"*\"]',NULL,'2022-11-24 02:08:51','2022-11-24 02:08:51'),(48,'App\\Models\\User',8,'main','86103f8733fec3ea7506c2ee8850297d6c83a7b674566dc0a402f88e8b6838cf','[\"*\"]',NULL,'2022-11-24 02:09:33','2022-11-24 02:09:33'),(49,'App\\Models\\User',8,'main','4fed75e11efeeee26ce2193beb991c38d56968d481368314752d8dd9921a0953','[\"*\"]',NULL,'2022-11-24 02:09:49','2022-11-24 02:09:49'),(50,'App\\Models\\User',8,'main','c9c0e0d4daa5f627e26c900067ef107bcaf51bf830303a6913316ede35e5b54c','[\"*\"]',NULL,'2022-11-24 02:09:52','2022-11-24 02:09:52'),(51,'App\\Models\\User',8,'main','d3b3dc80bccaaf768e131562ebb14b7dfcf9bcfbd1a1f9758775bcc8ec1a3284','[\"*\"]',NULL,'2022-11-24 02:10:12','2022-11-24 02:10:12'),(52,'App\\Models\\User',8,'main','f36a237cac578f7ae6ca36b3b5ad0cd50f7ece8ae982ff9e94981a53086a8e5a','[\"*\"]',NULL,'2022-11-24 02:19:52','2022-11-24 02:19:52'),(53,'App\\Models\\User',8,'main','b7ad94643e881a08d365ac3354f1bbaead37fe0809e9cbd3f924efba8294c16d','[\"*\"]',NULL,'2022-11-24 02:21:06','2022-11-24 02:21:06'),(54,'App\\Models\\User',8,'main','d1d33b481079b2367adcd077f0ea9cebc46047bf71b632231b8487cf73f1d417','[\"*\"]',NULL,'2022-11-24 02:36:47','2022-11-24 02:36:47'),(55,'App\\Models\\User',8,'main','f0ae1002035411f563a739b2f44a65472567d0b3b8390efb812bcab66a5914a8','[\"*\"]',NULL,'2022-11-24 09:37:24','2022-11-24 09:37:24'),(56,'App\\Models\\User',8,'main','c4731f02b9370fcda95b2f00eb15530316d46540768a4bfc04f1eb0ea24d904b','[\"*\"]',NULL,'2022-11-24 18:23:36','2022-11-24 18:23:36'),(57,'App\\Models\\User',8,'main','a465a694e4c6447798353b2a6de54dfc9d96a9b05417beeaf4bdf32c72deeb28','[\"*\"]',NULL,'2022-11-24 21:15:46','2022-11-24 21:15:46'),(58,'App\\Models\\User',8,'main','f65f0311e2e2872f9bee90c601e57881c870bc7bc5ef52efa59b6a7a22cd835a','[\"*\"]',NULL,'2022-11-25 00:33:42','2022-11-25 00:33:42'),(59,'App\\Models\\User',8,'main','691f32db8d5961f94b70ed3982037c0e5353bcdb333eaf05d6ab55f2b1a44289','[\"*\"]',NULL,'2022-11-28 21:35:31','2022-11-28 21:35:31'),(60,'App\\Models\\User',8,'main','f5272698a019d122e2a8e1978e2f806f40611bdedd9b76fe828ff0649fe7d1d3','[\"*\"]',NULL,'2022-11-29 18:12:18','2022-11-29 18:12:18'),(61,'App\\Models\\User',8,'main','2e03998469315e6fe17dcf9f584c20349bf002d2d7632e101c6ca7be3796f686','[\"*\"]',NULL,'2022-11-29 18:15:21','2022-11-29 18:15:21'),(62,'App\\Models\\User',8,'main','7484c83a92b479cd0f05edfdbb698a412d3783a4466529edb7258e83375b87f1','[\"*\"]',NULL,'2022-11-29 18:16:27','2022-11-29 18:16:27'),(63,'App\\Models\\User',8,'main','4d1b2d8fae9a5a0e553319582b372b547de32a2ead615e65760f40759c8ae16f','[\"*\"]',NULL,'2022-11-29 18:18:52','2022-11-29 18:18:52'),(64,'App\\Models\\User',8,'main','82e3f2f5ba3f8bc4e433bb36e775826feb1a02e913ef3c230a3ba2b645640339','[\"*\"]',NULL,'2022-11-29 18:26:11','2022-11-29 18:26:11'),(65,'App\\Models\\User',8,'main','01457f4f4d05dc104ed3c581615822a192e83fbe500cc5868651c58892c3aaa6','[\"*\"]',NULL,'2022-11-29 18:27:14','2022-11-29 18:27:14'),(66,'App\\Models\\User',8,'main','4e4bf5e09363b4ad9d88d1e54abc2d32c4cde6441df350f4a6547ff78ae46934','[\"*\"]',NULL,'2022-11-29 18:28:29','2022-11-29 18:28:29'),(67,'App\\Models\\User',8,'main','ffc7ed1f829c1e1845cab8499d6fad0189a933dd84f932441e131eb64dfb3ff7','[\"*\"]',NULL,'2022-11-29 18:28:33','2022-11-29 18:28:33'),(68,'App\\Models\\User',8,'main','31120f2219d960882283db6f8cce6ca758dbed4fcc66872f053cbac2afb14993','[\"*\"]',NULL,'2022-11-29 18:29:07','2022-11-29 18:29:07'),(69,'App\\Models\\User',8,'main','aa3c83f058fad39b4220c6617c1d67427bc75029c7dba5d6e1cc08b3730d3804','[\"*\"]',NULL,'2022-11-29 18:32:59','2022-11-29 18:32:59'),(70,'App\\Models\\User',8,'main','65ccede432c55f784758d356aca64ffaadc5497a76e8cb754f0ddc3ea3f37325','[\"*\"]',NULL,'2022-11-29 18:33:51','2022-11-29 18:33:51'),(71,'App\\Models\\User',8,'main','43d5275e8bbcb5b36cc05c6bc65e59cbe574c23b27de94e5cbef2efc0d6f13c9','[\"*\"]',NULL,'2022-11-29 18:36:46','2022-11-29 18:36:46'),(72,'App\\Models\\User',9,'main','a55ec71c207b847b9b1c50e266b866aadf59e689f69009f509136d909b47f7a2','[\"*\"]',NULL,'2022-12-01 07:16:59','2022-12-01 07:16:59'),(73,'App\\Models\\User',9,'main','395fb6e7763604c303fc2f1085fbfee2a85eeecd524dbd2e1e14e6bf70b52fd4','[\"*\"]',NULL,'2022-12-01 07:17:14','2022-12-01 07:17:14'),(74,'App\\Models\\User',9,'main','91ba39beb3e11a58b543f215a3f43a7e698367e1c402fbfbaaf5e2bbd448b5e7','[\"*\"]','2022-12-14 16:37:59','2022-12-14 16:11:31','2022-12-14 16:37:59'),(75,'App\\Models\\User',10,'main','a9f944386716a20f3bc7056b4c7f667486caf60e42f4c0c1d7f2197f464ed8f5','[\"*\"]',NULL,'2022-12-14 17:22:35','2022-12-14 17:22:35'),(76,'App\\Models\\User',11,'main','aa1f88e0f62fbd72b8f58bbf51176e8b8dc3a93034a9d0bbf8e14c00a846c56a','[\"*\"]',NULL,'2022-12-14 17:25:15','2022-12-14 17:25:15'),(77,'App\\Models\\User',11,'main','4eedda9bf43726c6d32ad0ade9911eadb0feec6dc8b57ddaf1865d1cbe24a13f','[\"*\"]',NULL,'2022-12-14 17:26:01','2022-12-14 17:26:01'),(78,'App\\Models\\User',12,'main','4332155ee88d50e07427c860f207c957a4f4fbfbad9918eca48230fc28ae979a','[\"*\"]',NULL,'2022-12-19 16:24:06','2022-12-19 16:24:06'),(79,'App\\Models\\User',12,'main','e54cebba854a2a418c1156c70ac6aaa5231f371aaa8b4590aa4b21d29c3e39ea','[\"*\"]',NULL,'2022-12-19 16:24:16','2022-12-19 16:24:16'),(80,'App\\Models\\User',9,'main','defddba4ad3948c8d24f8fe38529df66bb09a01a3c39c996a301e749cd935f91','[\"*\"]',NULL,'2022-12-19 16:28:59','2022-12-19 16:28:59'),(81,'App\\Models\\User',9,'main','981adf2becf5e96440cf409ad5c5c284fc7acb4ab89b248ed98ffb5182eab5f3','[\"*\"]',NULL,'2022-12-20 01:20:59','2022-12-20 01:20:59'),(82,'App\\Models\\User',9,'main','2ae20387645f9c36d746629cc407169ad20ed85b0999e515853c7f5f568bcaaf','[\"*\"]',NULL,'2022-12-21 19:34:10','2022-12-21 19:34:10'),(83,'App\\Models\\User',9,'main','bac54a702e79943ab8abd22d4b817c9cf17531922256169154357f8d08032ac5','[\"*\"]',NULL,'2022-12-22 18:08:38','2022-12-22 18:08:38'),(84,'App\\Models\\User',9,'main','77c6d95e6094b913e60ffc09e31dba15391488c61ede91dde8dea50c50397cab','[\"*\"]',NULL,'2022-12-22 20:54:41','2022-12-22 20:54:41'),(85,'App\\Models\\User',9,'main','4507e28401e174c87c8127ca62b04bce83cc73f8c368aaf333b9e8435ab6ed4b','[\"*\"]',NULL,'2022-12-23 17:53:06','2022-12-23 17:53:06'),(86,'App\\Models\\User',9,'main','7093b250c55906d5c7c7a310dde05b436d6b030b8306156308bacdad6442c40a','[\"*\"]',NULL,'2022-12-24 23:09:30','2022-12-24 23:09:30'),(87,'App\\Models\\User',9,'main','f1591977681a2faa884ae4db2184ff9c3e52e5c9fdae4f81ab201b5ae3c6ce21','[\"*\"]',NULL,'2023-01-03 07:44:54','2023-01-03 07:44:54'),(88,'App\\Models\\User',9,'main','b4199554cc1ae477959f324597d986175c30c58eaa833d99274e67da601a5c14','[\"*\"]',NULL,'2023-01-04 17:13:19','2023-01-04 17:13:19'),(89,'App\\Models\\User',9,'main','dccf652251f36731de8c8ea75150d4ecc27daa3749092a9ddeb927d9ba0972be','[\"*\"]',NULL,'2023-01-05 00:22:17','2023-01-05 00:22:17'),(90,'App\\Models\\User',9,'main','c14625b2c3ddb8f3c37d9e97b4db26a19a2271e5a21ea5b378dbcb442a1a2f80','[\"*\"]',NULL,'2023-01-05 10:28:54','2023-01-05 10:28:54'),(91,'App\\Models\\User',9,'main','7930bce781b8cfd6342c01a2d85fe83603677f94315b89c3c56381f8b01ba1de','[\"*\"]',NULL,'2023-01-06 18:43:07','2023-01-06 18:43:07'),(92,'App\\Models\\User',9,'main','3320ab35b8d7ce3fbe706d94500c63975e47f31c32b39cbb135f4e2c6d35cf0d','[\"*\"]',NULL,'2023-01-07 02:43:06','2023-01-07 02:43:06'),(93,'App\\Models\\User',9,'main','b6872aa05017cc2dbeb8f0a043e520603917a14b772bc71d74bf6cc391016dd3','[\"*\"]',NULL,'2023-01-10 04:17:25','2023-01-10 04:17:25'),(94,'App\\Models\\User',9,'main','35088947d82124d3e8055e10164daa8e4c9f78803f7e7c5674b9b4c96f9e2fa9','[\"*\"]',NULL,'2023-01-10 05:17:18','2023-01-10 05:17:18'),(95,'App\\Models\\User',9,'main','8b180674e2deeaed4f313b0c569c057a1430b5feca08c13a43f104cea31deace','[\"*\"]',NULL,'2023-01-10 05:20:58','2023-01-10 05:20:58'),(96,'App\\Models\\User',9,'main','7bf8cc4cda9ecd76221de52cfeb1829f682d6c820df695b88f112672cea4050a','[\"*\"]',NULL,'2023-01-10 23:21:49','2023-01-10 23:21:49'),(97,'App\\Models\\User',9,'main','1ac43728a15a568899887103ab36b37ff21b2a58e2f44e3681d4ad3335a92638','[\"*\"]',NULL,'2023-01-11 10:11:03','2023-01-11 10:11:03'),(98,'App\\Models\\User',9,'main','954499a3fa296b1527d3ff8dc5f51b9f597f6c91b2aa862b816bd8706b019c36','[\"*\"]',NULL,'2023-01-13 07:04:16','2023-01-13 07:04:16'),(99,'App\\Models\\User',9,'main','92f01892155952cfa2488af4c3e40bf07107a0379a7565536508276147f6a9c2','[\"*\"]',NULL,'2023-01-16 03:03:43','2023-01-16 03:03:43'),(100,'App\\Models\\User',9,'main','a4aa7208004a315072c2b28eefeee3e3e17deb4e9fbb753312f8ecfaa908d043','[\"*\"]',NULL,'2023-01-22 03:08:29','2023-01-22 03:08:29'),(101,'App\\Models\\User',9,'main','53f7bcb2a04f9b5449a43a86f88137632a204f8faafe4519a7fba5b82c9c2399','[\"*\"]',NULL,'2023-01-22 03:22:17','2023-01-22 03:22:17'),(102,'App\\Models\\User',9,'main','9c5b1b3cc50d0c1a8dc73a444a9decc673d4a6c63c62dd2448cf70ad307d8dc1','[\"*\"]',NULL,'2023-01-22 03:22:47','2023-01-22 03:22:47'),(103,'App\\Models\\User',9,'main','064c4192dcdde2a307cab28efb3b1f9e126be16cd187e20a5f12f8633c7f8925','[\"*\"]',NULL,'2023-01-22 03:27:31','2023-01-22 03:27:31'),(104,'App\\Models\\User',9,'main','59ac0c227a565408e0982ee47237cf1a52e3ef84f5b33a91b282d075b1239f0e','[\"*\"]','2023-01-28 00:37:13','2023-01-22 03:31:16','2023-01-28 00:37:13'),(105,'App\\Models\\User',9,'main','febe771efe910b93c374b489c1b7b6275885fbd516945f1184d4a4788e09f6e5','[\"*\"]','2023-01-28 02:21:53','2023-01-28 00:38:19','2023-01-28 02:21:53'),(106,'App\\Models\\User',9,'main','e1133b803e6d4581861106a493339afb0aa38725a50d5690096581eea3e9689c','[\"*\"]','2023-01-29 08:33:40','2023-01-29 05:04:26','2023-01-29 08:33:40'),(107,'App\\Models\\User',9,'main','dae8f7365eaaf2dc2f4980c843ea6c1e269f61ad0716865f8ca5f4bdc91685ab','[\"*\"]','2023-01-29 17:42:27','2023-01-29 17:42:08','2023-01-29 17:42:27'),(108,'App\\Models\\User',9,'main','a84d818179792a1b24208a773da1739f8b03ad0dbb3d1e4875ffd0ffe2835c46','[\"*\"]','2023-01-29 23:33:43','2023-01-29 23:08:16','2023-01-29 23:33:43'),(109,'App\\Models\\User',9,'main','9e16b4657b2eedffa377d168282b72f112903496c44f167b94721b95cb38a7cf','[\"*\"]','2023-01-29 23:37:34','2023-01-29 23:37:29','2023-01-29 23:37:34'),(110,'App\\Models\\User',9,'main','413c236a1d33f4c7a8375f0263576d1e7753ac05dd6ef2d5c01d5da1c7ffe76b','[\"*\"]','2023-01-30 19:24:24','2023-01-30 19:24:12','2023-01-30 19:24:24'),(111,'App\\Models\\User',9,'main','0b9fafd19dcce7e5d626dafa4bae4047c05171d85a2459c2afd9e6e47430dcb9','[\"*\"]','2023-01-30 21:25:29','2023-01-30 19:25:45','2023-01-30 21:25:29'),(112,'App\\Models\\User',9,'main','bdbb6f713397436f5cc8c31e2d167297bf0c3596ac7f17d443e75ebe8fcafcd3','[\"*\"]','2023-01-31 19:04:37','2023-01-31 04:53:30','2023-01-31 19:04:37'),(113,'App\\Models\\User',9,'main','430819be074171c8aed2da03d23b45dfae5b28b52b63aaefdf0c083e7c13bd70','[\"*\"]','2023-01-31 19:04:35','2023-01-31 10:18:55','2023-01-31 19:04:35');
+INSERT INTO `personal_access_tokens` VALUES (2,'App\\Models\\User',4,'main','fad423794c19b2fcafa97ea7b3df90432ae38f84feb04d7876ae77e8c43749fd','[\"*\"]',NULL,'2022-11-08 11:00:02','2022-11-08 11:00:02'),(3,'App\\Models\\User',4,'main','8b23b8515d0c16fa55307ada01558e8daa544f2cb148764486e7252fbcf40502','[\"*\"]',NULL,'2022-11-08 11:00:25','2022-11-08 11:00:25'),(4,'App\\Models\\User',4,'main','c7bf9c90bb85f93b443baf3ee8ead0f3da3de473fe798a3786ec450988c45b76','[\"*\"]',NULL,'2022-11-08 21:38:39','2022-11-08 21:38:39'),(5,'App\\Models\\User',5,'main','0aa1e989c6969e6d10c6646cf74b3ab944df69d6152044c171a4d936288972a6','[\"*\"]',NULL,'2022-11-11 00:18:15','2022-11-11 00:18:15'),(6,'App\\Models\\User',5,'main','da842488d492df963f2820a0e4897de5a30e3d05b27d84150e4e1f83928e9133','[\"*\"]',NULL,'2022-11-11 00:18:50','2022-11-11 00:18:50'),(7,'App\\Models\\User',5,'main','8e92ab3a7a4ad4da42c52fd6f1400095c016bfd9ec3bb302b18d363fda7bc889','[\"*\"]',NULL,'2022-11-11 04:49:37','2022-11-11 04:49:37'),(8,'App\\Models\\User',5,'main','2a7a97c651cd5fb2fcf4d9c1dfd1d8d944a95193103303c141aac0982812dd91','[\"*\"]',NULL,'2022-11-11 10:06:35','2022-11-11 10:06:35'),(9,'App\\Models\\User',5,'main','c7d95e0a2148e561747b204d7154d1f40c44b17549aae17a8da6512c1903bdd9','[\"*\"]',NULL,'2022-11-11 10:07:51','2022-11-11 10:07:51'),(10,'App\\Models\\User',5,'main','37d04b5f734555c1ac0da48ab605c44ed3a49aa5ec59c2cb18cf0087ec0dc768','[\"*\"]',NULL,'2022-11-11 10:10:00','2022-11-11 10:10:00'),(11,'App\\Models\\User',5,'main','2f11262c47a6795de590094b52168449bf37ca353d13c68c5b3dbd70d2d8a671','[\"*\"]',NULL,'2022-11-11 10:33:09','2022-11-11 10:33:09'),(12,'App\\Models\\User',5,'main','33f056e3e511f56ef8530326a2799d10b530b4273eaab0d593ea1a9e66bec7f4','[\"*\"]',NULL,'2022-11-11 10:34:46','2022-11-11 10:34:46'),(13,'App\\Models\\User',5,'main','1d3e0128edeed25fe49c1b7f32234649909b225b54554749eb47e4c562bd5a9b','[\"*\"]',NULL,'2022-11-11 10:39:32','2022-11-11 10:39:32'),(14,'App\\Models\\User',5,'main','4cab016e278c88a1e141cf1ad363d619f851475f4c1f2511c987bebc43970d41','[\"*\"]',NULL,'2022-11-11 10:44:52','2022-11-11 10:44:52'),(15,'App\\Models\\User',5,'main','a085b1189ee5434876835bc0e356830e26b446c54a442fec5b4f096b26f7756c','[\"*\"]',NULL,'2022-11-11 18:20:13','2022-11-11 18:20:13'),(16,'App\\Models\\User',5,'main','ec3da1d0dbbdfc1685ac78de7417e56226ba7f13df5cdd07b1de011d4f91fd58','[\"*\"]',NULL,'2022-11-13 16:34:48','2022-11-13 16:34:48'),(17,'App\\Models\\User',6,'main','c35d81587d6679cad0d462941e8b3d24f6057f4e7a1a539a0a2c664301d5a971','[\"*\"]',NULL,'2022-11-15 09:22:22','2022-11-15 09:22:22'),(18,'App\\Models\\User',6,'main','ce117f6577de5997021a35e2d05a8e9669bab2f744c97f435cec16968503bb04','[\"*\"]',NULL,'2022-11-15 09:22:34','2022-11-15 09:22:34'),(19,'App\\Models\\User',7,'main','002d96e3164c3ace78cca5670d336dde247293a7771cd6c00c74256dcc84372e','[\"*\"]',NULL,'2022-11-15 18:38:01','2022-11-15 18:38:01'),(20,'App\\Models\\User',7,'main','c633a7156756adc12e54def5ddffdd27828e529de86e94b9b1806f575d386453','[\"*\"]',NULL,'2022-11-15 18:38:16','2022-11-15 18:38:16'),(21,'App\\Models\\User',5,'main','066711ee3b2bc6ac0f388e03b56d3c8ce5e09ae6a81179bbce6afd86df179071','[\"*\"]',NULL,'2022-11-17 05:03:26','2022-11-17 05:03:26'),(22,'App\\Models\\User',5,'main','dbd3138ad438933d85d12b92d4afc21e95f30f04c2f97cfaba31e1f020b939e9','[\"*\"]',NULL,'2022-11-17 21:40:30','2022-11-17 21:40:30'),(23,'App\\Models\\User',5,'main','dc9f6f75376cdc7a6e887698f15c21ba08c5db28a52e327766b1e1273cc291c5','[\"*\"]',NULL,'2022-11-18 06:49:24','2022-11-18 06:49:24'),(24,'App\\Models\\User',5,'main','4823fb622e5f1d691bac582faa0faf3043dd0a0554f4339d3010c18159a8deb6','[\"*\"]',NULL,'2022-11-18 10:47:11','2022-11-18 10:47:11'),(25,'App\\Models\\User',6,'main','f32a736b9f58fc341538407297f67141cf36bad581fcf9e19f45cef6676ec6bf','[\"*\"]',NULL,'2022-11-18 10:47:49','2022-11-18 10:47:49'),(26,'App\\Models\\User',6,'main','5941cfbfc163e40db4a6b3f753aabad233ade3feaced5b2327bb6259c4773156','[\"*\"]',NULL,'2022-11-18 10:49:06','2022-11-18 10:49:06'),(27,'App\\Models\\User',5,'main','355bcb5ced91a3e77b83b325968688a12fd7205dc70ddf62f969830417c0752a','[\"*\"]',NULL,'2022-11-20 14:45:09','2022-11-20 14:45:09'),(28,'App\\Models\\User',6,'main','8193094a022a19d00c06774ec8ae0f089d5c0a57a2b5bd95fa62cc72764d5c36','[\"*\"]',NULL,'2022-11-20 18:44:49','2022-11-20 18:44:49'),(29,'App\\Models\\User',6,'main','def93eb74e74d92ea16f10fcaf0ebcc1496f753963fc17cdcd7442fee9323386','[\"*\"]',NULL,'2022-11-21 20:25:03','2022-11-21 20:25:03'),(30,'App\\Models\\User',6,'main','93c913260bd3a10edefdd0d2cc3e1a8ba95f7bbccd8e868672013c4a8f12ccae','[\"*\"]',NULL,'2022-11-22 14:16:17','2022-11-22 14:16:17'),(31,'App\\Models\\User',7,'main','1262a10de8a9ba54ff00c207791834275f013b4d05b5d9a1c46a789d87d142a3','[\"*\"]',NULL,'2022-11-22 19:38:09','2022-11-22 19:38:09'),(32,'App\\Models\\User',5,'main','7b21d51c7031b2bcb03f59665900fc2b1c35f0b1a2103d152f684bf7bed4449c','[\"*\"]',NULL,'2022-11-22 21:14:02','2022-11-22 21:14:02'),(33,'App\\Models\\User',6,'main','7c20ac3ce0b178133ac2666a10eacaa6a7bf0e35ea592e942abab05709eff183','[\"*\"]',NULL,'2022-11-22 21:16:44','2022-11-22 21:16:44'),(34,'App\\Models\\User',6,'main','360f4e14c5fb61c24f3c017f8fd41ad4a2d460627b42feaf44fae3e9c470b5cc','[\"*\"]',NULL,'2022-11-23 18:38:56','2022-11-23 18:38:56'),(35,'App\\Models\\User',8,'main','b18722012bec8d32da5a01ed7599fec0c7bc2e63bd55e23d75c51c52b09a1d4f','[\"*\"]',NULL,'2022-11-23 21:33:01','2022-11-23 21:33:01'),(36,'App\\Models\\User',8,'main','b8deacf012d2afbea9729c6f42873d1af2e052e68172aa167a31a32314a22060','[\"*\"]',NULL,'2022-11-23 21:33:19','2022-11-23 21:33:19'),(37,'App\\Models\\User',8,'main','17843f3bb8358b7cc59edf54484ed4cbe5236612885268e38961a326b4ca31bd','[\"*\"]','2022-11-24 01:27:21','2022-11-24 01:23:23','2022-11-24 01:27:21'),(38,'App\\Models\\User',8,'main','fbf99bf0f64788cc17d79c697feb4ed0d5f085a44ed05c7b2e2b2cf777d974f4','[\"*\"]',NULL,'2022-11-24 01:45:02','2022-11-24 01:45:02'),(39,'App\\Models\\User',8,'main','50945625730f6994b69d25f168a94d3477107eb117587ab4d8820fb76772597e','[\"*\"]',NULL,'2022-11-24 01:50:18','2022-11-24 01:50:18'),(40,'App\\Models\\User',8,'main','3565443e7ea98126f57ff7d5b76dc1c6e348af1173a0ba90c4124683d59d1511','[\"*\"]',NULL,'2022-11-24 01:51:38','2022-11-24 01:51:38'),(41,'App\\Models\\User',8,'main','e2c2dd0e587f95aa9d55c62a04e746345aed67ed34e3b6fef4cee0774e5d9e1f','[\"*\"]',NULL,'2022-11-24 01:54:49','2022-11-24 01:54:49'),(42,'App\\Models\\User',8,'main','475b88901b90a2b31e61ef7b8bd8e5be2d5326912c7c6b396fc60a4c74142c62','[\"*\"]',NULL,'2022-11-24 01:55:31','2022-11-24 01:55:31'),(43,'App\\Models\\User',8,'main','911c89bfdf0d83dab85e5f2e24584e77a7213334259be8291faa3047865d2f11','[\"*\"]',NULL,'2022-11-24 01:55:58','2022-11-24 01:55:58'),(44,'App\\Models\\User',8,'main','79910f6bbdc548d92cbe2371bb6868f24ef5ed980adb3e66f3ddad06422d5a61','[\"*\"]',NULL,'2022-11-24 01:56:53','2022-11-24 01:56:53'),(45,'App\\Models\\User',8,'main','ef74dba917d7f74fee9587931fd2e9a1c249c6a4a54f6c4d05e336e66024b1ea','[\"*\"]',NULL,'2022-11-24 02:05:40','2022-11-24 02:05:40'),(46,'App\\Models\\User',8,'main','858ee43fb1e289be220f0b7575c044ef125f6b6cb553176a9a1971c6f5f6ef76','[\"*\"]',NULL,'2022-11-24 02:08:03','2022-11-24 02:08:03'),(47,'App\\Models\\User',8,'main','b9e5ada0950bcb76c1ded852c0df0a8a9879463b207a95be589915f250a39402','[\"*\"]',NULL,'2022-11-24 02:08:51','2022-11-24 02:08:51'),(48,'App\\Models\\User',8,'main','86103f8733fec3ea7506c2ee8850297d6c83a7b674566dc0a402f88e8b6838cf','[\"*\"]',NULL,'2022-11-24 02:09:33','2022-11-24 02:09:33'),(49,'App\\Models\\User',8,'main','4fed75e11efeeee26ce2193beb991c38d56968d481368314752d8dd9921a0953','[\"*\"]',NULL,'2022-11-24 02:09:49','2022-11-24 02:09:49'),(50,'App\\Models\\User',8,'main','c9c0e0d4daa5f627e26c900067ef107bcaf51bf830303a6913316ede35e5b54c','[\"*\"]',NULL,'2022-11-24 02:09:52','2022-11-24 02:09:52'),(51,'App\\Models\\User',8,'main','d3b3dc80bccaaf768e131562ebb14b7dfcf9bcfbd1a1f9758775bcc8ec1a3284','[\"*\"]',NULL,'2022-11-24 02:10:12','2022-11-24 02:10:12'),(52,'App\\Models\\User',8,'main','f36a237cac578f7ae6ca36b3b5ad0cd50f7ece8ae982ff9e94981a53086a8e5a','[\"*\"]',NULL,'2022-11-24 02:19:52','2022-11-24 02:19:52'),(53,'App\\Models\\User',8,'main','b7ad94643e881a08d365ac3354f1bbaead37fe0809e9cbd3f924efba8294c16d','[\"*\"]',NULL,'2022-11-24 02:21:06','2022-11-24 02:21:06'),(54,'App\\Models\\User',8,'main','d1d33b481079b2367adcd077f0ea9cebc46047bf71b632231b8487cf73f1d417','[\"*\"]',NULL,'2022-11-24 02:36:47','2022-11-24 02:36:47'),(55,'App\\Models\\User',8,'main','f0ae1002035411f563a739b2f44a65472567d0b3b8390efb812bcab66a5914a8','[\"*\"]',NULL,'2022-11-24 09:37:24','2022-11-24 09:37:24'),(56,'App\\Models\\User',8,'main','c4731f02b9370fcda95b2f00eb15530316d46540768a4bfc04f1eb0ea24d904b','[\"*\"]',NULL,'2022-11-24 18:23:36','2022-11-24 18:23:36'),(57,'App\\Models\\User',8,'main','a465a694e4c6447798353b2a6de54dfc9d96a9b05417beeaf4bdf32c72deeb28','[\"*\"]',NULL,'2022-11-24 21:15:46','2022-11-24 21:15:46'),(58,'App\\Models\\User',8,'main','f65f0311e2e2872f9bee90c601e57881c870bc7bc5ef52efa59b6a7a22cd835a','[\"*\"]',NULL,'2022-11-25 00:33:42','2022-11-25 00:33:42'),(59,'App\\Models\\User',8,'main','691f32db8d5961f94b70ed3982037c0e5353bcdb333eaf05d6ab55f2b1a44289','[\"*\"]',NULL,'2022-11-28 21:35:31','2022-11-28 21:35:31'),(60,'App\\Models\\User',8,'main','f5272698a019d122e2a8e1978e2f806f40611bdedd9b76fe828ff0649fe7d1d3','[\"*\"]',NULL,'2022-11-29 18:12:18','2022-11-29 18:12:18'),(61,'App\\Models\\User',8,'main','2e03998469315e6fe17dcf9f584c20349bf002d2d7632e101c6ca7be3796f686','[\"*\"]',NULL,'2022-11-29 18:15:21','2022-11-29 18:15:21'),(62,'App\\Models\\User',8,'main','7484c83a92b479cd0f05edfdbb698a412d3783a4466529edb7258e83375b87f1','[\"*\"]',NULL,'2022-11-29 18:16:27','2022-11-29 18:16:27'),(63,'App\\Models\\User',8,'main','4d1b2d8fae9a5a0e553319582b372b547de32a2ead615e65760f40759c8ae16f','[\"*\"]',NULL,'2022-11-29 18:18:52','2022-11-29 18:18:52'),(64,'App\\Models\\User',8,'main','82e3f2f5ba3f8bc4e433bb36e775826feb1a02e913ef3c230a3ba2b645640339','[\"*\"]',NULL,'2022-11-29 18:26:11','2022-11-29 18:26:11'),(65,'App\\Models\\User',8,'main','01457f4f4d05dc104ed3c581615822a192e83fbe500cc5868651c58892c3aaa6','[\"*\"]',NULL,'2022-11-29 18:27:14','2022-11-29 18:27:14'),(66,'App\\Models\\User',8,'main','4e4bf5e09363b4ad9d88d1e54abc2d32c4cde6441df350f4a6547ff78ae46934','[\"*\"]',NULL,'2022-11-29 18:28:29','2022-11-29 18:28:29'),(67,'App\\Models\\User',8,'main','ffc7ed1f829c1e1845cab8499d6fad0189a933dd84f932441e131eb64dfb3ff7','[\"*\"]',NULL,'2022-11-29 18:28:33','2022-11-29 18:28:33'),(68,'App\\Models\\User',8,'main','31120f2219d960882283db6f8cce6ca758dbed4fcc66872f053cbac2afb14993','[\"*\"]',NULL,'2022-11-29 18:29:07','2022-11-29 18:29:07'),(69,'App\\Models\\User',8,'main','aa3c83f058fad39b4220c6617c1d67427bc75029c7dba5d6e1cc08b3730d3804','[\"*\"]',NULL,'2022-11-29 18:32:59','2022-11-29 18:32:59'),(70,'App\\Models\\User',8,'main','65ccede432c55f784758d356aca64ffaadc5497a76e8cb754f0ddc3ea3f37325','[\"*\"]',NULL,'2022-11-29 18:33:51','2022-11-29 18:33:51'),(71,'App\\Models\\User',8,'main','43d5275e8bbcb5b36cc05c6bc65e59cbe574c23b27de94e5cbef2efc0d6f13c9','[\"*\"]',NULL,'2022-11-29 18:36:46','2022-11-29 18:36:46'),(72,'App\\Models\\User',9,'main','a55ec71c207b847b9b1c50e266b866aadf59e689f69009f509136d909b47f7a2','[\"*\"]',NULL,'2022-12-01 07:16:59','2022-12-01 07:16:59'),(73,'App\\Models\\User',9,'main','395fb6e7763604c303fc2f1085fbfee2a85eeecd524dbd2e1e14e6bf70b52fd4','[\"*\"]',NULL,'2022-12-01 07:17:14','2022-12-01 07:17:14'),(74,'App\\Models\\User',9,'main','91ba39beb3e11a58b543f215a3f43a7e698367e1c402fbfbaaf5e2bbd448b5e7','[\"*\"]','2022-12-14 16:37:59','2022-12-14 16:11:31','2022-12-14 16:37:59'),(75,'App\\Models\\User',10,'main','a9f944386716a20f3bc7056b4c7f667486caf60e42f4c0c1d7f2197f464ed8f5','[\"*\"]',NULL,'2022-12-14 17:22:35','2022-12-14 17:22:35'),(76,'App\\Models\\User',11,'main','aa1f88e0f62fbd72b8f58bbf51176e8b8dc3a93034a9d0bbf8e14c00a846c56a','[\"*\"]',NULL,'2022-12-14 17:25:15','2022-12-14 17:25:15'),(77,'App\\Models\\User',11,'main','4eedda9bf43726c6d32ad0ade9911eadb0feec6dc8b57ddaf1865d1cbe24a13f','[\"*\"]',NULL,'2022-12-14 17:26:01','2022-12-14 17:26:01'),(78,'App\\Models\\User',12,'main','4332155ee88d50e07427c860f207c957a4f4fbfbad9918eca48230fc28ae979a','[\"*\"]',NULL,'2022-12-19 16:24:06','2022-12-19 16:24:06'),(79,'App\\Models\\User',12,'main','e54cebba854a2a418c1156c70ac6aaa5231f371aaa8b4590aa4b21d29c3e39ea','[\"*\"]',NULL,'2022-12-19 16:24:16','2022-12-19 16:24:16'),(80,'App\\Models\\User',9,'main','defddba4ad3948c8d24f8fe38529df66bb09a01a3c39c996a301e749cd935f91','[\"*\"]',NULL,'2022-12-19 16:28:59','2022-12-19 16:28:59'),(81,'App\\Models\\User',9,'main','981adf2becf5e96440cf409ad5c5c284fc7acb4ab89b248ed98ffb5182eab5f3','[\"*\"]',NULL,'2022-12-20 01:20:59','2022-12-20 01:20:59'),(82,'App\\Models\\User',9,'main','2ae20387645f9c36d746629cc407169ad20ed85b0999e515853c7f5f568bcaaf','[\"*\"]',NULL,'2022-12-21 19:34:10','2022-12-21 19:34:10'),(83,'App\\Models\\User',9,'main','bac54a702e79943ab8abd22d4b817c9cf17531922256169154357f8d08032ac5','[\"*\"]',NULL,'2022-12-22 18:08:38','2022-12-22 18:08:38'),(84,'App\\Models\\User',9,'main','77c6d95e6094b913e60ffc09e31dba15391488c61ede91dde8dea50c50397cab','[\"*\"]',NULL,'2022-12-22 20:54:41','2022-12-22 20:54:41'),(85,'App\\Models\\User',9,'main','4507e28401e174c87c8127ca62b04bce83cc73f8c368aaf333b9e8435ab6ed4b','[\"*\"]',NULL,'2022-12-23 17:53:06','2022-12-23 17:53:06'),(86,'App\\Models\\User',9,'main','7093b250c55906d5c7c7a310dde05b436d6b030b8306156308bacdad6442c40a','[\"*\"]',NULL,'2022-12-24 23:09:30','2022-12-24 23:09:30'),(87,'App\\Models\\User',9,'main','f1591977681a2faa884ae4db2184ff9c3e52e5c9fdae4f81ab201b5ae3c6ce21','[\"*\"]',NULL,'2023-01-03 07:44:54','2023-01-03 07:44:54'),(88,'App\\Models\\User',9,'main','b4199554cc1ae477959f324597d986175c30c58eaa833d99274e67da601a5c14','[\"*\"]',NULL,'2023-01-04 17:13:19','2023-01-04 17:13:19'),(89,'App\\Models\\User',9,'main','dccf652251f36731de8c8ea75150d4ecc27daa3749092a9ddeb927d9ba0972be','[\"*\"]',NULL,'2023-01-05 00:22:17','2023-01-05 00:22:17'),(90,'App\\Models\\User',9,'main','c14625b2c3ddb8f3c37d9e97b4db26a19a2271e5a21ea5b378dbcb442a1a2f80','[\"*\"]',NULL,'2023-01-05 10:28:54','2023-01-05 10:28:54'),(91,'App\\Models\\User',9,'main','7930bce781b8cfd6342c01a2d85fe83603677f94315b89c3c56381f8b01ba1de','[\"*\"]',NULL,'2023-01-06 18:43:07','2023-01-06 18:43:07'),(92,'App\\Models\\User',9,'main','3320ab35b8d7ce3fbe706d94500c63975e47f31c32b39cbb135f4e2c6d35cf0d','[\"*\"]',NULL,'2023-01-07 02:43:06','2023-01-07 02:43:06'),(93,'App\\Models\\User',9,'main','b6872aa05017cc2dbeb8f0a043e520603917a14b772bc71d74bf6cc391016dd3','[\"*\"]',NULL,'2023-01-10 04:17:25','2023-01-10 04:17:25'),(94,'App\\Models\\User',9,'main','35088947d82124d3e8055e10164daa8e4c9f78803f7e7c5674b9b4c96f9e2fa9','[\"*\"]',NULL,'2023-01-10 05:17:18','2023-01-10 05:17:18'),(95,'App\\Models\\User',9,'main','8b180674e2deeaed4f313b0c569c057a1430b5feca08c13a43f104cea31deace','[\"*\"]',NULL,'2023-01-10 05:20:58','2023-01-10 05:20:58'),(96,'App\\Models\\User',9,'main','7bf8cc4cda9ecd76221de52cfeb1829f682d6c820df695b88f112672cea4050a','[\"*\"]',NULL,'2023-01-10 23:21:49','2023-01-10 23:21:49'),(97,'App\\Models\\User',9,'main','1ac43728a15a568899887103ab36b37ff21b2a58e2f44e3681d4ad3335a92638','[\"*\"]',NULL,'2023-01-11 10:11:03','2023-01-11 10:11:03'),(98,'App\\Models\\User',9,'main','954499a3fa296b1527d3ff8dc5f51b9f597f6c91b2aa862b816bd8706b019c36','[\"*\"]',NULL,'2023-01-13 07:04:16','2023-01-13 07:04:16'),(99,'App\\Models\\User',9,'main','92f01892155952cfa2488af4c3e40bf07107a0379a7565536508276147f6a9c2','[\"*\"]',NULL,'2023-01-16 03:03:43','2023-01-16 03:03:43'),(100,'App\\Models\\User',9,'main','a4aa7208004a315072c2b28eefeee3e3e17deb4e9fbb753312f8ecfaa908d043','[\"*\"]',NULL,'2023-01-22 03:08:29','2023-01-22 03:08:29'),(101,'App\\Models\\User',9,'main','53f7bcb2a04f9b5449a43a86f88137632a204f8faafe4519a7fba5b82c9c2399','[\"*\"]',NULL,'2023-01-22 03:22:17','2023-01-22 03:22:17'),(102,'App\\Models\\User',9,'main','9c5b1b3cc50d0c1a8dc73a444a9decc673d4a6c63c62dd2448cf70ad307d8dc1','[\"*\"]',NULL,'2023-01-22 03:22:47','2023-01-22 03:22:47'),(103,'App\\Models\\User',9,'main','064c4192dcdde2a307cab28efb3b1f9e126be16cd187e20a5f12f8633c7f8925','[\"*\"]',NULL,'2023-01-22 03:27:31','2023-01-22 03:27:31'),(104,'App\\Models\\User',9,'main','59ac0c227a565408e0982ee47237cf1a52e3ef84f5b33a91b282d075b1239f0e','[\"*\"]','2023-01-28 00:37:13','2023-01-22 03:31:16','2023-01-28 00:37:13'),(105,'App\\Models\\User',9,'main','febe771efe910b93c374b489c1b7b6275885fbd516945f1184d4a4788e09f6e5','[\"*\"]','2023-01-28 02:21:53','2023-01-28 00:38:19','2023-01-28 02:21:53'),(106,'App\\Models\\User',9,'main','e1133b803e6d4581861106a493339afb0aa38725a50d5690096581eea3e9689c','[\"*\"]','2023-01-29 08:33:40','2023-01-29 05:04:26','2023-01-29 08:33:40'),(107,'App\\Models\\User',9,'main','dae8f7365eaaf2dc2f4980c843ea6c1e269f61ad0716865f8ca5f4bdc91685ab','[\"*\"]','2023-01-29 17:42:27','2023-01-29 17:42:08','2023-01-29 17:42:27'),(108,'App\\Models\\User',9,'main','a84d818179792a1b24208a773da1739f8b03ad0dbb3d1e4875ffd0ffe2835c46','[\"*\"]','2023-01-29 23:33:43','2023-01-29 23:08:16','2023-01-29 23:33:43'),(109,'App\\Models\\User',9,'main','9e16b4657b2eedffa377d168282b72f112903496c44f167b94721b95cb38a7cf','[\"*\"]','2023-01-29 23:37:34','2023-01-29 23:37:29','2023-01-29 23:37:34'),(110,'App\\Models\\User',9,'main','413c236a1d33f4c7a8375f0263576d1e7753ac05dd6ef2d5c01d5da1c7ffe76b','[\"*\"]','2023-01-30 19:24:24','2023-01-30 19:24:12','2023-01-30 19:24:24'),(111,'App\\Models\\User',9,'main','0b9fafd19dcce7e5d626dafa4bae4047c05171d85a2459c2afd9e6e47430dcb9','[\"*\"]','2023-01-30 21:25:29','2023-01-30 19:25:45','2023-01-30 21:25:29'),(112,'App\\Models\\User',9,'main','bdbb6f713397436f5cc8c31e2d167297bf0c3596ac7f17d443e75ebe8fcafcd3','[\"*\"]','2023-01-31 19:04:37','2023-01-31 04:53:30','2023-01-31 19:04:37'),(113,'App\\Models\\User',9,'main','430819be074171c8aed2da03d23b45dfae5b28b52b63aaefdf0c083e7c13bd70','[\"*\"]','2023-01-31 21:46:14','2023-01-31 10:18:55','2023-01-31 21:46:14'),(114,'App\\Models\\User',13,'main','17c0234daefb9010b2f1f3d58d9e73e7b2ea1a8c159aeb1bea1a2548687f2ddf','[\"*\"]',NULL,'2023-01-31 21:47:47','2023-01-31 21:47:47'),(115,'App\\Models\\User',13,'main','d4861363d01ceb534100897f1963ce89b3672b8832559a17ca1b0cd4e4e60412','[\"*\"]','2023-01-31 21:51:25','2023-01-31 21:47:58','2023-01-31 21:51:25'),(116,'App\\Models\\User',14,'main','68a3ac07c4def03b758a6280c3d1b743abb48b1551d6d5ea5acbd85cd051b100','[\"*\"]',NULL,'2023-01-31 21:51:52','2023-01-31 21:51:52'),(117,'App\\Models\\User',14,'main','cbce0e62d41517b44b9c9fab1bfeaffd55c88f8938188a7fcd3aa8900e213745','[\"*\"]','2023-01-31 21:52:11','2023-01-31 21:52:02','2023-01-31 21:52:11'),(118,'App\\Models\\User',9,'main','fac18343ff92ac9ed767165365f1a027c57669380ae5d33d301e4165a3e9bd69','[\"*\"]','2023-02-04 09:52:34','2023-02-01 06:02:07','2023-02-04 09:52:34'),(119,'App\\Models\\User',9,'main','b4b03d8e6fbc5e29c81269f73814eec13d02994075d08f3a951d74d763514bdb','[\"*\"]',NULL,'2023-02-01 06:06:06','2023-02-01 06:06:06'),(120,'App\\Models\\User',9,'main','1315b00ee91f98d54cf91205b1c1030ca57b9e1038795802e0de3a1a9b9b48f8','[\"*\"]',NULL,'2023-02-01 07:43:45','2023-02-01 07:43:45'),(121,'App\\Models\\User',9,'main','93708d85cc064485f8158d36a2f4ca2f600abba5239d0b553631dd2cf89bafb9','[\"*\"]','2023-02-01 08:27:12','2023-02-01 08:26:57','2023-02-01 08:27:12'),(122,'App\\Models\\User',9,'main','e290ed5c1898f7ed9e2d5666bde8c190e3a8a2b8049b0edec3e8467511369a52','[\"*\"]',NULL,'2023-02-01 08:29:16','2023-02-01 08:29:16'),(123,'App\\Models\\User',9,'main','6280844b6b7f4055d58f9ce4ef2bf5d50fa6813a65a57e2478f0b68a9bf266ff','[\"*\"]','2023-02-01 08:30:38','2023-02-01 08:30:01','2023-02-01 08:30:38'),(124,'App\\Models\\User',9,'main','85d2c0808c78582ec8df1a53b9ed806ecdb94e8b2a5a1a04d6068b4ac75b4a62','[\"*\"]','2023-02-01 19:04:40','2023-02-01 10:58:19','2023-02-01 19:04:40'),(125,'App\\Models\\User',9,'main','79163b8bc84a2aaf9544ad6aabc357bb1bcc93110dec9f185a75d60f2e1c40a7','[\"*\"]','2023-02-03 19:31:24','2023-02-02 00:47:45','2023-02-03 19:31:24'),(126,'App\\Models\\User',9,'main','0c7c3a960398079da28921db0a3759a79a548b6eb45ecbbbbe218792a32b8860','[\"*\"]',NULL,'2023-02-02 16:45:04','2023-02-02 16:45:04'),(127,'App\\Models\\User',9,'main','a9316a241625e2400172bf1af287dcb7bf2528ab79fe08df06133ee658c6ea33','[\"*\"]',NULL,'2023-02-02 16:45:15','2023-02-02 16:45:15'),(128,'App\\Models\\User',9,'main','a0a5cfa12a3099733110c39a569e6a7f3bc6e3b9ee24301cb341f49dccd51453','[\"*\"]',NULL,'2023-02-02 16:45:17','2023-02-02 16:45:17'),(129,'App\\Models\\User',9,'main','a340e68c2ab6974e1ba39361d360f16fad60a7a12f304ee437b77931728525b5','[\"*\"]',NULL,'2023-02-02 16:45:41','2023-02-02 16:45:41'),(130,'App\\Models\\User',9,'main','b6218e7a4d1beef3e171492e3c786e03ac15c37368727aa6269985d8820af724','[\"*\"]','2023-02-02 17:55:24','2023-02-02 16:45:58','2023-02-02 17:55:24'),(131,'App\\Models\\User',9,'main','2e8ecb7a98786e7fe7119c0d57fa4ab1f799acff0dd482abe974efb1041159ad','[\"*\"]',NULL,'2023-02-04 14:28:36','2023-02-04 14:28:36'),(132,'App\\Models\\User',9,'main','00a2191906cbbad3adb73870eded10927f4bd555d8e6607e8b87bf9b02365b48','[\"*\"]',NULL,'2023-02-04 14:28:45','2023-02-04 14:28:45'),(133,'App\\Models\\User',9,'main','4260c2b43bb17b7f7de3b86c08a7ec876b32c2b87875ea02ddb5e07a011e6ee9','[\"*\"]','2023-02-04 16:42:21','2023-02-04 14:29:17','2023-02-04 16:42:21'),(134,'App\\Models\\User',9,'main','3900e35d01e4e28b1d8f3ae1973442023982024051084a389676a4df05bf04ed','[\"*\"]',NULL,'2023-02-04 22:00:11','2023-02-04 22:00:11'),(135,'App\\Models\\User',9,'main','8e5790a6f15ecf71446ea6a43c6e55417d8ea4cb4c80faeb57d9831d7225a228','[\"*\"]',NULL,'2023-02-04 22:00:18','2023-02-04 22:00:18'),(136,'App\\Models\\User',9,'main','b690bb8dac30997bdadb7d2805809aeed58993344065044176087bb6ec673fb0','[\"*\"]',NULL,'2023-02-04 22:00:31','2023-02-04 22:00:31'),(137,'App\\Models\\User',9,'main','5c72356d96db40cb74eb6df82b0455309c6a52f50be527f51311b4c763290a3d','[\"*\"]',NULL,'2023-02-04 22:01:05','2023-02-04 22:01:05'),(138,'App\\Models\\User',9,'main','b106a87dc2d83fbca74bfa3464b25d7cf166931bf8c17760bf56d294a1595a24','[\"*\"]',NULL,'2023-02-04 22:01:13','2023-02-04 22:01:13'),(139,'App\\Models\\User',9,'main','bde8e98c20568221db9c8a63c416e8a712c76cfeecd2905ec0fde68aa6430a3d','[\"*\"]',NULL,'2023-02-04 22:01:21','2023-02-04 22:01:21'),(140,'App\\Models\\User',9,'main','e0ede40a3bff5f303bf396990ea0ce78b1699a8e779f946408dcc103cb342fbd','[\"*\"]',NULL,'2023-02-04 22:01:36','2023-02-04 22:01:36'),(141,'App\\Models\\User',9,'main','775a4733cb19daa9c53790860bca3a81bab23b11db81d8cf24b74a7523b79d7a','[\"*\"]',NULL,'2023-02-04 22:01:37','2023-02-04 22:01:37'),(142,'App\\Models\\User',9,'main','8697b26a9c78030d09dc607e781e9ccf885f3eb669393b1fc0a48365bcb101ce','[\"*\"]','2023-02-07 08:21:43','2023-02-04 22:01:52','2023-02-07 08:21:43'),(143,'App\\Models\\User',9,'main','ed6ff59a4cc781ebc18a5a8db2b449c5d5fff4d5c66d8a3265a66c75b2519245','[\"*\"]','2023-02-09 17:38:33','2023-02-07 09:22:16','2023-02-09 17:38:33'),(144,'App\\Models\\User',9,'main','86c4ff13614dcf2589422e418f13544988fe717576a31d3d463314a482aebda9','[\"*\"]',NULL,'2023-02-10 22:36:21','2023-02-10 22:36:21'),(145,'App\\Models\\User',9,'main','ae32c6927e4986a4783e154e9426695ed0941dae4ca912b3e8bd83752f591147','[\"*\"]',NULL,'2023-02-10 23:03:54','2023-02-10 23:03:54'),(146,'App\\Models\\User',9,'main','5c3e14fc2b22470c2f7393431d2cdc93fbbb09b2bffc347d0a424473693df8c4','[\"*\"]','2023-02-10 23:52:58','2023-02-10 23:04:04','2023-02-10 23:52:58'),(147,'App\\Models\\User',9,'main','8d8717ab5d684d527d312045a72363af511899d43980ec23968dc77885b69047','[\"*\"]','2023-02-11 06:35:48','2023-02-11 03:22:08','2023-02-11 06:35:48'),(148,'App\\Models\\User',9,'main','69dea6f13e3ee035c9af79497a7fcc62ff1466d5293ac7f281c8c2bb3fa045c5','[\"*\"]','2023-02-12 19:48:33','2023-02-11 06:44:42','2023-02-12 19:48:33'),(149,'App\\Models\\User',9,'main','cef910810576668ef03c69e5721138bb58ce19448681931577584d0841057054','[\"*\"]','2023-02-13 14:30:30','2023-02-11 19:41:36','2023-02-13 14:30:30'),(150,'App\\Models\\User',9,'main','270646fb56cb93b36247594d383698f6a8a7f3ed2c8002dfbb42d2b7a129510d','[\"*\"]','2023-02-13 18:53:46','2023-02-12 19:49:00','2023-02-13 18:53:46'),(151,'App\\Models\\User',9,'main','266a717731d0adf7eb827468b31790c135b1552bee591f8441cdb60ed545dd71','[\"*\"]',NULL,'2023-02-16 07:57:17','2023-02-16 07:57:17'),(152,'App\\Models\\User',9,'main','648e599f5d47ac6a803de917bafb56297ad5a6949db8ca51e9b2db042cbd6dab','[\"*\"]',NULL,'2023-02-16 07:57:40','2023-02-16 07:57:40'),(153,'App\\Models\\User',9,'main','0227ec1ba9c3834f85b2489df95117a39fbd4b5a3f78c3a76968fd557272732c','[\"*\"]',NULL,'2023-02-16 07:58:34','2023-02-16 07:58:34'),(154,'App\\Models\\User',9,'main','f2941a2bb2dbb5efee3c7b174957d6282455f84000a47e1b5535ad357a12925c','[\"*\"]',NULL,'2023-02-16 08:21:07','2023-02-16 08:21:07'),(155,'App\\Models\\User',9,'main','65a6458e125a87add082146d47ff2262218586af9e574ffc4b1fdff7ddf4a6b7','[\"*\"]',NULL,'2023-02-16 08:21:09','2023-02-16 08:21:09'),(156,'App\\Models\\User',9,'main','809a711cf24a865bd27b9cca935fe5f0122c1a24c68c93eb1c8b950f9b8a1d71','[\"*\"]',NULL,'2023-02-16 08:21:15','2023-02-16 08:21:15'),(157,'App\\Models\\User',9,'main','827732bec01739c2cf1b4e57745416058837d886ad50b3e870c00244edaa2de6','[\"*\"]',NULL,'2023-02-16 08:21:24','2023-02-16 08:21:24'),(158,'App\\Models\\User',9,'main','e9e85a92eadbc0f6defe4eaed059be54d3f1f5296dbbb439c9082bd0aef6df4a','[\"*\"]',NULL,'2023-02-16 08:21:41','2023-02-16 08:21:41'),(159,'App\\Models\\User',9,'main','3760e8b5f2a59be902564d4a61e1364b8f953dc127a979def7c8f95c02a4a734','[\"*\"]','2023-02-16 23:08:14','2023-02-16 22:50:46','2023-02-16 23:08:14'),(160,'App\\Models\\User',9,'main','84bfb33494f67e2038653f94562a9d9984c9fa6ac8913d6673d1687334ee34a6','[\"*\"]',NULL,'2023-02-16 23:10:21','2023-02-16 23:10:21'),(161,'App\\Models\\User',9,'main','7e55fcb9799e03834775a5c75174c49b1b8f10dcdb219a2b9ef63b023cc7850b','[\"*\"]',NULL,'2023-02-16 23:10:38','2023-02-16 23:10:38'),(162,'App\\Models\\User',9,'main','0639b4ec608d1e890468ae6984d88c9adf8ce89258f1c460ee27605c1f3d390c','[\"*\"]','2023-02-18 08:44:21','2023-02-16 23:15:10','2023-02-18 08:44:21'),(163,'App\\Models\\User',9,'main','decee302e657c95a718e55488d7c9b1d1194e713205513cd07cbe07583c70746','[\"*\"]',NULL,'2023-02-16 23:35:35','2023-02-16 23:35:35'),(164,'App\\Models\\User',9,'main','ff9bc1d386e507da8205c2c4f3ef6d5d0aba1b253f18552434d35ccb141bb08a','[\"*\"]',NULL,'2023-02-16 23:35:36','2023-02-16 23:35:36'),(165,'App\\Models\\User',9,'main','cb601b104e2ce8ac14941d3ea1a8891a705a16fe6bf4cd39a8317869121be160','[\"*\"]',NULL,'2023-02-16 23:35:48','2023-02-16 23:35:48'),(166,'App\\Models\\User',9,'main','4cf176f8494dfd4698bc5362a21aba64e92bce7a15413003841967f517dc0812','[\"*\"]','2023-02-18 21:46:47','2023-02-18 12:37:45','2023-02-18 21:46:47'),(167,'App\\Models\\User',9,'main','c6dc6c819174bed638aa2f50367dcdcf213b9297512a0ce3aa0d4d608a856871','[\"*\"]',NULL,'2023-02-18 21:48:06','2023-02-18 21:48:06'),(168,'App\\Models\\User',9,'main','7bd40040b76ecd06b2d6d3fcee5e9bea6982480f67733440eea77a25046be6dd','[\"*\"]',NULL,'2023-02-18 21:49:22','2023-02-18 21:49:22'),(169,'App\\Models\\User',9,'main','39fce2d4a9461b91020ad71ed8a06daa38a1786a51d51c87dd84f569c63e34ef','[\"*\"]',NULL,'2023-02-18 21:49:25','2023-02-18 21:49:25'),(170,'App\\Models\\User',9,'main','50ceacb980d25cc2520723e0dc008c367504f599c3c055ef7be4d7f5388cd4a5','[\"*\"]',NULL,'2023-02-18 21:49:35','2023-02-18 21:49:35'),(171,'App\\Models\\User',9,'main','df7cc3235d7f981a8565850fe37fce39978981793101c2eea6fa4db94f8fc5f6','[\"*\"]','2023-02-20 23:00:03','2023-02-18 21:58:34','2023-02-20 23:00:03'),(172,'App\\Models\\User',9,'main','abff6114defae93bd8adc07d03880d8c2aa69c4a8f9cbc6e3b0c5b4d1c649f80','[\"*\"]',NULL,'2023-02-21 06:57:46','2023-02-21 06:57:46'),(173,'App\\Models\\User',9,'main','22da1e6e861a2ad65298b42f07e1258da6d2b0b7f045cd2edf4f695a1b678ec3','[\"*\"]',NULL,'2023-02-21 06:57:49','2023-02-21 06:57:49'),(174,'App\\Models\\User',9,'main','853468f77f61446472e53aed3e93a14fbf7dd03ff8578e92d551ee993d5ba9fe','[\"*\"]','2023-02-21 16:47:58','2023-02-21 06:58:10','2023-02-21 16:47:58'),(175,'App\\Models\\User',9,'main','1210edf003a0d51c849f3155378d507075a90eb20d67cd53a5f2ce37e08c02f8','[\"*\"]','2023-02-22 22:41:30','2023-02-21 23:43:42','2023-02-22 22:41:30'),(176,'App\\Models\\User',9,'main','395c3bbf700a1b58c27a4468a6d7dddf3c5d48fc173e51f8795cebaca1a0c2c2','[\"*\"]',NULL,'2023-02-22 22:42:07','2023-02-22 22:42:07'),(177,'App\\Models\\User',9,'main','4156be3acf7f50e932f4bb9713c66d218c362641da39f8d63fe055e53ad8c247','[\"*\"]','2023-02-23 16:43:14','2023-02-22 22:42:26','2023-02-23 16:43:14'),(178,'App\\Models\\User',9,'main','7ed49afc0630167038d0357bbd4f98df5eaf234d9ebd3e78580ea1fd253dae1f','[\"*\"]','2023-02-24 00:14:39','2023-02-23 17:34:19','2023-02-24 00:14:39'),(179,'App\\Models\\User',9,'main','ce914ab1a28c16a0d43f24705658129182a9d7b0d291fca637c3455140f178af','[\"*\"]','2023-02-24 03:24:40','2023-02-24 00:14:58','2023-02-24 03:24:40'),(180,'App\\Models\\User',9,'main','a8075fd48223e5aa238db42f68e80d179bcd6683e99b65c4f2f5801384b75323','[\"*\"]','2023-02-24 06:33:12','2023-02-24 06:13:30','2023-02-24 06:33:12'),(181,'App\\Models\\User',9,'main','d42d86de0c028fe3df6f8b7a28ebab0a238e4d90b01c48726411d6ecef56f9e0','[\"*\"]',NULL,'2023-02-24 09:35:35','2023-02-24 09:35:35'),(182,'App\\Models\\User',9,'main','f2bbe915e034064fd6ba1ae0de5cf61d9c3099019843431dfee57db34f9f79ce','[\"*\"]','2023-02-26 20:20:28','2023-02-24 09:35:48','2023-02-26 20:20:28'),(183,'App\\Models\\User',9,'main','f2776c3519e56444dfadde15b21ce4ba4413e3179cddc7e0ad9dda8e5e9ccd78','[\"*\"]',NULL,'2023-02-25 23:27:07','2023-02-25 23:27:07'),(184,'App\\Models\\User',9,'main','1dc430e6a73cb5364433d19b77fc9c47e15c0a62b3fc59dadd08f934bc7900b4','[\"*\"]',NULL,'2023-02-25 23:27:10','2023-02-25 23:27:10'),(185,'App\\Models\\User',9,'main','72fa54a57dbb4f395ab61d439634dee2fdd21f52571e5aa05fee0cf8554e58cb','[\"*\"]',NULL,'2023-02-25 23:27:34','2023-02-25 23:27:34'),(186,'App\\Models\\User',9,'main','efab33f9d48b218f498445a365806ab52e1c6b47a0b3e711f5c74138d3a441b1','[\"*\"]',NULL,'2023-02-26 01:52:02','2023-02-26 01:52:02'),(187,'App\\Models\\User',9,'main','1a81c6fca587d86a13d24fda71b5767d49d2e20869b5e858dbb055197a80747e','[\"*\"]',NULL,'2023-02-26 01:52:52','2023-02-26 01:52:52'),(188,'App\\Models\\User',9,'main','f88f6b39b8de596626be4ac7706cf010e27a6c67ecfac7d538a9403a46cb7768','[\"*\"]','2023-02-26 20:42:31','2023-02-26 20:21:19','2023-02-26 20:42:31');
 /*!40000 ALTER TABLE `personal_access_tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -522,8 +620,9 @@ CREATE TABLE `proy_integrantes` (
   `dayFechaInvitacionConfirmacion` datetime DEFAULT NULL,
   `codRolIntegrante` int(11) DEFAULT NULL,
   `desCorreo` varchar(255) DEFAULT NULL,
+  `idIntegrante` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`codProyIntegrante`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -532,7 +631,7 @@ CREATE TABLE `proy_integrantes` (
 
 LOCK TABLES `proy_integrantes` WRITE;
 /*!40000 ALTER TABLE `proy_integrantes` DISABLE KEYS */;
-INSERT INTO `proy_integrantes` VALUES (1,1,9,'1',3,'2023-01-30 09:33:24',NULL,1,'juan@gmail.com'),(2,1,9,'1',3,'2023-01-30 09:33:24',NULL,2,'pedro@gmail.com');
+INSERT INTO `proy_integrantes` VALUES (5,1,9,'1',3,'2023-02-11 13:08:28',NULL,2,'juan@gmail.com',NULL),(6,1,9,'1',6,'2023-02-11 13:08:28',NULL,1,'karin@gmail.com',NULL),(7,2,9,'1',1,'2023-02-23 13:02:58',NULL,1,'karina@gmail.com',NULL),(8,2,9,'1',4,'2023-02-23 13:02:58',NULL,2,'jorge@gmail.com',NULL),(9,3,9,'1',3,'2023-02-23 15:10:36',NULL,1,'crsirina@gmail.com',NULL),(10,4,9,'1',2,'2023-02-23 20:19:05',NULL,2,'alex@gmail.com',NULL),(13,6,9,'1',2,'2023-02-24 04:18:02',NULL,1,'cristina@gmail.com',NULL),(14,6,9,'1',3,'2023-02-24 04:18:02',NULL,2,'jasmin@gmail.com',NULL),(17,7,9,'1',5,'2023-02-24 04:24:05',NULL,2,'cristina@gmail.com',11),(18,7,9,'1',4,'2023-02-24 04:24:05',NULL,1,'pierina@gmail.com',-999);
 /*!40000 ALTER TABLE `proy_integrantes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -565,7 +664,7 @@ CREATE TABLE `proy_proyecto` (
   UNIQUE KEY `XPKProy_Proyecto` (`codProyecto`) USING BTREE,
   KEY `XIF1Proy_Proyecto` (`id`) USING BTREE,
   KEY `XIF2Proy_Proyecto` (`codUbigeo`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -574,8 +673,33 @@ CREATE TABLE `proy_proyecto` (
 
 LOCK TABLES `proy_proyecto` WRITE;
 /*!40000 ALTER TABLE `proy_proyecto` DISABLE KEYS */;
-INSERT INTO `proy_proyecto` VALUES (1,'prueba',1,9,'10',12,1500.00,1,1294,'2023-01-12 00:00:00',1500.00,0.00,120.00,'Perú','PRUEBA','2023-01-30 09:33:24','juan@gmail.com, pedro@gmail.com,',0);
+INSERT INTO `proy_proyecto` VALUES (1,'proyecto1',1,9,'1',12,142.00,6,1699,'2023-02-09 00:00:00',15000.00,0.00,1500.00,'Perú','lima','2023-02-11 13:08:28','juan@gmail.com, karin@gmail.com,',1),(2,'nuevo pro',1,9,'1',12,12.00,2,934,'2023-02-03 00:00:00',5000.00,0.00,5000.00,'Perú','vila','2023-02-23 13:02:58','karina@gmail.com, jorge@gmail.com, ,',1),(3,'empresa nada',1,9,'10',12,12.00,4,1313,'2023-02-09 00:00:00',150.00,0.00,21.00,'Perú','ssds','2023-02-23 15:10:36','crsirina@gmail.com,',2),(4,'preitensd',1,9,'1',12,0.00,2,1322,'2023-02-04 00:00:00',121.00,0.00,15.00,'Perú','sd','2023-02-23 20:19:05','alex@gmail.com,',2),(5,'proyecto noche',1,9,'1',12,15.00,2,1851,'2023-02-02 00:00:00',1500.00,0.00,1400.00,'Perú','villa','2023-02-24 03:56:02','diego@gmail.com, jasmin@gmail.com,',2),(6,'prueba de noche 2',1,9,'1',12,21.00,2,1699,'2023-02-01 00:00:00',12.00,0.00,12.00,'Perú','sas','2023-02-24 04:18:02','cristina@gmail.com, jasmin@gmail.com,',0),(7,'prueba noche 3',1,9,'5',12,12.00,2,107,'2023-02-15 00:00:00',1500.00,0.00,12.00,'Perú','sd','2023-02-24 04:24:05','cristina@gmail.com, pierina@gmail.com,',0);
 /*!40000 ALTER TABLE `proy_proyecto` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `proy_proyectoconf`
+--
+
+DROP TABLE IF EXISTS `proy_proyectoconf`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `proy_proyectoconf` (
+  `codProyectoconf` bigint(20) NOT NULL AUTO_INCREMENT,
+  `codProyecto` bigint(20) NOT NULL,
+  `codTipoDiaProgramacion` int(11) NOT NULL,
+  PRIMARY KEY (`codProyectoconf`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `proy_proyectoconf`
+--
+
+LOCK TABLES `proy_proyectoconf` WRITE;
+/*!40000 ALTER TABLE `proy_proyectoconf` DISABLE KEYS */;
+INSERT INTO `proy_proyectoconf` VALUES (1,1,1),(2,2,2),(3,3,1),(4,4,1),(5,6,1),(6,7,1);
+/*!40000 ALTER TABLE `proy_proyectoconf` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -593,7 +717,8 @@ CREATE TABLE `proy_proyectoreportes` (
   `dayFechaCreacion` datetime DEFAULT NULL,
   `desUsuarioCreacion` varchar(255) DEFAULT NULL,
   `desCorreoEnvios` varchar(255) DEFAULT NULL,
-  `codfrecuenciaenvioreporte` int(11) DEFAULT NULL
+  `codfrecuenciaenvioreporte` int(11) DEFAULT NULL,
+  `flagApplyAllStatus` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -603,7 +728,7 @@ CREATE TABLE `proy_proyectoreportes` (
 
 LOCK TABLES `proy_proyectoreportes` WRITE;
 /*!40000 ALTER TABLE `proy_proyectoreportes` DISABLE KEYS */;
-INSERT INTO `proy_proyectoreportes` VALUES (72,1,1,'LV','2023-01-30 09:33:24','','',1);
+INSERT INTO `proy_proyectoreportes` VALUES (80,1,1,'LV','2023-02-11 10:19:38','','',1,NULL),(81,1,0,'LV','2023-02-11 13:08:28','','juan@gmail.com',1,NULL),(81,1,0,'LV','2023-02-11 13:08:28','','karin@gmail.com',2,NULL),(82,2,1,'LS','2023-02-23 13:02:58','','',2,NULL),(83,3,1,'LV','2023-02-23 15:10:36','','',1,NULL),(84,4,1,'LV','2023-02-23 20:19:05','','',1,NULL),(85,6,1,'LV','2023-02-24 03:59:01','','',2,NULL),(86,7,1,'LV','2023-02-24 04:23:39','','',2,NULL);
 /*!40000 ALTER TABLE `proy_proyectoreportes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -764,7 +889,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `XPKuseremailunique` (`email`) USING BTREE,
   KEY `XIF1users` (`codCargo`) USING BTREE,
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`codCargo`) REFERENCES `sec_cargo` (`codCargo`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -773,7 +898,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (4,'AB','1234567890','CD','Free','abcd@abcd.com',NULL,'$2y$10$fYcUrydJqze3tPW9b37u7OTpjcHRJQvUXfjXYMVMEEBaN9DJV/1NO',NULL,'2022-11-08 11:00:02','2022-11-08 11:00:02',NULL),(5,'peter','123123123','peter','free','peter@p.com',NULL,'$2y$10$GueBt.76Dks1GaW.WNGlSuiBMSJTR.9OKn9t6bT6w0ihyg5.hcXYq',NULL,'2022-11-11 00:18:14','2022-11-11 00:18:14',NULL),(6,'James','1234567890','David','Free','james@d.com',NULL,'$2y$10$ffdn5MwekjzF3QM8jQATlefu4/TjY0/GdSPIbrCbk0.Y3BDLYd5Yu',NULL,'2022-11-15 09:22:22','2022-11-15 09:22:22',NULL),(7,'Peter','1231231231','Fawzy','Free','peter@peter.com',NULL,'$2y$10$YixvPeyUEGgbD1Nukz6MM.KuvlLUSMzYyGBF6OSWlcIoS6.G2e.iy',NULL,'2022-11-15 18:38:00','2022-11-15 18:38:00',NULL),(8,'Daniel Johnson','1234567890','Daniel','Free','Daniel@gmail.com',NULL,'$2y$10$8s5xke.qjVoqTrdhdyZgne6mlRNGCPGZ7fR5npayZlWeyZjR6a0Jy',NULL,'2022-11-23 21:33:01','2022-11-23 21:33:01',NULL),(9,'diego','541212','castro','sdsd','diego@gmail.com',NULL,'$2y$10$eYOuZbGzbvwbQwl8/L6vh./VDlzd2i.vVU5iZjh7/i4bQAS0Fa2a6',NULL,'2022-12-01 07:16:59','2023-01-30 19:48:22',1),(10,'pedro','6456455','veremo','sodimca','pedro@gmail.com',NULL,'$2y$10$kYxEEtzFJlJ.X.vU8ZRMau92a0iGJvRnqCQz3gu7kEBI445fxSORK',NULL,'2022-12-14 17:22:35','2022-12-14 17:22:35',NULL),(11,'cristina','64841111','veremo','sodimac','cristina@gmail.com',NULL,'$2y$10$vmQBbwYxmSup.KC0gLvbYOrDMMqbHP2SDf/sB16TB7qgK2Mu2A24u',NULL,'2022-12-14 17:25:15','2022-12-14 17:25:15',2),(12,'uan','9855652','sotomayot','sodimac','juan@gmail.com',NULL,'$2y$10$RSTpc6k3.Dv.StS73.RZg.8BwHbxX30zEXQtz9wzdYhu3BzlkOyd.',NULL,'2022-12-19 16:24:06','2022-12-19 16:24:06',1);
+INSERT INTO `users` VALUES (4,'AB','1234567890','CD','Free','abcd@abcd.com',NULL,'$2y$10$fYcUrydJqze3tPW9b37u7OTpjcHRJQvUXfjXYMVMEEBaN9DJV/1NO',NULL,'2022-11-08 11:00:02','2022-11-08 11:00:02',NULL),(5,'peter','123123123','peter','free','peter@p.com',NULL,'$2y$10$GueBt.76Dks1GaW.WNGlSuiBMSJTR.9OKn9t6bT6w0ihyg5.hcXYq',NULL,'2022-11-11 00:18:14','2022-11-11 00:18:14',NULL),(6,'James','1234567890','David','Free','james@d.com',NULL,'$2y$10$ffdn5MwekjzF3QM8jQATlefu4/TjY0/GdSPIbrCbk0.Y3BDLYd5Yu',NULL,'2022-11-15 09:22:22','2022-11-15 09:22:22',NULL),(7,'Peter','1231231231','Fawzy','Free','peter@peter.com',NULL,'$2y$10$YixvPeyUEGgbD1Nukz6MM.KuvlLUSMzYyGBF6OSWlcIoS6.G2e.iy',NULL,'2022-11-15 18:38:00','2022-11-15 18:38:00',NULL),(8,'Daniel Johnson','1234567890','Daniel','Free','Daniel@gmail.com',NULL,'$2y$10$8s5xke.qjVoqTrdhdyZgne6mlRNGCPGZ7fR5npayZlWeyZjR6a0Jy',NULL,'2022-11-23 21:33:01','2022-11-23 21:33:01',NULL),(9,'diego','541212','castro','sdsd','diego@gmail.com',NULL,'$2y$10$eYOuZbGzbvwbQwl8/L6vh./VDlzd2i.vVU5iZjh7/i4bQAS0Fa2a6',NULL,'2022-12-01 07:16:59','2023-01-30 19:48:22',1),(10,'pedro','6456455','veremo','sodimca','pedro@gmail.com',NULL,'$2y$10$kYxEEtzFJlJ.X.vU8ZRMau92a0iGJvRnqCQz3gu7kEBI445fxSORK',NULL,'2022-12-14 17:22:35','2022-12-14 17:22:35',NULL),(11,'cristina','64841111','veremo','sodimac','cristina@gmail.com',NULL,'$2y$10$vmQBbwYxmSup.KC0gLvbYOrDMMqbHP2SDf/sB16TB7qgK2Mu2A24u',NULL,'2022-12-14 17:25:15','2022-12-14 17:25:15',2),(12,'uan','9855652','sotomayot','sodimac','juan@gmail.com',NULL,'$2y$10$RSTpc6k3.Dv.StS73.RZg.8BwHbxX30zEXQtz9wzdYhu3BzlkOyd.',NULL,'2022-12-19 16:24:06','2022-12-19 16:24:06',1),(13,'karin','989243232','warthon','sodimac','karin@gmail.com',NULL,'$2y$10$8gp5.ts/cnx5a8QZWXShN.wI5v0pMcKS6mgZeeu8rg59v.xbgmwku',NULL,'2023-01-31 21:47:47','2023-01-31 21:47:47',1),(14,'nada','92398232','vermos','soidmac','nada@gmail.com',NULL,'$2y$10$Z8YgkUYxfMxv1YjviDN67OtUvVPZ9sX4m19D/qli9n0Vg.8Zy9Dy6',NULL,'2023-01-31 21:51:52','2023-01-31 21:51:52',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -790,7 +915,7 @@ CREATE TABLE `util_reportes` (
   `desDirReporte` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`codUtilReportes`) USING BTREE,
   UNIQUE KEY `XPKUtil_Reportes` (`codUtilReportes`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -799,7 +924,7 @@ CREATE TABLE `util_reportes` (
 
 LOCK TABLES `util_reportes` WRITE;
 /*!40000 ALTER TABLE `util_reportes` DISABLE KEYS */;
-INSERT INTO `util_reportes` VALUES (1,'Reporte de análisis de restricciones',NULL),(5,'Reporte de análisis de restricciones',NULL),(10,'Reporte de análisis de restricciones',NULL),(11,'Reporte de avance gráfico',NULL),(12,'Reporte de análisis de restricciones',NULL),(13,'Reporte de avance gráfico',NULL),(14,'Reporte de análisis de restricciones',NULL),(15,'Reporte de avance gráfico',NULL),(16,'Reporte de análisis de restricciones',NULL),(17,'Reporte de análisis de restricciones',NULL),(18,'Reporte de avance gráfico',NULL),(19,'Reporte de análisis de restricciones',NULL),(36,'Reporte de análisis de restricciones',NULL),(37,'Reporte de análisis de restricciones',NULL),(38,'Reporte de análisis de restricciones',NULL),(39,'Reporte de avance gráfico',NULL),(40,'Reporte de análisis de restricciones',NULL),(41,'Reporte de análisis de restricciones',NULL),(42,'Reporte de análisis de restricciones',NULL),(43,'Reporte de análisis de restricciones',NULL),(44,'Reporte de análisis de restricciones',NULL),(45,'Reporte de análisis de restricciones',NULL),(46,'Reporte de análisis de restricciones',NULL),(47,'Reporte de análisis de restricciones',NULL),(48,'Reporte de análisis de restricciones',NULL),(49,'Reporte de análisis de restricciones',NULL),(50,'Reporte de análisis de restricciones',NULL),(51,'Reporte de análisis de restricciones',NULL),(52,'Reporte de análisis de restricciones',NULL),(53,'Reporte de análisis de restricciones',NULL),(54,'Reporte de análisis de restricciones',NULL),(55,'Reporte de análisis de restricciones',NULL),(56,'Reporte de análisis de restricciones',NULL),(57,'Reporte de análisis de restricciones',NULL),(58,'Reporte de análisis de restricciones',NULL),(59,'Reporte de análisis de restricciones',NULL),(60,'Reporte de análisis de restricciones',NULL),(61,'Reporte de análisis de restricciones',NULL),(62,NULL,NULL),(63,'Reporte de análisis de restricciones',NULL),(64,'Reporte de análisis de restricciones',NULL),(65,'Reporte de análisis de restricciones',NULL),(66,'Reporte de análisis de restricciones',NULL),(67,'Reporte de análisis de restricciones',NULL),(68,'Reporte de análisis de restricciones',NULL),(69,'Reporte de análisis de restricciones',NULL),(70,'Reporte de análisis de restricciones',NULL),(71,'Reporte de análisis de restricciones',NULL),(72,'Reporte de análisis de restricciones',NULL);
+INSERT INTO `util_reportes` VALUES (1,'Reporte de análisis de restricciones',NULL),(5,'Reporte de análisis de restricciones',NULL),(10,'Reporte de análisis de restricciones',NULL),(11,'Reporte de avance gráfico',NULL),(12,'Reporte de análisis de restricciones',NULL),(13,'Reporte de avance gráfico',NULL),(14,'Reporte de análisis de restricciones',NULL),(15,'Reporte de avance gráfico',NULL),(16,'Reporte de análisis de restricciones',NULL),(17,'Reporte de análisis de restricciones',NULL),(18,'Reporte de avance gráfico',NULL),(19,'Reporte de análisis de restricciones',NULL),(36,'Reporte de análisis de restricciones',NULL),(37,'Reporte de análisis de restricciones',NULL),(38,'Reporte de análisis de restricciones',NULL),(39,'Reporte de avance gráfico',NULL),(40,'Reporte de análisis de restricciones',NULL),(41,'Reporte de análisis de restricciones',NULL),(42,'Reporte de análisis de restricciones',NULL),(43,'Reporte de análisis de restricciones',NULL),(44,'Reporte de análisis de restricciones',NULL),(45,'Reporte de análisis de restricciones',NULL),(46,'Reporte de análisis de restricciones',NULL),(47,'Reporte de análisis de restricciones',NULL),(48,'Reporte de análisis de restricciones',NULL),(49,'Reporte de análisis de restricciones',NULL),(50,'Reporte de análisis de restricciones',NULL),(51,'Reporte de análisis de restricciones',NULL),(52,'Reporte de análisis de restricciones',NULL),(53,'Reporte de análisis de restricciones',NULL),(54,'Reporte de análisis de restricciones',NULL),(55,'Reporte de análisis de restricciones',NULL),(56,'Reporte de análisis de restricciones',NULL),(57,'Reporte de análisis de restricciones',NULL),(58,'Reporte de análisis de restricciones',NULL),(59,'Reporte de análisis de restricciones',NULL),(60,'Reporte de análisis de restricciones',NULL),(61,'Reporte de análisis de restricciones',NULL),(62,NULL,NULL),(63,'Reporte de análisis de restricciones',NULL),(64,'Reporte de análisis de restricciones',NULL),(65,'Reporte de análisis de restricciones',NULL),(66,'Reporte de análisis de restricciones',NULL),(67,'Reporte de análisis de restricciones',NULL),(68,'Reporte de análisis de restricciones',NULL),(69,'Reporte de análisis de restricciones',NULL),(70,'Reporte de análisis de restricciones',NULL),(71,'Reporte de análisis de restricciones',NULL),(72,'Reporte de análisis de restricciones',NULL),(73,'Reporte de análisis de restricciones',NULL),(74,'Reporte de análisis de restricciones',NULL),(75,'Reporte de análisis de restricciones',NULL),(76,'Reporte de análisis de restricciones',NULL),(77,'Reporte de análisis de restricciones',NULL),(78,'Reporte de avance gráfico',NULL),(79,'Reporte de análisis de restricciones',NULL),(80,'Reporte de análisis de restricciones',NULL),(81,'Reporte de análisis de restricciones',NULL),(82,'Reporte de análisis de restricciones',NULL),(83,'Reporte de análisis de restricciones',NULL),(84,'Reporte de análisis de restricciones',NULL),(85,'Reporte de análisis de restricciones',NULL),(86,'Reporte de análisis de restricciones',NULL);
 /*!40000 ALTER TABLE `util_reportes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -816,4 +941,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-01-31  9:29:45
+-- Dump completed on 2023-02-26 10:46:01

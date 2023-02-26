@@ -16,7 +16,8 @@ class Restriction extends Model
         'desUsuarioCreacion',
         'indNoRetrasados',
         'indRetrasados',
-        'codAnaRes'
+        'codAnaRes',
+        'desColOcultas'
     ];
 
     protected $table      = 'anares_analisisrestricciones';

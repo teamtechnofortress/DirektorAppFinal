@@ -114,4 +114,14 @@ class AuthController extends Controller
         return $res;
     }
 
+
+    public function get_search_person(Request $request){
+        // $data = $request->validate([
+        //     'buscar' => 'required|string'
+        // ]);
+        $buscar_mail  = trim($request['buscar']);
+        return $buscar_mail == '' ? array() :  User::select("users.id as id", "users.email as email")->where('email',$buscar_mail)->orWhere('email','like',"%{$buscar_mail}%")->get();
+
+    }
+
 }

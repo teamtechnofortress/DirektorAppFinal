@@ -24,6 +24,7 @@ export default {
   name: "project-table-row-component",
   props: {
     row: Object,
+    index: Number,
   },
   methods: {
     handleClick: function () {

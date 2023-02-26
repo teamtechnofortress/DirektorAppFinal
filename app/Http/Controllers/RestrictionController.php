@@ -88,13 +88,42 @@ class RestrictionController extends Controller
      return $data;
 
     }
+
+    public function upd_numOrden(Request $request) {
+        //$restrictionid = Restriction::where('codProyecto', $request['codProyecto'])->get('codAnaRes');
+        $enviar =  array();
+        $enviar["mensaje"] = "";
+        $enviar["estado"]  = false;
+
+        try {
+
+            foreach($request['data'] as $info) {
+
+                $resultado1 = PhaseActividad::where('codProyecto',(int)$request['codProyecto'])
+                ->where('codAnaResActividad', $info['codAnaResActividad'])
+                ->update([
+                    'numOrden' =>  $info['index']
+                ]);
+
+            }
+
+            $enviar["estado"]  = true;
+
+        } catch (\Throwable $th) {
+            $enviar["mensaje"] = "Tenemos errores y no se puede actualizar";
+        }
+
+     return $enviar;
+
+    }
+
     public function update_state(Request $request) {
         //$restrictionid = Restriction::where('codProyecto', $request['codProyecto'])->get('codAnaRes');
         $enviar =  array();
         $enviar["mensaje"] = "";
         $enviar["estado"]  = false;
 
-        // try {
+        try {
 
             $resultado = Restriction::where('codProyecto',(int)$request['codProyecto'])->update([
                 'codEstado' => $request['state']
@@ -102,9 +131,30 @@ class RestrictionController extends Controller
 
             $enviar["estado"]  = true;
 
-        // } catch (\Throwable $th) {
-        //     $enviar["mensaje"] = "Tenemos errores y no se puede actualizar";
-        // }
+        } catch (\Throwable $th) {
+            $enviar["mensaje"] = "Tenemos errores y no se puede actualizar";
+        }
+
+     return $enviar;
+
+    }
+    public function update_hidden(Request $request) {
+        //$restrictionid = Restriction::where('codProyecto', $request['codProyecto'])->get('codAnaRes');
+        $enviar =  array();
+        $enviar["mensaje"] = "";
+        $enviar["estado"]  = false;
+
+        try {
+
+            $resultado = Restriction::where('codProyecto',(int)$request['codProyecto'])->update([
+                'desColOcultas' => trim($request['hidecolumns']) == "" ? " " : $request['hidecolumns']
+            ]);
+
+            $enviar["estado"]  = true;
+
+        } catch (\Throwable $th) {
+            $enviar["mensaje"] = "Tenemos errores y no se puede actualizar";
+        }
 
      return $enviar;
 
@@ -216,6 +266,7 @@ class RestrictionController extends Controller
         // $data = json_decode($request);
         $enviar = array();
         $enviar["flag"]     = 0;
+        $enviar["inserciones"]     = array();
         $enviar["mensaje"]  = "";
         // print_r($request);
 
@@ -232,7 +283,7 @@ class RestrictionController extends Controller
                     $resultado = "";
                     $tiporesultado = "";
 
-                    if($value['codAnaResActividad'] != -999){
+                    if($value['codAnaResActividad'] > 0){
 
                         $resultado = PhaseActividad::where('codAnaResActividad',(int)$value['codAnaResActividad'])->update([
                             'codTipoRestriccion' => $value['codTipoRestriccion'],
@@ -242,13 +293,15 @@ class RestrictionController extends Controller
                             'codEstadoActividad'     => $value['codEstadoActividad'],
                             'dayFechaRequerida'      => ($fecha == 'null' || $fecha == '') ? null : $fecha,
                             'dayFechaConciliada'     => ($fechac == 'null' || $fechac == '') ? null : $fechac,
+                            // 'numOrden'               => $value['numOrden']
                         ]);
+
                         $tiporesultado = "upd";
 
                     }else{
 
                         $codAnaRes = Restriction::where('codProyecto', $request['projectId'])->get('codAnaRes');
-                        $resultado = PhaseActividad::create([
+                        $resultado = PhaseActividad::insertGetId([
                             'codTipoRestriccion' => $value['codTipoRestriccion'],
                             'desActividad'       => (string)$value['desActividad'],
                             'desRestriccion'     => (string)$value['desRestriccion'],
@@ -260,19 +313,23 @@ class RestrictionController extends Controller
                             'codAnaRes'     => $codAnaRes[0]['codAnaRes'],
                             'codAnaResFase' => $value['codAnaResFase'],
                             'codAnaResFrente' => $value['codAnaResFrente'],
-                            'codUsuarioSolicitante' => $request['userId']
+                            'codUsuarioSolicitante' => $request['userId'],
+                            'numOrden'              => $value['idrestriccion'] + 0.01
                         ]);
                         $tiporesultado = "ins";
 
-                    }
+                        $datos                    = array();
+                        $datos['idPivote']        = $value['codAnaResActividad'];
+                        $datos["idReal"]          = $resultado;
+                        $enviar["inserciones"][]  = $datos;
 
-                    $enviar["updateResult"] = $resultado;
-                    $enviar["typeResult"]   = $tiporesultado;
-                    $enviar["mensaje"]      = "Registros Actualizados !";
-                    $enviar["flag"]         =  1;
+                    }
 
 
             }
+
+            $enviar["flag"]                   =  1;
+            $enviar["mensaje"]                = "Registros Actualizados !";
 
 
         } catch (Throwable $e) {
@@ -312,12 +369,12 @@ class RestrictionController extends Controller
 
         $enviar      = array();
         $anaresdata  = [];
-
+        $conteo      = 0;
         foreach($frontdata as $eachdata) {
             $dataFrente = [
-                'codFrente'     => $eachdata['codAnaResFrente'],
+                'codFrente'   => $eachdata['codAnaResFrente'],
                 'desFrente'   => $eachdata['desAnaResFrente'],
-                'isOpen' => true,
+                'isOpen'      => $conteo == 0 ? true : false,
                 'listaFase'   => [],
             ];
 
@@ -343,9 +400,10 @@ class RestrictionController extends Controller
                  ->leftJoin('conf_estado', function($join){
                     $join->on('anares_actividad.codEstadoActividad', '=', 'conf_estado.codEstado');
                  })
-
+                ->where('conf_estado.desModulo','=',  'ANARES')
                 ->where('anares_actividad.codAnaResFase','=',  $sevdata['codAnaResFase'])
                 ->where('anares_actividad.codAnaResFrente','=', $eachdata['codAnaResFrente'])
+                ->orderBy('anares_actividad.numOrden', 'ASC')
                 ->get();
                     foreach($Activedata as $data) {
                         $restricciones = [
@@ -354,13 +412,14 @@ class RestrictionController extends Controller
                             'desRestriccion'     => $data['desRestriccion'],
                             'codTipoRestriccion' => $data['codTipoRestriccion'],
                             'desTipoRestriccion' => $data['desTipoRestriccion'],
-                            'dayFechaRequerida'     => $data['dayFechaRequerida'] == null ? '' : $data['dayFechaRequerida'],
-                            'dayFechaConciliada'    => $data['dayFechaConciliada'] == null ? '' : $data['dayFechaConciliada'],
+                            'dayFechaRequerida'     => $data['dayFechaRequerida'] == null ? '' : date("Y-m-d", strtotime($data['dayFechaRequerida'])),  //$data['dayFechaRequerida'] == null ? '' : $data['dayFechaRequerida'],
+                            'dayFechaConciliada'    => $data['dayFechaConciliada'] == null ? '' : date("Y-m-d", strtotime($data['dayFechaConciliada'])),  //$data['dayFechaConciliada'] == null ? '' : $data['dayFechaConciliada'],
                             'idUsuarioResponsable'  => $data['idUsuarioResponsable'],
                             'desUsuarioResponsable' => $data['desUsuarioResponsable'],
                             'codEstadoActividad' => $data['codEstadoActividad'],
                             'desEstadoActividad' => $data['desEstadoActividad'],
                             'desAreaResponsable' => $data['desArea'],
+                            'numOrden'           => $data['numOrden'],
                             'isEnabled'          => false,
                             'isupdate'           => false
                             // 'applicant' => "Lizeth Marzano",
@@ -370,6 +429,7 @@ class RestrictionController extends Controller
                 array_push($dataFrente['listaFase'], $dataFase);
             }
             array_push($anaresdata, $dataFrente);
+            $conteo++;
         }
 
         $tipoRestricciones = Ana_TipoRestricciones::All();
@@ -389,6 +449,7 @@ class RestrictionController extends Controller
         $enviar['areaIntegrante']    = $areaIntegrante;
         $enviar['tipoRestricciones'] = $tipoRestricciones;
         $enviar['restricciones']     = $anaresdata;
+        $enviar['columnasOcultas']   = $restriction[0]['desColOcultas'];
 
 
 
@@ -474,6 +535,7 @@ class RestrictionController extends Controller
             // $consulta2 = $consulta2->codAnaResActividad;
             $consulta        = PhaseActividad::find($request['codAnaResActividad'])->replicate();
             $arrayconsulta   = $consulta->toArray();
+            $arrayconsulta['numOrden'] =  $arrayconsulta['numOrden'] + 0.001;
             $newCreatedModel = PhaseActividad::create($arrayconsulta);
             // $newID      = $consulta->id;
 

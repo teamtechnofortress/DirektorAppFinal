@@ -1,5 +1,5 @@
 <template>
-  <tr @click="visualizar">
+  <tr >
     <td class="absolute left-0 mt-2">
       <button class="bg-[#DCE4F9] w-6 h-6 rounded-md justify-center flex items-center" @click="handleClick('modal')"
         v-click-outside="hide">
@@ -102,6 +102,7 @@
 </template>
 
 <script>
+import draggable from "vuedraggable";
 import ClickOutside from "vue-click-outside";
 import TableTooltip from "./TableTooltip.vue";
 import SelectOption from "./SelectOption.vue";
@@ -112,7 +113,8 @@ export default {
   name: "custome-table-row",
   components: {
     TableTooltip,
-    SelectOption
+    SelectOption,
+    draggable
   },
   props: {
     statusRestriction:Boolean,
@@ -273,21 +275,13 @@ export default {
 
     updateRow: function (updRow) {
 
-      // this.restriction_row.isEnabled       = 1
-      // let enviar = {
-      //       frente: this.frontId,
-      //       fase  : this.phaseId,
-      //       restriccion : this.restriction_row.codAnaResActividad,
-      //       data  : updRow
-      //   }
       let enviar = {}
       this.$emit('updateRow', enviar);
 
-
     },
-    visualizar() {
-          console.log(this.statusRestriction)
-    },
+    // visualizar() {
+    //       console.log(this.statusRestriction)
+    // },
 
     verificarCambio(data) {
 
@@ -348,9 +342,6 @@ export default {
   },
   computed:{
 
-    // validarEstado: function() {
-    //   return this.statusRestriction === true ? false : true
-    // }
 
   },
   mounted: function () {

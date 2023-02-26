@@ -332,6 +332,7 @@ export default {
       sessionStorage.setItem('constraintid', payload.id)
       sessionStorage.setItem('constraintNameProy', payload.nameProy)
       // console.log(payload)
+      this.$store.state.sidebar = false
       this.$router.push({
         name: 'add_restrictions'
       })

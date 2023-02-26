@@ -50,9 +50,9 @@
               v-if="phaseOpen"
             />
           </div>
-          <span class="mt-8 text-xs leading-5">
+          <!-- <span class="mt-8 text-xs leading-5">
             *Al eliminar un frente, se eliminarán las fases correspondientes
-          </span>
+          </span> -->
         </div>
       </div>
 
@@ -128,12 +128,13 @@ export default {
       return options;
     },
     getPhaseOption: function() {
-      const options = [
-        {
-          value: '-999',
-          name: 'Todo',
-        }
-      ];
+      // const options = [
+      //   {
+      //     value: '-999',
+      //     name: 'Todo',
+      //   }
+      // ];
+      const options = []
       this.rows.map(row => {
         if (row.codFrente === this.frontId) {
           row.listaFase.map(elem => {

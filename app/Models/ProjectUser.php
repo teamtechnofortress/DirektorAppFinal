@@ -18,7 +18,8 @@ class ProjectUser extends Model
         'dayFechaInvitationConfirm',
         'codRolIntegrante',
         'codProyIntegrante',
-        'desCorreo'
+        'desCorreo',
+        'idIntegrante'
     ];
 
     protected $table = 'proy_integrantes';

@@ -43,6 +43,8 @@ Route::post('/get_projectreport', [ProjectController::class, 'get_projectreport'
 Route::post('/get_projectuser', [ProjectController::class, 'get_projectuser']);
 Route::post('/update_restriction_member', [RestrictionController::class, 'update_member']);
 Route::post('/update_restriction_state', [RestrictionController::class, 'update_state']);
+Route::post('/update_hidden_columns', [RestrictionController::class, 'update_hidden']);
+
 Route::post('/add_front', [RestrictionController::class, 'add_front']);
 Route::post('/add_phase', [RestrictionController::class, 'add_phase']);
 Route::post('/add_Actividad', [RestrictionController::class, 'add_Actividad']);
@@ -62,11 +64,13 @@ Route::get('/get_areaintegrante', [\App\Http\Controllers\UtilsController::class,
 Route::get('/get_proyrolintegrante', [\App\Http\Controllers\UtilsController::class, 'get_proyrolintegrante']);
 Route::get('/get_utilitarios_proyecto', [\App\Http\Controllers\UtilsController::class, 'get_utilitarios_proyecto']);
 
+Route::get('/get_programmingdaytypes', [\App\Http\Controllers\ConfController::class, 'get_programmingdaytypes']);
 
 Route::post('/get_buscar', [\App\Http\Controllers\UtilsController::class, 'get_search_empresa']);
 Route::post('/set_new_empresa', [\App\Http\Controllers\UtilsController::class, 'set_new_empresa']);
 Route::post('/get_data_restricciones', [RestrictionController::class, 'get_data_restricciones']);
 Route::post('/upd_restricciones', [RestrictionController::class, 'upd_restricciones']);
+Route::post('/upd_numOrden', [RestrictionController::class, 'upd_numOrden']);
 
 
 Route::post('/get_restrictionsMember', [RestrictionController::class, 'get_restrictionsMember']);
@@ -74,3 +78,9 @@ Route::post('/get_estado', [RestrictionController::class, 'get_estado']);
 
 
 
+Route::post('/get_proy_applicant', [ProjectController::class, 'get_proy_applicant']);
+Route::post('/get_notification', [ProjectController::class, 'get_notification']);
+Route::post('/update_cod_notification', [ProjectController::class, 'update_cod_notification']);
+Route::post('/register_notification', [ProjectController::class, 'register_notification']);
+
+Route::post('/get_search_person', [\App\Http\Controllers\AuthController::class, 'get_search_person']);

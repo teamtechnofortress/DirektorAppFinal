@@ -5,7 +5,9 @@ import axiosClient from "../axios";
 const store = createStore({
   state: {
     hint: 1,
+    sidebar : false,
     menu: false,
+    pivotID : -989,
     count: 1,
     reportstate: false,
     codPhaseTemp:0,
@@ -50,7 +52,6 @@ const store = createStore({
         }
       ]
     }],
-
     restriction_rows: [
       {
         id: 1,
@@ -83,8 +84,6 @@ const store = createStore({
         ],
       },
     ],
-
-//  get restriction_rows id ->
     user: {
       data: {},
       name:"",
@@ -117,9 +116,7 @@ const store = createStore({
       "codUbigeo":2,
       "desUbigeo":""
     },
-  ]
-
-    ,
+    ],
     moneda:[],
     areaintegrante:[],
     rolintegrante:[],
@@ -136,7 +133,11 @@ const store = createStore({
       }
     },
     Restrictionlist:[],
-    Restrictionlist_P:[]
+    Restrictionlist_P:[],
+    /* lista tipo dia programacion - programming day type list */
+    programmingDayTypes: [],
+    notifications: [],
+    hiddenCols:[]
   },
   getters: {
 
@@ -174,13 +175,88 @@ const store = createStore({
     getWhiteprojectRows: (state) => {
       return state.whiteproject_rows;
     },
-    hideCols: (state) => (payload) => {
-      const row = state.whiteproject_rows.find((row) => row.id === payload.id);
-      if (typeof row === "undefined") return [];
-      const item = row.info.find((item) => item.id === payload.phaseId);
-      if (typeof item === "undefined") return [];
-      return item.hideCols;
+    // hideCols: (state) => (payload) => {
+    //   const row = state.whiteproject_rows.find((row) => row.id === payload.id);
+    //   if (typeof row === "undefined") return [];
+    //   const item = row.info.find((item) => item.id === payload.phaseId);
+    //   if (typeof item === "undefined") return [];
+    //   return item.hideCols;
+    // },
+    reportstate: state => {
+      return state.reportstate
     },
+    proDay: state => {
+      let currentObj;
+      if (state.currentprojectreport[0]) {
+        currentObj = state.programmingDayTypes.find(
+          obj => obj.value === state.currentprojectreport[0].proDayCode
+        );
+      }
+      return currentObj ? currentObj.name : '';
+    },
+    getResponsibleRows: state => payload => {
+      return state.whiteproject_rows.map((row) => {
+          return {
+              ...row, listaFase: row.listaFase.map((fase) => {
+                  return {
+                      ...fase, listaRestricciones: fase.listaRestricciones.filter(restriction =>
+                          restriction.idUsuarioResponsable === payload.value
+                      )
+                  }
+              })
+          };
+
+      });
+    },
+    getApplicantRows: state => payload => {
+      let applicantId = sessionStorage.getItem('Id');
+      return state.whiteproject_rows.map((row) => {
+          return {
+              ...row, listaFase: row.listaFase.map((fase) => {
+                  return {
+                      ...fase, listaRestricciones: fase.listaRestricciones.filter(restriction =>
+                          restriction.codUsuarioSolicitante === applicantId
+                      )
+                  }
+              })
+          };
+
+      });
+    },
+    getExpirationRows: state => payload => {
+      let res = state.whiteproject_rows.map((row) => {
+          return {
+              ...row, listaFase: row.listaFase.map((fase) => {
+                  return {
+                      ...fase, listaRestricciones: fase.listaRestricciones.filter(restriction =>
+                          (restriction.codEstadoActividad !== state.anaEstado.find(estado => estado.desEstado === 'Completado').codEstado)
+                          && (new Date(restriction.dayFechaRequerida) < new Date())
+                      )
+                  }
+              })
+          };
+
+      });
+
+      return res;
+    },
+    getResTypeRows: state => payload => {
+      console.log(">>> entrando a filtrar")
+      console.log(payload)
+      return state.whiteproject_rows.map((row) => {
+          return {
+              ...row, listaFase: row.listaFase.map((fase) => {
+                  return {
+                      ...fase, listaRestricciones: fase.listaRestricciones.filter(restriction =>
+                          restriction.codTipoRestriccion === payload.value
+                      )
+                  }
+              })
+          };
+
+      });
+    },
+
   },
   actions: {
     cleanListRestrictions(){
@@ -301,6 +377,14 @@ const store = createStore({
         return data
       })
     },
+    register_notification({commit, state}, payload) {
+      let p = {id: sessionStorage.getItem('Id'), date: payload.date, email: state.user.data.email};
+      console.log(p);
+      return axiosClient.post('/register_notification', p).then(res => {
+          console.log(res.data);
+          return res.data;
+      })
+    },
     edit_project({commit}, newprojectData) {
       newprojectData.id = sessionStorage.getItem('Id');
       return axiosClient.post('/edit_project', newprojectData)
@@ -312,6 +396,14 @@ const store = createStore({
     get_buscar({commit}, buscar ) {
       // newprojectData.id = sessionStorage.getItem('Id');
       return axiosClient.post('/get_buscar', buscar)
+      .then(res => {
+        console.log(res.data)
+        return res.data
+      })
+    },
+    get_buscar_usuarios({commit}, buscar ) {
+      // newprojectData.id = sessionStorage.getItem('Id');
+      return axiosClient.post('/get_search_person', buscar)
       .then(res => {
         console.log(res.data)
         return res.data
@@ -396,6 +488,19 @@ const store = createStore({
       // arreglo.push(restriction_row)
 
       return axiosClient.post('/upd_restricciones', restriction_row)
+    },
+    update_numOrden({commit}, data) {
+
+      let restriction_row = {
+        "codigo"    :  1,
+        // "userId"    : sessionStorage.getItem('Id'),
+        "codProyecto" : sessionStorage.getItem('constraintid'),
+        "data"   :[]
+      }
+      restriction_row.data = data
+      // arreglo.push(restriction_row)
+
+      return axiosClient.post('/upd_numOrden', restriction_row)
     },
     update_restriction_member({commit}, restriction) {
       const updateRes = {
@@ -509,6 +614,12 @@ const store = createStore({
         commit('setAnaResDataMembers', res.data.integrantesAnaReS)
         commit('setEstado', res.data.estados)
         commit('setEstadoRestriccion', res.data.estadoRestriccion)
+        if (!(res.data.columnasOcultas == null || res.data.columnasOcultas == '')){
+
+          commit('setColOcultas', res.data.columnasOcultas)
+
+        }
+
       })
     },
     get_restriccionesMember({commit}){
@@ -541,6 +652,15 @@ const store = createStore({
         commit('deleteFront', data)
       })
     },
+    update_hidden_columns({commit}, data){
+      //const anaresdata = { id: sessionStorage.getItem('constraintid') }
+      const changeData = {
+        codProyecto : sessionStorage.getItem('constraintid'),
+        hidecolumns : data.hideCols.toString()
+      }
+
+      return axiosClient.post('update_hidden_columns', changeData);
+    },
     get_Restriction_P({commit}){
       return axiosClient.get('get_restriction_p')
       .then(res => {
@@ -554,7 +674,50 @@ const store = createStore({
         commit('setAreaIntegrante', res.data)
 
       })
+    },
+    /* Action to get tipos dia programacion */
+    get_programmingdaytypes ({ commit }) {
+      return axiosClient.get('get_programmingdaytypes').then(res => {
+        commit('setProgrammingDayTypes', res.data)
+      })
+    },
+
+    /* Action to get applicants(solicitante) of the current project */
+    get_proy_applicant({commit}, payload) {
+      return axiosClient.post('get_proy_applicant', payload).then(res => {
+          return res.data;
+      });
+  },
+
+
+    get_resprojectuser({commit}, payload) {
+      return axiosClient
+          .post(
+              '/get_projectuser',
+              {projectId: payload.projectId},
+              {params: {responsible: payload.responsible}}
+          )
+          .then(res => {
+              console.log(res.data)
+              return res.data
+          })
+    },
+
+    get_notification({commit, state}) {
+      let id = sessionStorage.getItem('Id');
+      return axiosClient.post('get_notification', {id: id}).then(res => {
+          commit('setNotification', res.data);
+          return res.data;
+      })
+  },
+    update_cod_notification({commit, state}, payload) {
+        let cod_notification_usuario = payload.codNotificacionUsuario;
+        return axiosClient.post('update_cod_notification', {cod_notification_usuario: cod_notification_usuario}).then(res => {
+            return res.data;
+        })
     }
+
+
   },
   mutations: {
 
@@ -594,34 +757,27 @@ const store = createStore({
       }
       users.splice(ind, 1);
     },
-    setFilterColumn(state, payload) {
-      var tempAry = ['date_required', 'responsible', 'responsible_area', 'condition', 'applicant'];
-      var ind = tempAry.indexOf(payload.filterId);
-      if (ind > -1) {
-        tempAry.splice(ind, 1);
-        const rows = state.whiteproject_rows;
-        for (var i = 0; i < rows.length; i ++) {
-          for (var j = 0; j < rows[i].info.length; j ++) {
-            // console.log(rows[i].info[j])
-            rows[i].info[j]['hideCols'] = tempAry;
-          }
-        }
-      }
-    },
+    // setFilterColumn(state, payload) {
+    //   var tempAry = ['date_required', 'responsible', 'responsible_area', 'condition', 'applicant'];
+    //   var ind = tempAry.indexOf(payload.filterId);
+    //   if (ind > -1) {
+    //     tempAry.splice(ind, 1);
+    //     const rows = state.whiteproject_rows;
+    //     for (var i = 0; i < rows.length; i ++) {
+    //       for (var j = 0; j < rows[i].info.length; j ++) {
+    //         // console.log(rows[i].info[j])
+    //         rows[i].info[j]['hideCols'] = tempAry;
+    //       }
+    //     }
+    //   }
+    // },
     setHideCols(state, payload) {
       state.whiteproject_rows
         .find((row) => row.id === payload.frontId)
         .info.find((item) => item.id === payload.phaseId).hideCols =
         payload.hideCols;
     },
-    // updFrente(state, payload){
 
-    // const row   = state.whiteproject_rows.find((row) => row.codFrente === payload.frontId);
-    // if (row.length > 0){
-    //   row['codFrente'] = payload.frontIdReal
-    // }
-
-    // },
     updPhase(state, payload) {
      let frente     = payload.frontId
      let faseTemp   = state.codPhaseTemp
@@ -664,28 +820,37 @@ const store = createStore({
           codFase : codFaseTemp,
           insertar: 1,
           desFase : payload.phaseName,
-          // notDelayed: 0,
-          // delayed: 0,
-          listaRestricciones: [
-            {
-              codAnaResActividad: -999,
-              codEstadoActividad: 1,
-              codTipoRestriccion: "",
-              dayFechaConciliada: "",
-              dayFechaRequerida: "",
-              desActividad: "",
-              desAreaResponsable:"",
-              desEstadoActividad:1,
-              desRestriccion:"",
-              desTipoRestriccion:"",
-              desUsuarioResponsable:"",
-              idUsuarioResponsable:id,
-              isEnabled:false,
-              isupdate:false
-            },
-          ],
+          listaRestricciones: [],
           hideCols: [],
         };
+
+        let newRows = []
+        for (var i = 0; i < payload.cantNew; i ++) {
+
+          let temp =   {
+            codAnaResActividad: state.pivotID,
+            codEstadoActividad: 1,
+            codTipoRestriccion: "",
+            dayFechaConciliada: "",
+            dayFechaRequerida: "",
+            desActividad: "",
+            desAreaResponsable:"",
+            desEstadoActividad:1,
+            desRestriccion:"",
+            desTipoRestriccion:"",
+            desUsuarioResponsable:"",
+            idUsuarioResponsable:"",
+            isEnabled:false,
+            isupdate:false,
+            numOrden:0
+          }
+
+          newRows.push(temp)
+          state.pivotID = state.pivotID + 1
+
+        }
+
+        temp.listaRestricciones = newRows
         row.listaFase.push(temp);
 
       }
@@ -705,41 +870,83 @@ const store = createStore({
     addScrollTableRow(state, payload) {
       let cantNew = payload.exercise
       let id      = sessionStorage.getItem('Id')
-      console.log(state.whiteproject_rows)
+      let updRow   = []
+      let updRow2  = []
+      const row   = state.whiteproject_rows.find((row) => row.codFrente === payload.frontId).listaFase.find((item) => item.codFase === payload.phaseId);
+      updRow      = row.listaRestricciones
+      row.listaRestricciones = []
 
-      // const nowdate = new Date();
-      // const month = nowdate.getMonth()/1+1;
 
-      // const savedate = nowdate.getFullYear()+'-'+month+'-'+nowdate.getDate()+
-      // ' '+ nowdate.getHours()+':'+nowdate.getMinutes()+':'+nowdate.getSeconds();
+      // let conteo = 0
+      updRow.forEach(function (item, key, mapObj) {
+        row.listaRestricciones.push(item)
+        if(item.codAnaResActividad == payload.restID){
 
-      const row = state.whiteproject_rows.find((row) => row.codFrente === payload.frontId).listaFase.find((item) => item.codFase === payload.phaseId);
+          for (var i = 0; i < cantNew; i ++) {
 
-      for (var i = 0; i < cantNew; i ++) {
+              let temp =   {
+                codAnaResActividad: state.pivotID,
+                codEstadoActividad: 1,
+                codTipoRestriccion: "",
+                dayFechaConciliada: "",
+                dayFechaRequerida: "",
+                desActividad: "",
+                desAreaResponsable:"",
+                desEstadoActividad:1,
+                desRestriccion:"",
+                desTipoRestriccion:"",
+                desUsuarioResponsable:"",
+                idUsuarioResponsable:"",
+                isEnabled:false,
+                isupdate:false,
+                numOrden:0
+              }
 
-        const temp =   {
-          codAnaResActividad: -999,
-          codEstadoActividad: 1,
-          codTipoRestriccion: "",
-          dayFechaConciliada: "",
-          dayFechaRequerida: "",
-          desActividad: "",
-          desAreaResponsable:"",
-          desEstadoActividad:1,
-          desRestriccion:"",
-          desTipoRestriccion:"",
-          desUsuarioResponsable:"",
-          idUsuarioResponsable:id,
-          isEnabled:false,
-          isupdate:false
+              row.listaRestricciones.push(temp)
+              state.pivotID = state.pivotID + 1
+
+          }
+
         }
 
-        row.listaRestricciones.push(temp);
+        // conteo++;
+      });
 
-      }
+
+
+      // updRow2.push(temp)
+      // row.listaRestricciones  = updRow2
+      // updRow.push(temp);
+      // row.listaRestricciones = updRow
+
+      // for (var i = 0; i < cantNew; i ++) {
+
+      //   const temp =   {
+      //     codAnaResActividad: -999,
+      //     codEstadoActividad: 1,
+      //     codTipoRestriccion: "",
+      //     dayFechaConciliada: "",
+      //     dayFechaRequerida: "",
+      //     desActividad: "",
+      //     desAreaResponsable:"",
+      //     desEstadoActividad:1,
+      //     desRestriccion:"",
+      //     desTipoRestriccion:"",
+      //     desUsuarioResponsable:"",
+      //     idUsuarioResponsable:id,
+      //     isEnabled:false,
+      //     isupdate:false,
+      //     numOrden:0
+      //   }
+
+      //   row.listaRestricciones.push(temp);
+
+      // }
 
     },
     delScrollTableRow(state, payload) {
+
+      console.log(state.whiteproject_rows)
       const rows = state.whiteproject_rows.find((row) => row.codFrente === payload.frontId).listaFase.find((item) => item.codFase === payload.phaseId).listaRestricciones;
 
       var ind = '';
@@ -774,6 +981,7 @@ const store = createStore({
             desTipoRestriccion: rows[i]['desTipoRestriccion'],
             desUsuarioResponsable: rows[i]['desUsuarioResponsable'],
             idUsuarioResponsable: rows[i]['idUsuarioResponsable'],
+            numOrden : 0,
             isEnabled:false,
             isupdate:false
           }
@@ -845,6 +1053,9 @@ const store = createStore({
 
     setUserName: (username) => {
       state.user.name = username;
+    },
+    setColOcultas: (state, data) => {
+      state.hiddenCols = data.split(",");
     },
 
     setUtilitarios: (state, utils) => {
@@ -939,6 +1150,14 @@ const store = createStore({
         state.Restrictionlist.push({name: i.desTipoRestricciones, value: i.codTipoRestricciones})
       })
     },
+    /* Set tipos dia programacion */
+    setProgrammingDayTypes (state, ResData) {
+      state.programmingDayTypes = ResData
+    },
+    setNotification(state, ResData) {
+      state.notifications = ResData;
+  }
+
   },
   modules: {},
 });
