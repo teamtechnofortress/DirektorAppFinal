@@ -76,7 +76,7 @@
       <div class="flex sm:flex-col sm:mb-2" v-if="!fullScreen ">
         <button
           :disabled="isDisabled"
-          class="w-[150px] sm:w-full h-8 px-4 flex justify-between items-center border-2 border-orange rounded mr-4 sm:mb-2"
+          class="w-[120px] sm:w-full h-8 px-3 flex justify-between items-center border-2 border-orange rounded mr-2 sm:mb-2"
           @click="openModal({param: 'addFront'})"
           :class="{
             'border-orange': !isDisabled,
@@ -96,7 +96,7 @@
         </button>
         <button
           :disabled="isDisabled"
-          class="w-[140px] sm:w-full h-8 px-4 flex justify-between items-center border-2 border-orange rounded mr-4 sm:mb-2"
+          class="w-[120px] sm:w-full h-8 px-3 flex justify-between items-center border-2 border-orange rounded mr-2 sm:mb-2"
           @click="openModal({param: 'addPhase'})"
           :class="{
             'border-orange': !isDisabled,
@@ -117,7 +117,7 @@
           alt="" />
         </button>
         <button
-          class="w-[110px] sm:w-full h-8 px-4 flex justify-between items-center border-2 rounded"
+          class="w-[110px] sm:w-full h-8 px-3 flex justify-between items-center border-2 rounded mr-2 sm:mb-2"
           :disabled="isDisabled"
           :class="{
             'border-orange': !isDisabled,
@@ -140,6 +140,26 @@
             alt=""
           />
         </button>
+        <button
+          class="w-[110px] sm:w-full h-8 px-4 flex justify-between items-center border-2 rounded"
+          :disabled="isDisabled"
+          :class="{
+            'border-orange': !isDisabled,
+            'border-[#DCE4F9]': isDisabled,
+          }"
+
+        >
+          <span
+            class="text-xs"
+            :class="{
+              'text-orange': !isDisabled,
+              'text-[#8A9CC9]': isDisabled,
+            }"
+          >
+            Enviar Correos
+          </span>
+
+        </button>
       </div>
       <div class="flex sm:mb-2" v-if="fullScreen">
         <ul class="text-[#8A9CC9] items-center flex text-xs">
@@ -161,7 +181,7 @@
           <span class="text-xs text-[#002B6B] mr-1">Descargar excel</span>
           <img src="../../assets/images/icons/download.svg" alt="" />
         </div>
-        <div class="flex items-center mr-4 cursor-pointer sm:mb-2">
+        <div class="flex items-center mr-4 cursor-pointer sm:mb-2" @click="openModal({param: 'uploadExcel'})">
           <span class="text-xs text-[#002B6B] mr-1">Importar excel</span>
           <img src="../../assets/images/icons/upload.svg" alt="" />
         </div>
@@ -255,6 +275,7 @@
                       :phaseId="fase.codFase"
                       :frontName="frente.desFrente"
                       :phaseName="fase.desFase"
+                      :ResizeActually = "sizeActually"
                       class="table-fixed"
                       @fullScreen="toggleFullScreen"
                       @addRowModal="addRowModal"
@@ -373,6 +394,7 @@
     <DeleteRow v-if="modalName === 'deleteRow'" @closeModal="closeModal" @delRow="delRow" />
     <ToggleColumn :hideCols="hideCols" v-if="modalName == 'toggleColumn'" @closeModal="closeModal" @setColumnsStatus="setColumnsStatus" />
     <DeleteFront :rows="rows" v-if="modalName === 'deleteFront'" @closeModal="closeModal" @deleteFront="deleteFront" />
+    <uploadExcel  v-if="modalName === 'uploadExcel'" @closeModal="closeModal" />
     <!-- <Confirm
       :confirmHeader="'Eliminar usuario'"
       :header="''"
@@ -398,6 +420,7 @@ import DataTableRestriccionesRow from "../../components/DataTableRestriccionesRo
 import ToggleColumn from "../../components/ToggleColumn.vue";
 import AddRow from "../../components/AddRow.vue";
 import DeleteRow from "../../components/DeleteRow.vue";
+import UploadExcel from "../../components/UploadExcel.vue";
 // import Confirm from "../../components/Confirm.vue";
 // import DownloadReport from "../../components/DownloadReport.vue";
 import SelectOption from "../../components/SelectOption.vue";
@@ -417,6 +440,7 @@ export default {
     AddRow,
     DeleteRow,
     DeleteFront,
+    UploadExcel,
     // Confirm,
     // ScrollTableRow,
     // RestrictionPerson,
@@ -430,6 +454,8 @@ export default {
 },
   data: function () {
     return {
+      sizeActually : 0,
+
       FilterActiveFlag : false,
       FilterActiveData : [],
       FilterActivetree : [],
@@ -475,9 +501,12 @@ export default {
       listhideCols: [],
       headerCols: {
         // plus: "",
-        exercise: "Descrip. Actividad",
-        restriction: "Descrip. Restricción",
-        restrictionType: "Tipo de restricción",
+        // exercise: "Descrip. Actividad",
+        // restriction: "Descrip. Restricción",
+        // restrictionType: "Tipo de restricción",
+        exercise: "Actividad",
+        restriction: "Restricción",
+        restrictionType: "Tipo",
         date_required: "Fecha requerida",
         date_conciliad: "Fecha conciliada",
         responsible: "Responsable",
@@ -1121,6 +1150,9 @@ export default {
       });
 
     },
+    ResizeActually() {
+      this.sizeActually =  window.innerWidth
+    }
 
 
   },
@@ -1179,12 +1211,16 @@ export default {
     isLoading: function(){
       return this.pageloadflag
     },
+
     // hideCols: function() {
     //   return this.$store.getters.hideCols({id: this.frontId, phaseId: this.phaseId});
     // }
 
   },
   mounted: async function() {
+
+    window.addEventListener('resize', this.ResizeActually);
+    this.ResizeActually()
 
     await store.dispatch('get_infoPerson');
     console.log(">> entro 1")

@@ -1,9 +1,10 @@
 <template>
+  <!-- w-screen antes -->
   <div
-    class="w-screen h-screen bg-modal flex items-center justify-center modal-background fixed top-0 left-0 z-40"
+    class="w-full h-screen bg-modal flex items-center justify-center modal-background fixed top-0 left-0 z-40"
   >
     <div
-      class="flex flex-col justify-center items-center w-[554px] sm:w-[296px] rounded-2xl bg-white absolute p-16 sm:px-6 sm:py-12 overflow-auto 
+      class="flex flex-col justify-center items-center w-[554px] sm:w-[296px] rounded-2xl bg-white absolute p-16 sm:px-6 sm:py-12 overflow-auto
       max-h-[750px] justify-between"
     >
       <img

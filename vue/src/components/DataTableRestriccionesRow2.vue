@@ -6,7 +6,7 @@
               v-click-outside="hide">
               <img src="../assets/images/icons/points.svg" :class="{ 'content-pointsActive': restriction_data.isTooltip }" alt="" />
             </button>
-            <TableTooltip v-if="isOpen" @tooltip="openModal" />
+            <TableTooltip v-if="isOpen" @tooltip="openModal" :ResizeActually="ResizeActually" />
           </td>
           <td :class="{'hidden': hideCols.indexOf('exercise') > -1}"> <input :disabled="!statusRestriction"  @keyup="verificarCambio({name:'desActividad', value: restriction_data.desActividad})" v-model="restriction_data.desActividad" type="text" class="text-xs w-full border border-[#8A9CC9] px-2 h-8 rounded" :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" /> </td>
           <td :class="{'hidden': hideCols.indexOf('restriction') > -1}"> <input :disabled="!statusRestriction"  @keyup="verificarCambio({name:'desRestriccion', value: restriction_data.desRestriccion})" v-model="restriction_data.desRestriccion" type="text" class="text-xs w-full border border-[#8A9CC9] px-2 h-8 rounded"  :class="{'bg-gray-100': !statusRestriction , 'text-gray-700': !statusRestriction  }" /> </td>
@@ -163,7 +163,9 @@ export default {
     hideCols: Array,
     listindex:Array,
     listIds:Array,
-    validarUpd:Boolean
+    validarUpd:Boolean,
+
+    ResizeActually:Number
   },
   data: function () {
     return {
@@ -203,6 +205,7 @@ export default {
     },
 
     handleClick: function (index) {
+      console.log(" >>>>>>> veremos que estanis trayendd "+this.ResizeActually)
       if (index === 'option') {
         this.isoptions = !this.isoptions;
       } else

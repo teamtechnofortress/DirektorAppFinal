@@ -1,7 +1,7 @@
 <template>
   <div>
 
-  <nav @click="validamosArray"> click aqui para ver </nav>
+  <!-- <nav @click="validamosArray"> click aqui para ver </nav> -->
   <table class="w-full">
     <thead class="bg-[#DCE4F9]">
       <tr :class="{ 'h-14': tableType === 'scroll' }">
@@ -56,7 +56,7 @@
             :statusRestriction="mstatusRestriction"
             :listindex="[midxFront,midxPhase,index]"
             :listIds  = "[frontId, phaseId]"
-
+            :ResizeActually = "ResizeActually"
             :validarUpd = "mvalidarUpd"
 
             @openModal = "openModal"
@@ -102,6 +102,7 @@ export default {
     idxPhase:Number,
 
     validarUpd:Boolean,
+    ResizeActually:Number,
   },
   computed:{
       mhideCols: function() {

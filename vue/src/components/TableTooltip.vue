@@ -3,6 +3,7 @@
     class="flex flex-col w-40 h-[84px] rounded bg-white absolute shadow-tooltip z-10"
   >
     <div
+      v-if="ResizeActually < 1000"
       class="w-full h-10 flex items-center text-[#616E8E] group cursor-pointer"
       @click="handleClick('addRow')"
     >
@@ -47,6 +48,7 @@ export default {
   name: "table-tooltip-component",
   props: {
     id: Number,
+    ResizeActually:Number,
   },
   methods: {
     handleClick: function (param) {
