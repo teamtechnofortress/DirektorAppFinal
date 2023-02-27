@@ -300,22 +300,38 @@ class RestrictionController extends Controller
 
                     }else{
 
+                        $nuevo_orden =  $value['idrestriccion'] + 0.01;
                         $codAnaRes = Restriction::where('codProyecto', $request['projectId'])->get('codAnaRes');
+
+                        if( $value['codAnaResActividad'] == -999){
+
+                            $get_last  = PhaseActividad::where('codAnaResFase',(int)$value['codAnaResFase'])
+                            ->where('codAnaResFrente',(int)$value['codAnaResFrente'])
+                            ->orderBy('numOrden', 'desc')
+                            ->first();
+
+                            $nuevo_orden = isset($get_last[0]->numOrden) ? $get_last[0]->numOrden + 0.01 : 0;
+
+                        }
+
+                        // return;
+
                         $resultado = PhaseActividad::insertGetId([
-                            'codTipoRestriccion' => $value['codTipoRestriccion'],
-                            'desActividad'       => (string)$value['desActividad'],
-                            'desRestriccion'     => (string)$value['desRestriccion'],
+                            'codTipoRestriccion'     => $value['codTipoRestriccion'],
+                            'desActividad'           => (string)$value['desActividad'],
+                            'desRestriccion'         => (string)$value['desRestriccion'],
                             'idUsuarioResponsable'   => $value['idUsuarioResponsable'],
                             'codEstadoActividad'     => $value['codEstadoActividad'],
                             'dayFechaRequerida'      => ($fecha == 'null' || $fecha == '') ? null : $fecha,
                             'dayFechaConciliada'     => ($fechac == 'null' || $fechac == '') ? null : $fechac,
-                            'codProyecto'   => $request['projectId'],
-                            'codAnaRes'     => $codAnaRes[0]['codAnaRes'],
-                            'codAnaResFase' => $value['codAnaResFase'],
-                            'codAnaResFrente' => $value['codAnaResFrente'],
-                            'codUsuarioSolicitante' => $request['userId'],
-                            'numOrden'              => $value['idrestriccion'] + 0.01
+                            'codProyecto'            => $request['projectId'],
+                            'codAnaRes'              => $codAnaRes[0]['codAnaRes'],
+                            'codAnaResFase'          => $value['codAnaResFase'],
+                            'codAnaResFrente'        => $value['codAnaResFrente'],
+                            'codUsuarioSolicitante'  => $request['userId'],
+                            'numOrden'               => $nuevo_orden
                         ]);
+
                         $tiporesultado = "ins";
 
                         $datos                    = array();

@@ -944,6 +944,12 @@ const store = createStore({
       // }
 
     },
+    saveRowfromForm(state, payload) {
+
+      const rows = state.whiteproject_rows.find((row) => row.codFrente === payload.frontId).listaFase.find((item) => item.codFase === payload.phaseId).listaRestricciones;
+      rows.push(payload.data.row)
+
+    },
     delScrollTableRow(state, payload) {
 
       console.log(state.whiteproject_rows)

@@ -10,15 +10,17 @@
           class="px-4 py-3 rounded-tl-[7px] w-24 absolute left-0 bg-[#DCE4F9] h-14 flex"
         >
           <img
+            v-if="ResizeActually > 1000"
             src="../assets/images/icons/full-screen.svg"
             class="cursor-pointer"
             @click="$emit('fullScreen', {frontId: frontId, phaseId: phaseId, frontName: frontName, phaseName: phaseName, restrictions:restrictions})"
             alt=""
           />
           <img
-            src="../assets/images/icons/add-row.svg"
+            v-if="ResizeActually < 1000 || restrictions.length == 0 "
+            src="../assets/images/icons/add-row3.svg"
             class="cursor-pointer w-[32px] ml-[4px]"
-            @click="$emit('addRowModal', {frontId: frontId, phaseId: phaseId, frontName: frontName, phaseName: phaseName})"
+            @click="$emit('addRowData', {frontId: frontId, phaseId: phaseId, frontName: frontName, phaseName: phaseName})"
             alt=""
           />
         </th>
@@ -103,6 +105,7 @@ export default {
 
     validarUpd:Boolean,
     ResizeActually:Number,
+    // rowsCant:Number
   },
   computed:{
       mhideCols: function() {

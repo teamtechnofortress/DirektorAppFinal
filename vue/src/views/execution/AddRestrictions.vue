@@ -276,6 +276,7 @@
                       :frontName="frente.desFrente"
                       :phaseName="fase.desFase"
                       :ResizeActually = "sizeActually"
+
                       class="table-fixed"
                       @fullScreen="toggleFullScreen"
                       @addRowModal="addRowModal"
@@ -291,6 +292,7 @@
                       @movimientoRow      = "movimientoRow"
                       @updalidarUpd       = "updalidarUpd"
                       @openModal="openModal"
+                      @addRowData = "addRowData"
 
                     >
                       <!-- <template #default="{ tr, id }">
@@ -391,6 +393,15 @@
     <AddFront :rows="rows" v-if="modalName === 'addFront'" @closeModal="closeModal" @addFront="addFront" />
     <AddPhase :rows="rows" v-if="modalName === 'addPhase'" @closeModal="closeModal" @addPhase="addPhase" />
     <AddRow v-if="modalName === 'addRow'" @closeModal="closeModal" @addRow="addRow" />
+    <AddRowData
+         v-if="modalName === 'addRowData'"
+        :hideCols = "hideCols"
+        :statusRestriction="statusRestriction"
+        :frontId = "frontId"
+        :phaseId = "phaseId"
+        @saveRowfromForm = "saveRowfromForm"
+        @closeModal      = "closeModal"
+    />
     <DeleteRow v-if="modalName === 'deleteRow'" @closeModal="closeModal" @delRow="delRow" />
     <ToggleColumn :hideCols="hideCols" v-if="modalName == 'toggleColumn'" @closeModal="closeModal" @setColumnsStatus="setColumnsStatus" />
     <DeleteFront :rows="rows" v-if="modalName === 'deleteFront'" @closeModal="closeModal" @deleteFront="deleteFront" />
@@ -427,6 +438,8 @@ import SelectOption from "../../components/SelectOption.vue";
 import DeleteFront from "../../components/DeleteFront.vue";
 import Loading from 'vue-loading-overlay';
 
+import AddRowData from "../../components/AddRowData.vue";
+
 import store from "../../store";
 export default {
   name: "white-project-component",
@@ -449,6 +462,7 @@ export default {
     // DownloadReport,
     SelectOption,
     ToggleColumn,
+    AddRowData
 
 
 },
@@ -727,8 +741,8 @@ export default {
     },
     delRow: function (payload) {
 
-      let frenteId = this.frontId
-      let faseId = this.phaseId
+      let frenteId      = this.frontId
+      let faseId        = this.phaseId
       let restriccionId = this.exercise
 
       console.log(frenteId+" -- "+faseId+" -- "+restriccionId)
@@ -748,7 +762,7 @@ export default {
                 ...payload,
               });
 
-        this.closeModal();
+              this.closeModal();
 
         }else{
           console.log("Tenemos errores al eliminar")
@@ -793,15 +807,66 @@ export default {
     addRowModal: function(payload) {
       this.openModal({param: 'addRow', frontId: payload.frontId, phaseId: payload.phaseId})
     },
+    addRowData: function(payload) {
+      this.openModal({param: 'addRowData', frontId: payload.frontId, phaseId: payload.phaseId})
+    },
+    saveRowfromForm: function(data){
+      let enviar                       = []
+      let payload                      = []
+
+      let dr= data.row['dayFechaRequerida']
+      let dayFechaRequerida_str   = (dr != "") ? dr+" "+"12:00:00":"";
+      let dc= data.row['dayFechaConciliada']
+      let dayFechaConciliada_str   = (dc != "") ? dc+" "+"12:00:00":"";
+
+      data.row['dayFechaRequerida']    =  dayFechaRequerida_str
+      data.row['dayFechaConciliada']   =  dayFechaConciliada_str
+      data.row['codAnaResActividad']   = -999
+
+      let data2                        = data.row
+      data2['codAnaResFase']           = data.phaseId
+      data2['codAnaResFrente']         = data.frontId
+      data2['idrestriccion']           = 0
+
+      enviar.push(data2)
+      let point = this
+      this.$store.dispatch('update_restricciones', enviar).then((response) => {
+
+        if (response.data.flag == 1 ){
+
+          if (response.data.inserciones.length > 0){
+
+              let codNuevo = response.data.inserciones[0]['idReal']
+
+              data.row['codAnaResActividad']  = codNuevo
+
+              point.$store.commit({
+                    type: 'saveRowfromForm',
+                    frontId: data.frontId,
+                    phaseId: data.phaseId,
+                    data: data,
+                    ...payload,
+              });
+
+              point.closeModal();
+              point.setTimeifUpd(500, "Se inserto nuevo registro")
+
+          }
+
+        }
+
+
+      });
+
+    },
     updateRow: function(data) {
 
       // console.log(">>>> llegue a updateRow dd")
       // return;
       let frontIdx  = data.frontIdx;
       let phaseIdx  = data.phaseIdx;
-      let enviar = this.restrictionsUpd;
+      let enviar    = this.restrictionsUpd;
       if (enviar.length > 0){
-          // console.log(">>>>>> Entrando a actualizar.")
 
           this.$store.dispatch('update_restricciones', enviar)
               .then((response) => {
@@ -965,7 +1030,7 @@ export default {
 
     },
     revision: function(){
-      console.log(this.restrictionsUpd)
+      console.log(this.restrictions)
     },
     movimientoRow: function(data){
 
@@ -1161,6 +1226,9 @@ export default {
     isDisabled: function () {
       return this.disabledItems
     },
+    // rowsCant: function(){
+    //   return this.$store.state.whiteproject_rows.length
+    // },
     rows: function() {
       let res           = this.$store.state.whiteproject_rows;
       this.restrictions = res
@@ -1170,10 +1238,7 @@ export default {
         return this.restrictions
 
       }else{
-        // console.log(">>>>>  entramos aqui selTreeOpt")
-        // return this.selTreeOpt
 
-        // let restrictions = [];
         switch (this.treeIndex) {
             /* 'Responsable' */
             case 0:
@@ -1200,7 +1265,6 @@ export default {
 
       }
 
-      // return this.getResTypeRows();
     },
     hideCols: function() {
       return  this.$store.state.hiddenCols; //this.listhideCols; //this.$store.getters.hideCols({id: this.frontId, phaseId: this.phaseId});

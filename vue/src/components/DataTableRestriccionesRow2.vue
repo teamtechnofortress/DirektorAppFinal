@@ -38,6 +38,7 @@
 
 
           </td>
+
           <td :class="{'hidden': hideCols.indexOf('date_required') > -1}">
 
             <input
