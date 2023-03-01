@@ -371,10 +371,9 @@ const store = createStore({
     create_project({commit}, projectData) {
       projectData.id = sessionStorage.getItem('Id');
       return axiosClient.post('/create_project', projectData)
-      .then(({data}) => {
-        this.state.codProyecto = data
-        console.log(this.state.codProyecto)
-        return data
+      .then(res => {
+        this.state.codProyecto = res.data.codPro
+        return res.data
       })
     },
     register_notification({commit, state}, payload) {
@@ -452,9 +451,9 @@ const store = createStore({
       return axiosClient.post('/get_project', id)
       .then(res => {
         commit('setProject', res.data)
-        this.state.projects.forEach (pro => {
-          commit('copyProjectFromDB', pro)
-        })
+          this.state.projects.forEach (pro => {
+            commit('copyProjectFromDB', pro)
+          })
       })
     },
     get_projectreport({commit}, projectId) {
@@ -1126,8 +1125,10 @@ const store = createStore({
       }
       const struser = projectData.desUsuarioCreacion;
       //tempProject.equipments = struser.substr(0, struser.length-1).split(', ');
-      tempProject.users = struser.substr(0, struser.length-1).split(', ');
-      state.restriction_rows.push(tempProject)
+      if(struser){
+        tempProject.users = struser.substr(0, struser.length-1).split(', ');
+        state.restriction_rows.push(tempProject)
+      }
     },
     setCurrentReport(state, ReportData) {
       state.currentprojectreport = ReportData

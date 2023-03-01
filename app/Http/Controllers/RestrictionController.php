@@ -11,11 +11,11 @@ use App\Models\RestrictionPhase;
 use App\Models\Conf_Estado;
 use App\Models\Ana_TipoRestricciones;
 use App\Models\Proy_AreaIntegrante;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 use Illuminate\Http\Request;
-
-
-
 
 class RestrictionController extends Controller
 {
@@ -300,38 +300,22 @@ class RestrictionController extends Controller
 
                     }else{
 
-                        $nuevo_orden =  $value['idrestriccion'] + 0.01;
                         $codAnaRes = Restriction::where('codProyecto', $request['projectId'])->get('codAnaRes');
-
-                        if( $value['codAnaResActividad'] == -999){
-
-                            $get_last  = PhaseActividad::where('codAnaResFase',(int)$value['codAnaResFase'])
-                            ->where('codAnaResFrente',(int)$value['codAnaResFrente'])
-                            ->orderBy('numOrden', 'desc')
-                            ->first();
-
-                            $nuevo_orden = isset($get_last[0]->numOrden) ? $get_last[0]->numOrden + 0.01 : 0;
-
-                        }
-
-                        // return;
-
                         $resultado = PhaseActividad::insertGetId([
-                            'codTipoRestriccion'     => $value['codTipoRestriccion'],
-                            'desActividad'           => (string)$value['desActividad'],
-                            'desRestriccion'         => (string)$value['desRestriccion'],
+                            'codTipoRestriccion' => $value['codTipoRestriccion'],
+                            'desActividad'       => (string)$value['desActividad'],
+                            'desRestriccion'     => (string)$value['desRestriccion'],
                             'idUsuarioResponsable'   => $value['idUsuarioResponsable'],
                             'codEstadoActividad'     => $value['codEstadoActividad'],
                             'dayFechaRequerida'      => ($fecha == 'null' || $fecha == '') ? null : $fecha,
                             'dayFechaConciliada'     => ($fechac == 'null' || $fechac == '') ? null : $fechac,
-                            'codProyecto'            => $request['projectId'],
-                            'codAnaRes'              => $codAnaRes[0]['codAnaRes'],
-                            'codAnaResFase'          => $value['codAnaResFase'],
-                            'codAnaResFrente'        => $value['codAnaResFrente'],
-                            'codUsuarioSolicitante'  => $request['userId'],
-                            'numOrden'               => $nuevo_orden
+                            'codProyecto'   => $request['projectId'],
+                            'codAnaRes'     => $codAnaRes[0]['codAnaRes'],
+                            'codAnaResFase' => $value['codAnaResFase'],
+                            'codAnaResFrente' => $value['codAnaResFrente'],
+                            'codUsuarioSolicitante' => $request['userId'],
+                            'numOrden'              => $value['idrestriccion'] + 0.01
                         ]);
-
                         $tiporesultado = "ins";
 
                         $datos                    = array();
@@ -623,5 +607,89 @@ class RestrictionController extends Controller
         }
         $TipoRestricciones = RestrictionPerson::where('codTipoRestricciones', '>=', 0)->get();
         return $TipoRestricciones;
+    }
+
+    /* Upload Excel */
+    public function uploadExcel(Request $request,$id){
+        try{
+            // Get the uploaded file
+            $file = $request->excelFile;
+            // Load the spreadsheet
+            $spreadsheet = IOFactory::load($file);
+            // Get the active sheet
+            $worksheet = $spreadsheet->getActiveSheet();
+            // Get the highest row number and column letter
+            $highestRow = $worksheet->getHighestRow();
+            $highestColumn = $worksheet->getHighestColumn();
+            // Loop through each row of the sheet
+            for ($row = 2; $row <= $highestRow; $row++) {
+                $success = false;
+                // Get the row data as an array
+                $rowData = $worksheet->rangeToArray('A' . $row . ':' . $highestColumn . $row, null, true, false)[0];
+                $Frente = $rowData[0];
+                $Fase = $rowData[1];
+                $Actividad = $rowData[2];
+                $Restriccion = $rowData[3];
+                $TipoRestriccion = $rowData[4];
+                $FechaRequerida = (Date::excelToDateTimeObject($rowData[5]))->format('Y-m-d');
+                $FechaConciliada = (Date::excelToDateTimeObject($rowData[6]))->format('Y-m-d');
+                $Responsable = $rowData[7];
+                $Estado = $rowData[8];
+                $Solicitante = $rowData[9];
+
+                /* check in anares_tiporestricciones */
+                $check_anares_tiporestricciones = Ana_TipoRestricciones::where('desTipoRestricciones',$TipoRestriccion)->first();
+                if($check_anares_tiporestricciones){
+                    /* check in proy_integrantes*/
+                    $proy_integrantes = ProjectUser::where('desCorreo',$Responsable)->first();
+                    if($proy_integrantes){
+                        /* check in ana_integrantes */
+                        $check_ana_integrantes = RestrictionMember::where('codProyIntegrante',$proy_integrantes->codProyIntegrante)->first();
+                        if($check_ana_integrantes){
+                            /* check in conf_estado */
+                            $conf_estado = Conf_Estado::where(['desEstado'=>$Estado,'desModulo'=>'ANARES'])->first();
+                            if($conf_estado){
+                                $anares_actividad = new PhaseActividad;
+                                $anares_frente = new RestrictionFront;
+                                $anares_fase = new RestrictionPhase;
+
+                                /* Add Values */
+                                $anares_frente->desAnaResFrente = $Frente;
+                                $anares_fase->desAnaResFase = $Fase;
+                                $anares_actividad->desActividad = $Actividad;
+                                $anares_actividad->desRestriccion = $Restriccion;
+                                $anares_actividad->codTipoRestriccion = $check_anares_tiporestricciones->codTipoRestricciones;
+                                $anares_actividad->dayFechaRequerida = $FechaRequerida;
+                                $anares_actividad->dayFechaConciliada = $FechaConciliada;
+                                $anares_actividad->idUsuarioResponsable = $proy_integrantes->codProyIntegrante;
+
+                                $anares_actividad->codEstadoActividad = $conf_estado->codEstado;
+                                if($Solicitante){
+                                    $anares_actividad->codEstadoActividad = $id;
+                                }
+                                if($anares_frente->save()){
+                                    if($anares_fase->save()){
+                                        if($anares_actividad->save()){
+                                            $success = true;
+                                        }
+                                        else return ["error"=>true,"message"=>"Something went wrong!"];
+                                    }
+                                    else return ["error"=>true,"message"=>"Something went wrong!"];
+                                }
+                                else return ["error"=>true,"message"=>"Something went wrong!"];
+                            }
+                            else return ["error"=>true,"message"=>"conf_estado recored not found!"];
+                        }
+                        else return ["error"=>true,"message"=>"ana_integrantes recored not found!"];
+                    }
+                    else return ["error"=>true,"message"=>"proy_integrantes recored not found!"];
+                }
+                else return ["error"=>true,"message"=>"anares_tiporestricciones recored not found!"];
+            }
+            return ["success"=>$success,"message"=> $success ? "Excel file imported success!" : "Something went wrong!"];
+        }
+        catch (\Exception $e) {
+            return ["error"=>true,"message"=>$e->getMessage()];
+        }
     }
 }

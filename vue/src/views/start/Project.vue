@@ -1,30 +1,45 @@
 <template>
-  <div id = 'create_project'>
+  <div id="create_project">
     <div
       v-if="isLoading == false"
       class="h-full flex justify-center sm:items-start"
-
     >
-    <loading
+      <loading
+        v-model:active="isLoadingTrue"
+        :can-cancel="false"
+        :is-full-page="true"
+        loader="dots"
+      />
 
-           v-model:active=isLoadingTrue
-           :can-cancel="false"
-           :is-full-page=true
-           loader="dots"
-       />
-
-        <!-- aqui tenemos algo {{validar}} -->
+      <!-- aqui tenemos algo {{validar}} -->
     </div>
-    <div class="flex flex-col" v-if="(status > 0 && status < 5) && isLoading">
+    <div class="notify" v-if="notify">
+      {{notifyMsg}} 
+      <svg style="display: inline;cursor:pointer" @click="this.notify=false" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </div>
+    <div class="flex flex-col" v-if="status > 0 && status < 5 && isLoading">
       <ProjectBar :step="status" />
-      <Breadcrumb :paths="['Inicio', 'Crear Proyecto']" :settingFlag="false" :class="status === 4 ? 'hidden' : 'm-1'" />
+      <Breadcrumb
+        :paths="['Inicio', 'Crear Proyecto']"
+        :settingFlag="false"
+        :class="status === 4 ? 'hidden' : 'm-1'"
+      />
       <FirstStep :class="status === 1 ? '' : 'hidden'" ref="step1" />
       <SecondStep :class="status === 2 ? '' : 'hidden'" ref="step2" />
       <ThirdStep :class="status === 3 ? '' : 'hidden'" ref="step3" />
-      <FooterStep :buttons="['Cancelar', createstatus?'Crear proyecto':'Editar proyecto']" :flag="footerFlag" :text="'*Campos obligatorios'" @cancel="cancel" @next="nextStatus" :class="status === 4 ? 'hidden' : ''"  />
+      <FooterStep
+        :buttons="[
+          'Cancelar',
+          createstatus ? 'Crear proyecto' : 'Editar proyecto',
+        ]"
+        :flag="footerFlag"
+        :text="'*Campos obligatorios'"
+        @cancel="cancel"
+        @next="nextStatus"
+        :class="status === 4 ? 'hidden' : ''"
+      />
 
       <div class="flex flex-col" :class="status === 4 ? '' : 'hidden'">
-
         <Breadcrumb :paths="['Inicio', 'Tus Proyectos']" :settingFlag="false" />
         <Indicator
           :header="'Tus proyectos'"
@@ -40,16 +55,14 @@
             class="sm:hidden"
           >
             <template #default="{ row, index }">
-
               <ProjectTableRow
-              :row="row"
-              :index="index"
-              @openModal="openModal"
-              @editProject="editProject"
-              @viewProject="viewProject" />
-
+                :row="row"
+                :index="index"
+                @openModal="openModal"
+                @editProject="editProject"
+                @viewProject="viewProject"
+              />
             </template>
-
           </DataTable>
           <div class="sm:flex flex-col justify-center hidden">
             <SquareBox v-for="(row, index) in projectRows" :key="index">
@@ -59,7 +72,9 @@
               <div class="flex mb-2">
                 <span class="text-xs leading-5 mr-1"
                   >Estado:
-                  <span class="font-medium">{{ row.data ? `Abierto` : `Cerrado` }}</span></span
+                  <span class="font-medium">{{
+                    row.data ? `Abierto` : `Cerrado`
+                  }}</span></span
                 >
               </div>
               <div class="flex flex-col mb-2 text-xs leading-5">
@@ -74,12 +89,22 @@
               </div>
 
               <div class="flex mb-2 justify-end text-orange text-sm leading-4">
-
                 <span class="mr-4">
-                  <span class="cursor-pointer" @click="editProject(row.projectId)">Editar</span> &nbsp;| &nbsp;
-                  <span class="cursor-pointer" @click="viewProject(row.id); openModal({param: 'viewproject', id: row.id})">Ver</span>
+                  <span
+                    class="cursor-pointer"
+                    @click="editProject(row.projectId)"
+                    >Editar</span
+                  >
+                  &nbsp;| &nbsp;
+                  <span
+                    class="cursor-pointer"
+                    @click="
+                      viewProject(row.id);
+                      openModal({ param: 'viewproject', id: row.id });
+                    "
+                    >Ver</span
+                  >
                 </span>
-
               </div>
             </SquareBox>
           </div>
@@ -112,11 +137,11 @@ import FirstStep from "../../components/FirstStep.vue";
 import FooterStep from "../../components/FooterStep.vue";
 import SecondStep from "../../components/SecondStep.vue";
 import ThirdStep from "../../components/ThirdStep.vue";
-import ViewProject from '../../components/ViewProject.vue'
+import ViewProject from "../../components/ViewProject.vue";
 import store from "../../store";
-import {inject} from 'vue';
+import { inject } from "vue";
 
-import Loading from 'vue-loading-overlay';
+import Loading from "vue-loading-overlay";
 
 export default {
   name: "project-view",
@@ -137,20 +162,22 @@ export default {
     FooterStep,
     SecondStep,
     ThirdStep,
-    ViewProject
+    ViewProject,
   },
   setup() {
-            const emitter = inject('emitter');
-            const onRegisterNotification = (value) => {
-                emitter.emit('notificationRegistered', value);
-            };
-            return {
-                onRegisterNotification
-            }
-        },
+    const emitter = inject("emitter");
+    const onRegisterNotification = (value) => {
+      emitter.emit("notificationRegistered", value);
+    };
+    return {
+      onRegisterNotification,
+    };
+  },
   data: function () {
     return {
-      pageloadflag:false,
+      notify: false,
+      notifyMsg: 'This is test message',
+      pageloadflag: false,
       viewprojectData: {},
       modalName: "",
       footerFlag: true,
@@ -165,51 +192,56 @@ export default {
       createstatus: true,
       projectId: null,
       notificationTypes: [
-                    {codNotificacion: 1, desNombre: 'CreateProject', desDescripción: 'Creacion de Proyecto', desPersonalizar: 'Nada'},
-                    {codNotificacion: 2, desNombre: 'CreateRestricction', desDescripción: 'Creacion de restriccion', desPersonalizar: null},
-                    {codNotificacion: 3, desNombre: 'AssignRestriction', desDescripción: 'Asignacion de restriccion', desPersonalizar: null},
-                ]
+        {
+          codNotificacion: 1,
+          desNombre: "CreateProject",
+          desDescripción: "Creacion de Proyecto",
+          desPersonalizar: "Nada",
+        },
+        {
+          codNotificacion: 2,
+          desNombre: "CreateRestricction",
+          desDescripción: "Creacion de restriccion",
+          desPersonalizar: null,
+        },
+        {
+          codNotificacion: 3,
+          desNombre: "AssignRestriction",
+          desDescripción: "Asignacion de restriccion",
+          desPersonalizar: null,
+        },
+      ],
     };
   },
   methods: {
+    cleanInputs: function () {
+      this.$refs.step1.projectName = "";
+      this.$refs.step1.business = "";
+      this.$refs.step1.term = "";
+      this.$refs.step1.coveredArea = "";
+      this.$refs.step1.projectType = "";
+      this.$refs.step1.startDate = "";
+      this.$refs.step1.referenceAmount = "";
+      this.$refs.step1.area = "";
+      this.$refs.step1.builtArea = "";
+      this.$refs.step1.country = "Peru";
+      this.$refs.step1.address = "";
+      this.$refs.step1.ubigeo = "";
+      this.$refs.step1.codMoneda = "";
 
-    cleanInputs: function (){
+      this.$refs.step2.users = [];
+      this.$refs.step2.areaIntegrantes = [];
+      this.$refs.step2.rolIntegrantes = [];
+      this.$refs.step3.reports = [];
 
-            this.$refs.step1.projectName= "";
-            this.$refs.step1.business= "";
-            this.$refs.step1.term= "";
-            this.$refs.step1.coveredArea= "";
-            this.$refs.step1.projectType= "";
-            this.$refs.step1.startDate= "";
-            this.$refs.step1.referenceAmount="";
-            this.$refs.step1.area="";
-            this.$refs.step1.builtArea= "";
-            this.$refs.step1.country= "Peru";
-            this.$refs.step1.address="";
-            this.$refs.step1.ubigeo="";
-            this.$refs.step1.codMoneda= "";
-
-
-            this.$refs.step2.users   = [];
-            this.$refs.step2.areaIntegrantes = [];
-            this.$refs.step2.rolIntegrantes  = [];
-            this.$refs.step3.reports = [];
-
-            this.$refs.step1.searchText="";
-            this.$refs.step1.searchTextUbigeo = "";
-            // this.$refs.step1.placeholder="Seleccionar Ubicación";
-
-
-
-
-
-
-
+      this.$refs.step1.searchText = "";
+      this.$refs.step1.searchTextUbigeo = "";
+      // this.$refs.step1.placeholder="Seleccionar Ubicación";
     },
     openModal: function (param) {
       if (typeof param !== "string") {
         this.rowId = param.id;
-        param      = param.param;
+        param = param.param;
       }
       this.modalName = param;
     },
@@ -223,9 +255,9 @@ export default {
         this.successHeader = "¡Proyecto agregado con éxito!";
         this.openModal("success");
 
-        store.dispatch('get_project')
+        store.dispatch("get_project");
         this.$store.commit("copyRestriction");
-        this.status = 4
+        this.status = 4;
         this.$store.state.createStatus = true;
       } else {
         this.closeModal();
@@ -244,7 +276,8 @@ export default {
                 this.$refs.step1.business === "" ||
                 this.$refs.step1.projectType === "" ||
                 this.$refs.step1.district === "",
-              this.$refs.step1.country === "" || this.$refs.step1.address === "")
+              this.$refs.step1.country === "" ||
+                this.$refs.step1.address === "")
             ) {
               alert("please insert correct data and fill all fields.");
               this.status = 1;
@@ -297,15 +330,24 @@ export default {
               projectData.usersum += user.userEmail + ", ";
             });
             console.log(projectData);
-            store.dispatch("create_project", projectData).catch((error) => {
+            store.dispatch("create_project", projectData).then(res => {
+              if(res.mail){
+                this.notify=true
+                this.notifyMsg=res.message
+                setTimeout(function(){
+                  this.notify=false
+                }, 3000)
+              }
+            }).catch((error) => {
               console.log(error);
             });
-            let payload = {date: savedate};
-            store.dispatch("register_notification", payload).then(res => {
-                let message = this.notificationTypes.find(m => m.codNotificacion === res.codNotificacion);
-                message.codNotificacionUsuario = res.codNotificacionUsuario;
-                this.onRegisterNotification(message);
-
+            let payload = { date: savedate };
+            store.dispatch("register_notification", payload).then((res) => {
+              let message = this.notificationTypes.find(
+                (m) => m.codNotificacion === res.codNotificacion
+              );
+              message.codNotificacionUsuario = res.codNotificacionUsuario;
+              this.onRegisterNotification(message);
             });
 
             this.cleanInputs();
@@ -462,8 +504,8 @@ export default {
               userEmail: user.desCorreo,
               userRole: user.codRolIntegrante,
               userArea: user.codArea,
-              id : user.idIntegrante,
-              suggestiondata: []
+              id: user.idIntegrante,
+              suggestiondata: [],
             };
             users.push(temp);
           });
@@ -477,22 +519,23 @@ export default {
 
           /* When editing a specific project, set step3 TypeFrequency from the current project report */
           if (this.$store.state.currentprojectreport[0]) {
-            let proDayCode = this.$store.state.currentprojectreport[0].proDayCode;
+            let proDayCode =
+              this.$store.state.currentprojectreport[0].proDayCode;
             let matchObj = this.$refs.step3.programmingDayTypes.find(
               (obj) => obj.value === proDayCode
             );
-            this.$refs.step3.TypeFrequency = matchObj ? matchObj.typeFrequency : '';
+            this.$refs.step3.TypeFrequency = matchObj
+              ? matchObj.typeFrequency
+              : "";
             this.$refs.step3.programmingDayTypeCode = matchObj ? proDayCode : 0;
           }
         });
-
       });
 
       this.cleanInputs();
     },
-    viewProject: function(payload) {
-
-      const project = this.$store.state.projects[payload-1];
+    viewProject: function (payload) {
+      const project = this.$store.state.projects[payload - 1];
       const projectInfo = {
         projectName: project.desNombreProyecto,
         business: project.desEmpresa,
@@ -505,11 +548,10 @@ export default {
         area: project.numAreaTechada,
         builtArea: project.numAreaConstruida,
         country: project.desDireccion,
-      }
-      this.viewprojectData = projectInfo
-
+      };
+      this.viewprojectData = projectInfo;
     },
-    cancel: function() {
+    cancel: function () {
       this.status = 4;
       this.cleanInputs();
     },
@@ -548,8 +590,6 @@ export default {
           });
         }
       });
-
-
     },
   },
   computed: {
@@ -566,41 +606,46 @@ export default {
 
     //    return this.pageloadflag
     // },
-    isLoadingTrue(){
-       return true
+    isLoadingTrue() {
+      return true;
     },
-    isLoading: function(){
-      return this.pageloadflag
-    }
-
+    isLoading: function () {
+      return this.pageloadflag;
+    },
   },
 
-  mounted: async function() {
-
-
-    await store.dispatch('get_infoPerson');
-    await store.dispatch('get_project')
+  mounted: async function () {
+    await store.dispatch("get_infoPerson");
+    await store.dispatch("get_project");
     await this.$store.commit("copyRestriction");
-    this.status=4
-    if(this.$store.state.createStatus === true)
-    {
-      await store.dispatch('get_project')
+    this.status = 4;
+    if (this.$store.state.createStatus === true) {
+      await store.dispatch("get_project");
       await this.$store.commit("copyRestriction");
-      this.status=4;
+      this.status = 4;
       // this.pageloadflag = "Se termino de cargar la pagina"
     }
 
-    this.pageloadflag = true
+    this.pageloadflag = true;
 
     /* Get programming day type list */
     store.dispatch("get_programmingdaytypes").then((response) => {
       this.$refs.step3.programmingDayTypes = [];
-      this.$refs.step3.programmingDayTypes = this.$store.state.programmingDayTypes;
+      this.$refs.step3.programmingDayTypes =
+        this.$store.state.programmingDayTypes;
     });
-
-
   },
-
-
 };
 </script>
+<style>
+  .notify{
+    width: fit-content;
+    position: absolute;
+    right: 100px;
+    background: #008000e6;
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 9
+  }
+</style>

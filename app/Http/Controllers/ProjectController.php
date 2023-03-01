@@ -20,12 +20,15 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InvitationEmail;
 
 class ProjectController extends Controller
 {
     //
     public function create_project (Request $request) {
 
+        $mail = false;
         $data = $request->validate([
             'projectName' => 'required|string',
             'business' => 'required|numeric',
@@ -75,6 +78,19 @@ class ProjectController extends Controller
                     'idIntegrante'        => $userId
                 ]);
 
+            }
+            if(!isset($user['id'])){
+                $insertMail = \DB::table('conf_colacorreos')->insert([
+                    "desMensaje" => env('CLIENT_SIDE_URL')."/register",
+                    "dayFechaRegistro" => date('Y-m-d H:i:s'),
+                    "dayFechaEnvio" => date('Y-m-d H:i:s'),
+                    "codUsuarioRegistro" => $request['id'],
+                    "desCorreoEnvio" => $userEmail
+                ]);
+                if($insertMail){
+                    $res = Mail::to($userEmail)->send(new InvitationEmail('token'));
+                    if($res) $mail = true;
+                }
             }
         }
 
@@ -141,7 +157,7 @@ class ProjectController extends Controller
             'codTipoDiaProgramacion'    => $request['programmingDayTypeCode']
         ]);
 
-        return $codPro;
+        return ["codPro" => $codPro,"mail" => $mail,"message" => $mail ? "Emails were sent successfully" : ''];
     }
 
     public function get_project (Request $request) {

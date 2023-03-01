@@ -72,6 +72,8 @@ Route::post('/get_data_restricciones', [RestrictionController::class, 'get_data_
 Route::post('/upd_restricciones', [RestrictionController::class, 'upd_restricciones']);
 Route::post('/upd_numOrden', [RestrictionController::class, 'upd_numOrden']);
 
+/* Upload Excel */
+Route::post('/uploadExcel/{user}', [RestrictionController::class, 'uploadExcel']);
 
 Route::post('/get_restrictionsMember', [RestrictionController::class, 'get_restrictionsMember']);
 Route::post('/get_estado', [RestrictionController::class, 'get_estado']);
