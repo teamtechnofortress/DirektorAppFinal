@@ -298,7 +298,7 @@ class RestrictionController extends Controller
 
                         $tiporesultado = "upd";
 
-                    }else{
+                    }else{ 
 
                         $codAnaRes = Restriction::where('codProyecto', $request['projectId'])->get('codAnaRes');
                         $resultado = PhaseActividad::insertGetId([
@@ -610,7 +610,7 @@ class RestrictionController extends Controller
     }
 
     /* Upload Excel */
-    public function uploadExcel(Request $request,$id){
+    public function uploadExcel(Request $request,$id,$projectId){
         try{
             // Get the uploaded file
             $file = $request->excelFile;
@@ -649,15 +649,29 @@ class RestrictionController extends Controller
                             /* check in conf_estado */
                             $conf_estado = Conf_Estado::where(['desEstado'=>$Estado,'desModulo'=>'ANARES'])->first();
                             if($conf_estado){
+                                $anaRes = Restriction::where('codProyecto', $projectId)->get('codAnaRes');
+                                $codAnaRes = $anaRes[0]['codAnaRes'];
+
                                 $anares_actividad = new PhaseActividad;
                                 $anares_frente = new RestrictionFront;
                                 $anares_fase = new RestrictionPhase;
 
                                 /* Add Values */
                                 $anares_frente->desAnaResFrente = $Frente;
+                                $anares_frente->codProyecto = $projectId;
+                                $anares_frente->codAnaRes = $codAnaRes;
+
                                 $anares_fase->desAnaResFase = $Fase;
+                                $anares_fase->codProyecto = $projectId;
+                                $anares_fase->codAnaRes = $codAnaRes;
+
                                 $anares_actividad->desActividad = $Actividad;
+                                // $anares_actividad->codEstadoActividad = $conf_estado->codEstado;
                                 $anares_actividad->desRestriccion = $Restriccion;
+
+                                $anares_actividad->codProyecto = $projectId;
+                                $anares_actividad->codAnaRes = $codAnaRes;
+
                                 $anares_actividad->codTipoRestriccion = $check_anares_tiporestricciones->codTipoRestricciones;
                                 $anares_actividad->dayFechaRequerida = $FechaRequerida;
                                 $anares_actividad->dayFechaConciliada = $FechaConciliada;
@@ -665,10 +679,13 @@ class RestrictionController extends Controller
 
                                 $anares_actividad->codEstadoActividad = $conf_estado->codEstado;
                                 if($Solicitante){
-                                    $anares_actividad->codEstadoActividad = $id;
+                                    // $anares_actividad->codEstadoActividad = $id;
                                 }
                                 if($anares_frente->save()){
+                                    $anares_fase->codAnaResFrente = $anares_frente->codAnaResFrente;
                                     if($anares_fase->save()){
+                                        $anares_actividad->codAnaResFrente = $anares_frente->codAnaResFrente;
+                                        $anares_actividad->codAnaResFase = $anares_fase->codAnaResFase;
                                         if($anares_actividad->save()){
                                             $success = true;
                                         }

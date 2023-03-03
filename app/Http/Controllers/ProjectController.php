@@ -27,7 +27,6 @@ class ProjectController extends Controller
 {
     //
     public function create_project (Request $request) {
-
         $mail = false;
         $data = $request->validate([
             'projectName' => 'required|string',
@@ -81,16 +80,13 @@ class ProjectController extends Controller
             }
             if(!isset($user['id'])){
                 $insertMail = \DB::table('conf_colacorreos')->insert([
-                    "desMensaje" => env('CLIENT_SIDE_URL')."/register",
+                    "desMensaje" => view('emails.invitation')->render(),
                     "dayFechaRegistro" => date('Y-m-d H:i:s'),
-                    "dayFechaEnvio" => date('Y-m-d H:i:s'),
+                    // "dayFechaEnvio" => date('Y-m-d H:i:s'),
                     "codUsuarioRegistro" => $request['id'],
                     "desCorreoEnvio" => $userEmail
                 ]);
-                if($insertMail){
-                    $res = Mail::to($userEmail)->send(new InvitationEmail('token'));
-                    if($res) $mail = true;
-                }
+                if($insertMail) $mail = true;
             }
         }
 
@@ -158,6 +154,25 @@ class ProjectController extends Controller
         ]);
 
         return ["codPro" => $codPro,"mail" => $mail,"message" => $mail ? "Emails were sent successfully" : ''];
+    }
+
+    public function sendMails($id){
+        $success = false;
+        $results = \DB::table('conf_colacorreos')->where('codUsuarioRegistro',$id)->whereNull('dayFechaEnvio')->get();
+        // dd($results);
+        if($results){
+            foreach ($results as $key => $mail) {
+                $res = Mail::to($mail->desCorreoEnvio)->send(new InvitationEmail('token'));
+                if($res){
+                    $insertMail = \DB::table('conf_colacorreos')->where('codColaCorreo',$mail->codColaCorreo)->update([
+                        "dayFechaEnvio" => date('Y-m-d H:i:s')
+                    ]);
+                    if($insertMail) $success = true;
+                    else $success = false;
+                }
+            }
+            return ["success"=>$success,"message"=> $success ? "Emails were sent successfully." : "Something went wrong!"];
+        }
     }
 
     public function get_project (Request $request) {

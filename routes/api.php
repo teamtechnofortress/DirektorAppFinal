@@ -36,6 +36,7 @@ Route::post('/survey/{survey}/answer', [\App\Http\Controllers\SurveyController::
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/create_project', [ProjectController::class, 'create_project']);
+Route::get('/sendMails/{user}', [ProjectController::class, 'sendMails']);
 Route::post('/get_project', [ProjectController::class, 'get_project']);
 Route::post('/get_restrictions', [RestrictionController::class, 'get_restriction']);
 Route::post('/edit_project', [ProjectController::class, 'edit_project']);
@@ -73,7 +74,7 @@ Route::post('/upd_restricciones', [RestrictionController::class, 'upd_restriccio
 Route::post('/upd_numOrden', [RestrictionController::class, 'upd_numOrden']);
 
 /* Upload Excel */
-Route::post('/uploadExcel/{user}', [RestrictionController::class, 'uploadExcel']);
+Route::post('/uploadExcel/{user}/{projectId}', [RestrictionController::class, 'uploadExcel']);
 
 Route::post('/get_restrictionsMember', [RestrictionController::class, 'get_restrictionsMember']);
 Route::post('/get_estado', [RestrictionController::class, 'get_estado']);

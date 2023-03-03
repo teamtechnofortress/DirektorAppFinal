@@ -73,7 +73,7 @@ export default {
       let formData = new FormData()
       formData.append('excelFile',this.file)
       this.addLog(` > uploading file - ${this.file.name}`)
-      await axiosClient.post(`/uploadExcel/${sessionStorage.getItem('Id')}`,formData).then(res => {
+      await axiosClient.post(`/uploadExcel/${sessionStorage.getItem('Id')}/${sessionStorage.getItem("constraintid")}`,formData).then(res => {
         if(res.data.success){
           this.response.error = false
           this.response.success = true

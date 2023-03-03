@@ -142,6 +142,7 @@ import store from "../../store";
 import { inject } from "vue";
 
 import Loading from "vue-loading-overlay";
+import axiosClient from "../../axios"
 
 export default {
   name: "project-view",
@@ -330,13 +331,17 @@ export default {
               projectData.usersum += user.userEmail + ", ";
             });
             console.log(projectData);
-            store.dispatch("create_project", projectData).then(res => {
+            store.dispatch("create_project", projectData).then(async res => {
               if(res.mail){
-                this.notify=true
-                this.notifyMsg=res.message
-                setTimeout(function(){
-                  this.notify=false
-                }, 3000)
+                await axiosClient.get(`/sendMails/${sessionStorage.getItem('Id')}`).then(respo => {
+                  if(respo.data.success){
+                    this.notify=true
+                    this.notifyMsg=respo.data.message
+                    setTimeout(function(){
+                      this.notify=false
+                    }, 3000)
+                  }
+                })
               }
             }).catch((error) => {
               console.log(error);
