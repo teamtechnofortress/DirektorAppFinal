@@ -609,8 +609,8 @@ class RestrictionController extends Controller
         return $TipoRestricciones;
     }
 
-     /* Upload Excel */
-     public function uploadExcel(Request $request,$id,$projectId){
+    /* Upload Excel */
+    public function uploadExcel(Request $request,$id,$projectId){
         try{
             // Get the uploaded file
             $file = $request->excelFile;
@@ -624,7 +624,9 @@ class RestrictionController extends Controller
             // Loop through each row of the sheet
             $error = false;
             $success = false;
+            $errors = [];
             for ($row = 2; $row <= $highestRow; $row++) {
+                $error_ar = NULL;
                 // Get the row data as an array
                 $rowData = $worksheet->rangeToArray('A' . $row . ':' . $highestColumn . $row, null, true, false)[0];
                 $Frente = $rowData[0];
@@ -696,15 +698,20 @@ class RestrictionController extends Controller
                                 }
                                 else $error = true;
                             }
-                            else $error = true;
+                            else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'desEstado' and 'desModulo'=>'ANARES' did't match for this row."];
                         }
-                        else $error = true;
+                        else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'codProyIntegrante' value did't find for this row."];
                     }
-                    else $error = true;
+                    else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'codProyecto'=>$projectId and 'desCorreo'=>$Responsable did't find."];
                 }
-                else $error = true;
+                else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'desTipoRestricciones'=>$TipoRestriccion could not find in records."];
+
+                if($error_ar){
+                    $error = true;
+                    array_push($errors,$error_ar);
+                }
             }
-            return ["success"=>$success,"error" => $error,"successMessage"=> "Excel file imported success!", "errorMessage"=>"Something of records cannot be imported!"];
+            return ["success"=>$success,"error" => $error,"successMessage"=> "Excel file imported success!", "errorMessage"=>"Something of records cannot be imported!","errors" => $errors];
         }
         catch (\Exception $e) {
             return ["error"=>true,"message"=>$e->getMessage()];

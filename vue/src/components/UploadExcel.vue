@@ -86,7 +86,10 @@ export default {
         if(res.data.error){
           this.response.error = true
           this.response.errorMessage = res.data.errorMessage
-          this.addLog(` > "exited with error" \n message - ${res.data.errorMessage}`)
+          const errors = res.data.errors
+          for (let index = 0; index < errors.length; index++) {
+            this.addLog(` ${errors[index].row} \n message - ${errors[index].value}`)
+          }
         }
       }).catch(err => console.log(err))
     }
