@@ -609,8 +609,8 @@ class RestrictionController extends Controller
         return $TipoRestricciones;
     }
 
-    /* Upload Excel */
-    public function uploadExcel(Request $request,$id,$projectId){
+     /* Upload Excel */
+     public function uploadExcel(Request $request,$id,$projectId){
         try{
             // Get the uploaded file
             $file = $request->excelFile;
@@ -622,8 +622,9 @@ class RestrictionController extends Controller
             $highestRow = $worksheet->getHighestRow();
             $highestColumn = $worksheet->getHighestColumn();
             // Loop through each row of the sheet
+            $error = false;
+            $success = false;
             for ($row = 2; $row <= $highestRow; $row++) {
-                $success = false;
                 // Get the row data as an array
                 $rowData = $worksheet->rangeToArray('A' . $row . ':' . $highestColumn . $row, null, true, false)[0];
                 $Frente = $rowData[0];
@@ -641,7 +642,7 @@ class RestrictionController extends Controller
                 $check_anares_tiporestricciones = Ana_TipoRestricciones::where('desTipoRestricciones',$TipoRestriccion)->first();
                 if($check_anares_tiporestricciones){
                     /* check in proy_integrantes*/
-                    $proy_integrantes = ProjectUser::where('desCorreo',$Responsable)->first();
+                    $proy_integrantes = ProjectUser::where(['codProyecto'=>$projectId,'desCorreo'=>$Responsable])->first();
                     if($proy_integrantes){
                         /* check in ana_integrantes */
                         $check_ana_integrantes = RestrictionMember::where('codProyIntegrante',$proy_integrantes->codProyIntegrante)->first();
@@ -689,21 +690,21 @@ class RestrictionController extends Controller
                                         if($anares_actividad->save()){
                                             $success = true;
                                         }
-                                        else return ["error"=>true,"message"=>"Something went wrong!"];
+                                        else $error = true;
                                     }
-                                    else return ["error"=>true,"message"=>"Something went wrong!"];
+                                    else $error = true;
                                 }
-                                else return ["error"=>true,"message"=>"Something went wrong!"];
+                                else $error = true;
                             }
-                            else return ["error"=>true,"message"=>"conf_estado recored not found!"];
+                            else $error = true;
                         }
-                        else return ["error"=>true,"message"=>"ana_integrantes recored not found!"];
+                        else $error = true;
                     }
-                    else return ["error"=>true,"message"=>"proy_integrantes recored not found!"];
+                    else $error = true;
                 }
-                else return ["error"=>true,"message"=>"anares_tiporestricciones recored not found!"];
+                else $error = true;
             }
-            return ["success"=>$success,"message"=> $success ? "Excel file imported success!" : "Something went wrong!"];
+            return ["success"=>$success,"error" => $error,"successMessage"=> "Excel file imported success!", "errorMessage"=>"Something of records cannot be imported!"];
         }
         catch (\Exception $e) {
             return ["error"=>true,"message"=>$e->getMessage()];

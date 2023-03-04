@@ -5,8 +5,8 @@
         <img src="/src/assets/images/icons/upload.svg" class="inverted" alt="">
         Subir Archivo Excel
       </button>
-      <div class="alert alert-success" v-if="response.success">{{response.message}}</div>
-      <div class="alert alert-danger" v-if="response.error">{{response.message}}</div>
+      <div class="alert alert-success" v-if="response.success">{{response.successMessage}}</div>
+      <div class="alert alert-danger" v-if="response.error">{{response.errorMessage}}</div>
       <div class="mt-10 mb-2 w-full">
         <label>Log Messages</label>
       </div>
@@ -51,7 +51,8 @@ export default {
       response : {
         success: false,
         error: false,
-        message: ''
+        successMessage: '',
+        errorMessage: ''
       }
     };
   },
@@ -73,18 +74,20 @@ export default {
       let formData = new FormData()
       formData.append('excelFile',this.file)
       this.addLog(` > uploading file - ${this.file.name}`)
+      this.response.error = false
+      this.response.success = false
       await axiosClient.post(`/uploadExcel/${sessionStorage.getItem('Id')}/${sessionStorage.getItem("constraintid")}`,formData).then(res => {
         if(res.data.success){
-          this.response.error = false
           this.response.success = true
+          this.response.successMessage = res.data.successMessage
+          this.addLog(` > "exited with success" \n message - ${res.data.successMessage}`)
           // this.$emit('closeModal')
         }
-        else{
+        if(res.data.error){
           this.response.error = true
-          this.response.success = false
+          this.response.errorMessage = res.data.errorMessage
+          this.addLog(` > "exited with error" \n message - ${res.data.errorMessage}`)
         }
-        this.response.message = res.data.message
-        this.addLog(` > ${res.data.success ? "exited with success" : "exited with error"} \n message - ${res.data.message}`)
       }).catch(err => console.log(err))
     }
   }
