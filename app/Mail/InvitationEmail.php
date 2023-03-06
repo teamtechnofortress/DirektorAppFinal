@@ -11,7 +11,7 @@ class InvitationEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $token;
+    public $html;
 
     /**
      * Create a new message instance.
@@ -19,9 +19,9 @@ class InvitationEmail extends Mailable
      * @param  string  $token
      * @return void
      */
-    public function __construct($token)
+    public function __construct($html)
     {
-        $this->token = $token;
+        $this->html = $html;
     }
 
     /**
@@ -31,10 +31,7 @@ class InvitationEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.invitation')
-                    ->with([
-                        'token' => $this->token,
-                    ]);
+        return $this->view('emails.emailTemplate')->with(['html' => $this->html]);
     }
 }
 

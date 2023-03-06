@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\InvitationEmail;
+use App\Models\conf_colacorreos;
+use App\Jobs\SendEmails;
 
 class ProjectController extends Controller
 {
@@ -79,14 +80,13 @@ class ProjectController extends Controller
 
             }
             if(!isset($user['id'])){
-                $insertMail = \DB::table('conf_colacorreos')->insert([
-                    "desMensaje" => view('emails.invitation')->render(),
-                    "dayFechaRegistro" => date('Y-m-d H:i:s'),
-                    // "dayFechaEnvio" => date('Y-m-d H:i:s'),
-                    "codUsuarioRegistro" => $request['id'],
-                    "desCorreoEnvio" => $userEmail
-                ]);
-                if($insertMail) $mail = true;
+                $conf_colacorreos = new conf_colacorreos;
+                $conf_colacorreos->desMensaje = view('emails.invitation')->render();
+                $conf_colacorreos->dayFechaRegistro = date('Y-m-d H:i:s');
+                // "dayFechaEnvio" => date('Y-m-d H:i:s'),
+                $conf_colacorreos->codUsuarioRegistro = $request['id'];
+                $conf_colacorreos->desCorreoEnvio = $userEmail;
+                if($conf_colacorreos->save()) $mail = true;
             }
         }
 
@@ -157,22 +157,22 @@ class ProjectController extends Controller
     }
 
     public function sendMails($id){
-        $success = false;
-        $results = \DB::table('conf_colacorreos')->where('codUsuarioRegistro',$id)->whereNull('dayFechaEnvio')->get();
-        // dd($results);
-        if($results){
-            foreach ($results as $key => $mail) {
-                $res = Mail::to($mail->desCorreoEnvio)->send(new InvitationEmail('token'));
-                if($res){
-                    $insertMail = \DB::table('conf_colacorreos')->where('codColaCorreo',$mail->codColaCorreo)->update([
-                        "dayFechaEnvio" => date('Y-m-d H:i:s')
-                    ]);
-                    if($insertMail) $success = true;
-                    else $success = false;
-                }
-            }
-            return ["success"=>$success,"message"=> $success ? "Emails were sent successfully." : "Something went wrong!"];
-        }
+        // $success = false;
+        // $results = \DB::table('conf_colacorreos')->where('codUsuarioRegistro',$id)->whereNull('dayFechaEnvio')->get();
+        // // dd($results);
+        // if($results){
+        //     foreach ($results as $key => $mail) {
+        //         $res = Mail::to($mail->desCorreoEnvio)->send(new InvitationEmail('token'));
+        //         if($res){
+        //             $insertMail = \DB::table('conf_colacorreos')->where('codColaCorreo',$mail->codColaCorreo)->update([
+        //                 "dayFechaEnvio" => date('Y-m-d H:i:s')
+        //             ]);
+        //             if($insertMail) $success = true;
+        //             else $success = false;
+        //         }
+        //     }
+        //     return ["success"=>$success,"message"=> $success ? "Emails were sent successfully." : "Something went wrong!"];
+        // }
     }
 
     public function get_project (Request $request) {
@@ -417,4 +417,5 @@ class ProjectController extends Controller
     }
 
     /* ************************** DESARROLLADOR  POR EL PROGRAMADOR  ******************************* */
+
 }

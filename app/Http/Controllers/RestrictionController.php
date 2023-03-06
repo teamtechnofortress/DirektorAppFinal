@@ -634,8 +634,8 @@ class RestrictionController extends Controller
                 $Actividad = $rowData[2];
                 $Restriccion = $rowData[3];
                 $TipoRestriccion = $rowData[4];
-                $FechaRequerida = (Date::excelToDateTimeObject($rowData[5]))->format('Y-m-d');
-                $FechaConciliada = (Date::excelToDateTimeObject($rowData[6]))->format('Y-m-d');
+                $FechaRequerida = $rowData[5];
+                $FechaConciliada = $rowData[6];
                 $Responsable = $rowData[7];
                 $Estado = $rowData[8];
                 $Solicitante = $rowData[9];
@@ -676,8 +676,8 @@ class RestrictionController extends Controller
                                 $anares_actividad->codAnaRes = $codAnaRes;
 
                                 $anares_actividad->codTipoRestriccion = $check_anares_tiporestricciones->codTipoRestricciones;
-                                $anares_actividad->dayFechaRequerida = $FechaRequerida;
-                                $anares_actividad->dayFechaConciliada = $FechaConciliada;
+                                $anares_actividad->dayFechaRequerida = gettype($FechaRequerida)=="integer" ? (Date::excelToDateTimeObject($FechaRequerida))->format('Y-m-d') : '';
+                                $anares_actividad->dayFechaConciliada = gettype($FechaRequerida)=="integer" ? (Date::excelToDateTimeObject($FechaConciliada))->format('Y-m-d') : '';
                                 $anares_actividad->idUsuarioResponsable = $proy_integrantes->codProyIntegrante;
 
                                 $anares_actividad->codEstadoActividad = $conf_estado->codEstado;
