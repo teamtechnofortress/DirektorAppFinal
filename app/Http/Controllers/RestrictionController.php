@@ -656,18 +656,37 @@ class RestrictionController extends Controller
                                 $codAnaRes = $anaRes[0]['codAnaRes'];
 
                                 $anares_actividad = new PhaseActividad;
-                                $anares_frente = new RestrictionFront;
-                                $anares_fase = new RestrictionPhase;
 
-                                /* Add Values */
-                                $anares_frente->desAnaResFrente = $Frente;
-                                $anares_frente->codProyecto = $projectId;
-                                $anares_frente->codAnaRes = $codAnaRes;
+                                /* Check already frente exists */
+                                $frente_already = false;
+                                $fase_already = false;
+                                $anares_frente = RestrictionFront::where(['desAnaResFrente'=>$Frente,'codProyecto'=>$projectId,'codAnaRes'=>$codAnaRes])->first();
+                                if($anares_frente){
+                                    $frente_already = true;
+                                    $anares_fase = RestrictionPhase::where(['codAnaRes'=>$codAnaRes,'desAnaResFase'=>$Fase,'codProyecto'=>$projectId,'codAnaResFrente'=>$anares_frente->codAnaResFrente])->first();
+                                    if($anares_fase){
+                                        $fase_already = true;
+                                    }
+                                    else{
+                                        $anares_fase = new RestrictionPhase;
+                                        $anares_fase->desAnaResFase = $Fase;
+                                        $anares_fase->codProyecto = $projectId;
+                                        $anares_fase->codAnaRes = $codAnaRes;
+                                    }
+                                }
+                                else{
+                                    $anares_frente = new RestrictionFront;
+                                    $anares_fase = new RestrictionPhase;
 
-                                $anares_fase->desAnaResFase = $Fase;
-                                $anares_fase->codProyecto = $projectId;
-                                $anares_fase->codAnaRes = $codAnaRes;
+                                    /* Add Values */
+                                    $anares_frente->desAnaResFrente = $Frente;
+                                    $anares_frente->codProyecto = $projectId;
+                                    $anares_frente->codAnaRes = $codAnaRes;
 
+                                    $anares_fase->desAnaResFase = $Fase;
+                                    $anares_fase->codProyecto = $projectId;
+                                    $anares_fase->codAnaRes = $codAnaRes;
+                                }
                                 $anares_actividad->desActividad = $Actividad;
                                 // $anares_actividad->codEstadoActividad = $conf_estado->codEstado;
                                 $anares_actividad->desRestriccion = $Restriccion;
@@ -684,9 +703,13 @@ class RestrictionController extends Controller
                                 if($Solicitante){
                                     // $anares_actividad->codEstadoActividad = $id;
                                 }
-                                if($anares_frente->save()){
-                                    $anares_fase->codAnaResFrente = $anares_frente->codAnaResFrente;
-                                    if($anares_fase->save()){
+                                if(!$frente_already) $anares_frente->save();
+                                if($anares_frente){
+                                    if(!$fase_already){
+                                        $anares_fase->codAnaResFrente = $anares_frente->codAnaResFrente;
+                                        $anares_fase->save();
+                                    }
+                                    if($anares_fase){
                                         $anares_actividad->codAnaResFrente = $anares_frente->codAnaResFrente;
                                         $anares_actividad->codAnaResFase = $anares_fase->codAnaResFase;
                                         if($anares_actividad->save()){
