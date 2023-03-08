@@ -699,6 +699,7 @@ class RestrictionController extends Controller
                                         $anares_actividad->dayFechaRequerida = gettype($FechaRequerida)=="integer" ? (Date::excelToDateTimeObject($FechaRequerida))->format('Y-m-d') : date('Y-m-d H:i:s');
                                         $anares_actividad->dayFechaConciliada = gettype($FechaConciliada)=="integer" ? (Date::excelToDateTimeObject($FechaConciliada))->format('Y-m-d') : date('Y-m-d H:i:s');
                                         $anares_actividad->idUsuarioResponsable = $proy_integrantes->codProyIntegrante;
+                                        $anares_actividad->codUsuarioSolicitante = $id;
 
                                         $anares_actividad->codEstadoActividad = $conf_estado->codEstado;
                                         if($Solicitante){
