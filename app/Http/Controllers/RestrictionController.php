@@ -639,96 +639,100 @@ class RestrictionController extends Controller
                 $Responsable = $rowData[7];
                 $Estado = $rowData[8];
                 $Solicitante = $rowData[9];
+                if(gettype($FechaConciliada)=="integer"){
+                    if(gettype($FechaRequerida)=="integer"){
+                        /* check in anares_tiporestricciones */
+                        $check_anares_tiporestricciones = Ana_TipoRestricciones::where('desTipoRestricciones',$TipoRestriccion)->first();
+                        if($check_anares_tiporestricciones){
+                            /* check in proy_integrantes*/
+                            $proy_integrantes = ProjectUser::where(['codProyecto'=>$projectId,'desCorreo'=>$Responsable])->first();
+                            if($proy_integrantes){
+                                /* check in ana_integrantes */
+                                $check_ana_integrantes = RestrictionMember::where('codProyIntegrante',$proy_integrantes->codProyIntegrante)->first();
+                                if($check_ana_integrantes){
+                                    /* check in conf_estado */
+                                    $conf_estado = Conf_Estado::where(['desEstado'=>$Estado,'desModulo'=>'ANARES'])->first();
+                                    if($conf_estado){
+                                        $anaRes = Restriction::where('codProyecto', $projectId)->get('codAnaRes');
+                                        $codAnaRes = $anaRes[0]['codAnaRes'];
 
-                /* check in anares_tiporestricciones */
-                $check_anares_tiporestricciones = Ana_TipoRestricciones::where('desTipoRestricciones',$TipoRestriccion)->first();
-                if($check_anares_tiporestricciones){
-                    /* check in proy_integrantes*/
-                    $proy_integrantes = ProjectUser::where(['codProyecto'=>$projectId,'desCorreo'=>$Responsable])->first();
-                    if($proy_integrantes){
-                        /* check in ana_integrantes */
-                        $check_ana_integrantes = RestrictionMember::where('codProyIntegrante',$proy_integrantes->codProyIntegrante)->first();
-                        if($check_ana_integrantes){
-                            /* check in conf_estado */
-                            $conf_estado = Conf_Estado::where(['desEstado'=>$Estado,'desModulo'=>'ANARES'])->first();
-                            if($conf_estado){
-                                $anaRes = Restriction::where('codProyecto', $projectId)->get('codAnaRes');
-                                $codAnaRes = $anaRes[0]['codAnaRes'];
+                                        $anares_actividad = new PhaseActividad;
 
-                                $anares_actividad = new PhaseActividad;
+                                        /* Check already frente exists */
+                                        $frente_already = false;
+                                        $fase_already = false;
+                                        $anares_frente = RestrictionFront::where(['desAnaResFrente'=>$Frente,'codProyecto'=>$projectId,'codAnaRes'=>$codAnaRes])->first();
+                                        if($anares_frente){
+                                            $frente_already = true;
+                                            $anares_fase = RestrictionPhase::where(['codAnaRes'=>$codAnaRes,'desAnaResFase'=>$Fase,'codProyecto'=>$projectId,'codAnaResFrente'=>$anares_frente->codAnaResFrente])->first();
+                                            if($anares_fase){
+                                                $fase_already = true;
+                                            }
+                                            else{
+                                                $anares_fase = new RestrictionPhase;
+                                                $anares_fase->desAnaResFase = $Fase;
+                                                $anares_fase->codProyecto = $projectId;
+                                                $anares_fase->codAnaRes = $codAnaRes;
+                                            }
+                                        }
+                                        else{
+                                            $anares_frente = new RestrictionFront;
+                                            $anares_fase = new RestrictionPhase;
 
-                                /* Check already frente exists */
-                                $frente_already = false;
-                                $fase_already = false;
-                                $anares_frente = RestrictionFront::where(['desAnaResFrente'=>$Frente,'codProyecto'=>$projectId,'codAnaRes'=>$codAnaRes])->first();
-                                if($anares_frente){
-                                    $frente_already = true;
-                                    $anares_fase = RestrictionPhase::where(['codAnaRes'=>$codAnaRes,'desAnaResFase'=>$Fase,'codProyecto'=>$projectId,'codAnaResFrente'=>$anares_frente->codAnaResFrente])->first();
-                                    if($anares_fase){
-                                        $fase_already = true;
-                                    }
-                                    else{
-                                        $anares_fase = new RestrictionPhase;
-                                        $anares_fase->desAnaResFase = $Fase;
-                                        $anares_fase->codProyecto = $projectId;
-                                        $anares_fase->codAnaRes = $codAnaRes;
-                                    }
-                                }
-                                else{
-                                    $anares_frente = new RestrictionFront;
-                                    $anares_fase = new RestrictionPhase;
+                                            /* Add Values */
+                                            $anares_frente->desAnaResFrente = $Frente;
+                                            $anares_frente->codProyecto = $projectId;
+                                            $anares_frente->codAnaRes = $codAnaRes;
 
-                                    /* Add Values */
-                                    $anares_frente->desAnaResFrente = $Frente;
-                                    $anares_frente->codProyecto = $projectId;
-                                    $anares_frente->codAnaRes = $codAnaRes;
+                                            $anares_fase->desAnaResFase = $Fase;
+                                            $anares_fase->codProyecto = $projectId;
+                                            $anares_fase->codAnaRes = $codAnaRes;
+                                        }
+                                        $anares_actividad->desActividad = $Actividad;
+                                        // $anares_actividad->codEstadoActividad = $conf_estado->codEstado;
+                                        $anares_actividad->desRestriccion = $Restriccion;
 
-                                    $anares_fase->desAnaResFase = $Fase;
-                                    $anares_fase->codProyecto = $projectId;
-                                    $anares_fase->codAnaRes = $codAnaRes;
-                                }
-                                $anares_actividad->desActividad = $Actividad;
-                                // $anares_actividad->codEstadoActividad = $conf_estado->codEstado;
-                                $anares_actividad->desRestriccion = $Restriccion;
+                                        $anares_actividad->codProyecto = $projectId;
+                                        $anares_actividad->codAnaRes = $codAnaRes;
 
-                                $anares_actividad->codProyecto = $projectId;
-                                $anares_actividad->codAnaRes = $codAnaRes;
+                                        $anares_actividad->codTipoRestriccion = $check_anares_tiporestricciones->codTipoRestricciones;
+                                        $anares_actividad->dayFechaRequerida = gettype($FechaRequerida)=="integer" ? (Date::excelToDateTimeObject($FechaRequerida))->format('Y-m-d') : date('Y-m-d H:i:s');
+                                        $anares_actividad->dayFechaConciliada = gettype($FechaConciliada)=="integer" ? (Date::excelToDateTimeObject($FechaConciliada))->format('Y-m-d') : date('Y-m-d H:i:s');
+                                        $anares_actividad->idUsuarioResponsable = $proy_integrantes->codProyIntegrante;
 
-                                $anares_actividad->codTipoRestriccion = $check_anares_tiporestricciones->codTipoRestricciones;
-                                $anares_actividad->dayFechaRequerida = gettype($FechaRequerida)=="integer" ? (Date::excelToDateTimeObject($FechaRequerida))->format('Y-m-d') : '';
-                                $anares_actividad->dayFechaConciliada = gettype($FechaRequerida)=="integer" ? (Date::excelToDateTimeObject($FechaConciliada))->format('Y-m-d') : '';
-                                $anares_actividad->idUsuarioResponsable = $proy_integrantes->codProyIntegrante;
-
-                                $anares_actividad->codEstadoActividad = $conf_estado->codEstado;
-                                if($Solicitante){
-                                    // $anares_actividad->codEstadoActividad = $id;
-                                }
-                                if(!$frente_already) $anares_frente->save();
-                                if($anares_frente){
-                                    if(!$fase_already){
-                                        $anares_fase->codAnaResFrente = $anares_frente->codAnaResFrente;
-                                        $anares_fase->save();
-                                    }
-                                    if($anares_fase){
-                                        $anares_actividad->codAnaResFrente = $anares_frente->codAnaResFrente;
-                                        $anares_actividad->codAnaResFase = $anares_fase->codAnaResFase;
-                                        if($anares_actividad->save()){
-                                            $success = true;
+                                        $anares_actividad->codEstadoActividad = $conf_estado->codEstado;
+                                        if($Solicitante){
+                                            // $anares_actividad->codEstadoActividad = $id;
+                                        }
+                                        if(!$frente_already) $anares_frente->save();
+                                        if($anares_frente){
+                                            if(!$fase_already){
+                                                $anares_fase->codAnaResFrente = $anares_frente->codAnaResFrente;
+                                                $anares_fase->save();
+                                            }
+                                            if($anares_fase){
+                                                $anares_actividad->codAnaResFrente = $anares_frente->codAnaResFrente;
+                                                $anares_actividad->codAnaResFase = $anares_fase->codAnaResFase;
+                                                if($anares_actividad->save()){
+                                                    $success = true;
+                                                }
+                                                else $error = true;
+                                            }
+                                            else $error = true;
                                         }
                                         else $error = true;
                                     }
-                                    else $error = true;
+                                    else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'desEstado' and 'desModulo'=>'ANARES' did't match for this row."];
                                 }
-                                else $error = true;
+                                else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'codProyIntegrante' value did't find for this row."];
                             }
-                            else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'desEstado' and 'desModulo'=>'ANARES' did't match for this row."];
+                            else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'codProyecto'=>$projectId and 'desCorreo'=>$Responsable did't find."];
                         }
-                        else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'codProyIntegrante' value did't find for this row."];
+                        else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'desTipoRestricciones'=>$TipoRestriccion could not find in records."];
                     }
-                    else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'codProyecto'=>$projectId and 'desCorreo'=>$Responsable did't find."];
+                    else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'dayFechaRequerida'=>$FechaRequerida could not insert in Date Time column because of incorrect formate."];
                 }
-                else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'desTipoRestricciones'=>$TipoRestriccion could not find in records."];
-
+                else $error_ar = ["row" => "> Error at row: ".$row,'value' => "'dayFechaConciliada'=>$FechaConciliada could not insert in Date Time column because of incorrect formate."];
                 if($error_ar){
                     $error = true;
                     array_push($errors,$error_ar);
